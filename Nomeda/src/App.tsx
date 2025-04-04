@@ -1,16 +1,27 @@
 import {useState} from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import {GoogleOAuthProvider} from '@react-oauth/google'
-// import Home from './pages/Home';
+import {AccountDetailsPage} from './pages/account/AccountDetailsPage'
+import {PrivateRoute} from './components/Auth/PrivateRoute'
+import {useAuth} from './hooks/useAuth'
 
 function App() {
   const [count, setCount] = useState(0)
+  const {isAuthenticated} = useAuth() // Assuming adding an auth hook
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
+          {/* Account Routes - <Protected> */}
+          <Route
+            path="/account"
+            element={
+              <PrivateRoute isAuthenticated={isAuthenticated}>
+                <AccountDetailsPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
