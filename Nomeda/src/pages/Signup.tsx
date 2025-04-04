@@ -8,7 +8,7 @@ import AuthInput from '../components/Auth/AuthInput'
 import AuthError from '../components/Auth/AuthError'
 import SocialAuthButtons from '../components/Auth/SocialAuthButtons'
 
-import '../style/Login.css' // You can keep using the same style or create `Signup.css` if you want custom look
+import '../style/Auth.css' 
 
 const Signup: React.FC = () => {
   const [name, setName] = useState('')

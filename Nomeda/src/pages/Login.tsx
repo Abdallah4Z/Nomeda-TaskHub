@@ -6,7 +6,7 @@ import AuthHeader from '../components/Auth/AuthHeader';
 import AuthInput from '../components/Auth/AuthInput';
 import AuthError from '../components/Auth/AuthError';
 import SocialAuthButtons from '../components/Auth/SocialAuthButtons';
-import '../style/Login.css';
+import '../style/Auth.css';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
