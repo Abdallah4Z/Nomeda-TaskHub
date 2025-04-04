@@ -1,0 +1,45 @@
+.modal-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 1000px;
+    width: 1700px;
+    background-color: rgba(51, 45, 45, 0.795);
+    padding: 4px;
+    box-shadow: 40px;
+    display: flex;
+    border: 6px solid #333333;
+    border-radius: 15px;
+
+}
+.nav-container {
+width: 220px;
+background-color: #1c1c1c; 
+padding-top: 20px;
+font-family: 'Roboto', sans-serif; 
+font-size: 160px;
+user-select: none; 
+
+}
+
+.content-container {
+flex: 1;
+padding: 16px;
+background-color: #333333; / Set a different background color for the right side /
+}
+.nav-container .MuiListItem-root:hover,
+.nav-container .Mui-selected  {
+background-color: #444444; / Light gray background on hover and for selected /
+color: #ffffff; / Change text color to white /
+border-radius: 10px; 
+}
+.nav-container .MuiListItemIcon-root {
+margin-right: -18px; / Reduce space between icon and text /
+
+}
+.nav-container .MuiListItemText-primary {
+font-size: 20px;  / Increase the font size /
+font-weight: bold; / Make the text bold /
+color: #ffffff;  / Make text white for contrast */
+}
