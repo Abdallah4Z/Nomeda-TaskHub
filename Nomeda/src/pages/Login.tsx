@@ -1,106 +1,74 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
-import '../style/Login.css';
-import googleLogo from '../assets/google.svg';
-import githubLogo from '../assets/github.svg';
 import { jwtDecode } from 'jwt-decode';
-import { Link, useNavigate } from 'react-router-dom';
+import AuthHeader from '../components/Auth/AuthHeader';
+import AuthInput from '../components/Auth/AuthInput';
+import AuthError from '../components/Auth/AuthError';
+import SocialAuthButtons from '../components/Auth/SocialAuthButtons';
+import '../style/Login.css';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
-      alert('Please fill in all fields');
+      setError('Please fill in all fields');
       return;
     }
 
-    console.log('Logging in with:', email, password);
-    
-    // TODO: Replace with actual authentication logic
-    try {
-      setTimeout(() => {
-        navigate('/dashboard'); 
-      }, 1000);
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('Login failed. Please try again.');
-    }
+    // Simulate login
+    setTimeout(() => navigate('/dashboard'), 1000);
   };
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: tokenResponse => {
       try {
-        const decodedHeader = jwtDecode(tokenResponse.access_token);
-        console.log(decodedHeader);
-        navigate('/dashboard'); 
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        alert('Google login failed. Please try again.');
+        const decoded = jwtDecode(tokenResponse.access_token);
+        console.log(decoded);
+        navigate('/dashboard');
+      } catch (err) {
+        setError('Google login failed. Please try again.');
       }
     },
-    onError: errorResponse => {
-      console.error('Google login error:', errorResponse);
-      alert('Google login failed. Please try again.');
+    onError: err => {
+      setError('Google login failed. Please try again.');
     }
   });
 
   return (
     <div className="login-container">
-      <div className="login-header">
-        <h1>Log in to your account</h1>
-        <p>Welcome back! Please enter your details</p>
-      </div>
-
+      <AuthHeader title="Log in to your account" subtitle="Welcome back! Please enter your details" />
+      <AuthError message={error} />
+      
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
-
-        <button type="submit" className="login-btn">
-          Log In
-        </button>
+        <AuthInput
+          label="Email"
+          type="email"
+          id="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <AuthInput
+          label="Password"
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit" className="login-btn">Log In</button>
       </form>
 
       <div className="social-login">
         <div className="social-login-divider">or</div>
-        <div className="social-buttons-container">
-          <button
-            className="social-btn"
-            onClick={() => loginWithGoogle()}
-          >
-            <img src={googleLogo} alt="google" />
-            Sign in with Google
-          </button>
-          <button className="social-btn">
-            <img src={githubLogo} alt="github" />
-            Continue with GitHub
-          </button>
-        </div>
+        <SocialAuthButtons onGoogleClick={loginWithGoogle} isLoading={false} />
       </div>
 
       <div className="account-prompt">
