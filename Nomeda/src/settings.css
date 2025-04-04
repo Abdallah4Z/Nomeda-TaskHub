@@ -24,22 +24,22 @@ user-select: none;
 }
 
 .content-container {
-flex: 1;
-padding: 16px;
-background-color: #333333; / Set a different background color for the right side /
+    flex: 1;
+    padding: 16px;
+    background-color: #333333; /* Set a different background color for the right side */
 }
 .nav-container .MuiListItem-root:hover,
 .nav-container .Mui-selected  {
-background-color: #444444; / Light gray background on hover and for selected /
-color: #ffffff; / Change text color to white /
+background-color: #444444; 
+color: #ffffff; 
 border-radius: 10px; 
 }
 .nav-container .MuiListItemIcon-root {
-margin-right: -18px; / Reduce space between icon and text /
+margin-right: -18px; 
 
 }
 .nav-container .MuiListItemText-primary {
-font-size: 20px;  / Increase the font size /
-font-weight: bold; / Make the text bold /
-color: #ffffff;  / Make text white for contrast */
+font-size: 20px;  
+font-weight: bold; 
+color: #ffffff;  
 }

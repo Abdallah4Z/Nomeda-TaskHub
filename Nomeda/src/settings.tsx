@@ -63,8 +63,10 @@ const CenteredBox = () => {
       {/* Main container to center content (height 100vh means full screen height) */}
       
       {/* Button that triggers opening the modal */}
-      <Button variant="contained" color="primary" onClick={handleOpen}>
-        Open Box
+      <Button variant="contained" onClick={handleOpen}>
+      <ListItemIcon>
+                    <SettingsIcon sx={{ color: '#ffffff' }} />
+                  </ListItemIcon>
       </Button>
 
       {/* Modal component for the box that appears in the middle */}
