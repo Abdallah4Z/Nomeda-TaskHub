@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './style/App.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Homepage from './pages/Homepage'
 import NavigationDrawer from './components/NavigationDrawer'
 import CenteredBox from './components/settings';
 import Routerpage from './pages/Router';
-=======
 import {useState} from 'react'
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import {GoogleOAuthProvider} from '@react-oauth/google'
@@ -23,27 +18,18 @@ import {ForbiddenPage} from './pages/errors/ForbiddenPage'
 import {UnauthorizedPage} from './pages/errors/UnauthorizedPage'
 import {BadRequestPage} from './pages/errors/BadRequestPage'
 
->>>>>>> 38031c5dd4ae2085e750e4c6ea57431174d72b16
 function App() {
   const [count, setCount] = useState(0)
   const {isAuthenticated} = useAuth() // Assuming adding an auth hook
 
   return (
-<<<<<<< HEAD
-    <>
-      <Router>
-        <Routes>
-          <Route path="/Home" element={<Homepage />} />
-          <Route path="/Settings" element={<Routerpage />} />
-        </Routes>
-      </Router>
-    </>
-=======
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/Home" element={<Homepage />} />
+          <Route path="/settings" element={<Routerpage />} />
           {/* Account Routes - <Protected> */}
           <Route
             path="/account"
@@ -62,7 +48,6 @@ function App() {
         </Routes>
       </Router>
     </GoogleOAuthProvider>
->>>>>>> 38031c5dd4ae2085e750e4c6ea57431174d72b16
   )
 }
 

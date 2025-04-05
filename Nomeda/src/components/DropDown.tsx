@@ -14,7 +14,7 @@ interface ThemeSelectProps {
 
 const DropDown: React.FC<ThemeSelectProps> = ({ themeSetting, handleThemeChange, menuItems }) => {
   return (
-    <ListItem button>
+    <ListItem >
       <ListItemText/>
       <ListItemSecondaryAction>
         <FormControl variant="standard" sx={{ minWidth: 120 }}>
@@ -24,8 +24,13 @@ const DropDown: React.FC<ThemeSelectProps> = ({ themeSetting, handleThemeChange,
             value={themeSetting}
             onChange={handleThemeChange}
             sx={{ color: 'white',
-            left:20
-             }} // optional styling
+            left:30,
+            listStyle: 'none',      // remove the default bullet style
+            '& li': {
+                  display: 'list-item', // if needed for structure
+                  listStyle: 'none',    // remove bullet
+                },
+            }} // optional styling
             displayEmpty
           >
             {menuItems.map((item) => (

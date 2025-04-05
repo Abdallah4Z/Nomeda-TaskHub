@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
@@ -15,8 +14,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import CenteredBox from './settings'; // Import your Settings component
-import { useRouter } from 'next/router'; // Import useRouter from Next.js
-import { Navigate } from 'react-router-dom';
 import { useNavigate ,Link} from 'react-router-dom';
 
 const drawerWidth = 200;
@@ -90,7 +87,7 @@ const NavigationDrawer:React.FC=()=> {
     };
     const navigate = useNavigate();
     const handleInboxClick = () => {
-      navigate('/Settings'); // or navigate to "/home" if that's your intended route
+      navigate('/login'); // or navigate to "/home" if that's your intended route
     };
     const handleInboxClickHome = () => {
       navigate('/Home'); // or navigate to "/home" if that's your intended route
@@ -178,8 +175,7 @@ const NavigationDrawer:React.FC=()=> {
               }}
             >
             </Box>
-            <CenteredBox/>
-
+        < CenteredBox />
           </ListItem>
         </List>
       </Drawer>
