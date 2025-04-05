@@ -6,7 +6,7 @@ import { Box, Button, Modal,
     Divider,Select,
   MenuItem,FormControl ,
   InputLabel} from '@mui/material'; // Import necessary MUI components
-import './settings.css'; // Import the external CSS file
+import '../style/settings.css'; // Import the external CSS file
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -15,8 +15,12 @@ import BuildIcon from '@mui/icons-material/Build'; // Import icon for Services
 import ContactMailIcon from '@mui/icons-material/ContactMail'; // Import icon for Contact
 import IOSSwitchComponent from './IOS';
 import DropDown from './DropDown'; // Import the new ThemeSelect component
+import { IconButton } from '@mui/material';
 
-
+interface CenteredBoxProps {
+  open: boolean;
+  handleClose: () => void;
+}
 
 const CenteredBox = () => {
   const [open, setOpen] = useState(false); // State to control whether the modal is open or not
@@ -59,17 +63,32 @@ const CenteredBox = () => {
     { value: 'custom', label: 'Custom' },
   ];
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      {/* Main container to center content (height 100vh means full screen height) */}
-      
-      {/* Button that triggers opening the modal */}
-      <Button variant="contained" onClick={handleOpen}>
-      <ListItemIcon>
-                    <SettingsIcon sx={{ color: '#ffffff' }} />
-                  </ListItemIcon>
-      </Button>
+<Box
+  sx={{
+    position: 'fixed',          // Fixed position relative to the viewport
+    bottom: 0,                  // At the bottom
+    width: '100%',              // Make it full width if desired (or adjust as needed)
+  }}
+>
+  <IconButton
+    onClick={handleOpen}       // Function to call when the button is clicked
+    disableRipple              // Disables the ripple on click
+    disableFocusRipple         // Disables the ripple when focused
+    sx={{
+      // Remove outline on focus
+      '&:focus': {
+        outline: 'none',
+        boxShadow: 'none',
+      },
+      '&:hover': {
+        color: '#fff',                // Change text/icon color on hover
+        backgroundColor: 'fff', // Set backgroundColor to transparent (or any desired color)
+      },
+    }}
+  >
+    <SettingsIcon sx={{ color: '#fff' }} />
+  </IconButton>
 
-      {/* Modal component for the box that appears in the middle */}
       <Modal
         open={open} // Whether the modal is open or not
         onClose={handleClose} // Function to call when the modal is closed
@@ -134,6 +153,62 @@ const CenteredBox = () => {
                   <ListItemText primary="Contact" />
                 </ListItem>
               </List>
+              <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }}/>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'grey' ,
+                marginBottom:-1,fontFamily:'sans-serif',fontSize:12,
+                marginLeft:2}}>
+              General Settings
+            </Typography>
+              <List>
+
+                <ListItem 
+                button 
+                selected={selectedItem === 'General'} 
+
+                onClick={() => handleSelectItem('General')}>
+                <ListItemIcon>
+                    <SettingsIcon sx={{ color: '#ffffff' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="General" />
+                </ListItem>
+
+
+
+                <ListItem 
+                button 
+                selected={selectedItem === 'About'} 
+                onClick={() => handleSelectItem('About')}>
+                <ListItemIcon>
+                    <InfoIcon sx={{ color: '#ffffff' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="About" />
+                </ListItem>
+
+
+
+                <ListItem
+                 button
+                 selected={selectedItem === 'Services'} 
+
+                 onClick={() => handleSelectItem('Services')}>
+                  <ListItemText primary="Services" />
+                </ListItem>
+
+
+
+
+
+                <ListItem 
+                button 
+                selected={selectedItem === 'Contact'} 
+                onClick={() => handleSelectItem('Contact')}>
+                <ListItemIcon >
+                    <ContactMailIcon sx={{ color: '#ffffff' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Contact" />
+                </ListItem>
+              </List>
+              <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }}/>
             </Box>
 
 
@@ -147,15 +222,17 @@ const CenteredBox = () => {
           <Box className="content-container">
           {selectedItem === 'General' && (
               <div>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', paddingLeft: 2 }}>
                   General Settings
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2 }}>
+                <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2, paddingLeft: 2 }}>
                   Configure general options for the application.
                 </Typography>
+                <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }}/>
+
                 <List>
                   <ListItem button>
-                    <ListItemText primary="Enable Notifications" />
+                    <ListItemText primary="Enable Notifications" sx={{color:'white'}}/>
                     <ListItemSecondaryAction>
                     <IOSSwitchComponent
                         edge="end"
@@ -163,12 +240,38 @@ const CenteredBox = () => {
                         onChange={handleToggleChange('enableNotifications')}
                       />
                     </ListItemSecondaryAction>
+                    
                   </ListItem>
+                  <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2,marginTop:-2, paddingLeft: 2 }}>
+                  Enable or disable notifications for the application.
+                </Typography>
                   <ListItem button>
-                    <ListItemText primary="Dark Mode" />
+                    <ListItemText primary="Start Week On Monday" sx={{color:'white'}}/>
+                    <ListItemSecondaryAction>
+                    <IOSSwitchComponent
+                        edge="end"
+                        checked={toggleStates.darkMode}
+                        onChange={handleToggleChange('darkMode')}
+                      />
+                    </ListItemSecondaryAction>
                   </ListItem>
+                  <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2,marginTop:-2, paddingLeft: 2 }}>
+                  this will make your calendar start on Monday instead of Sunday.
+                </Typography>
+                <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }}/>
+
+                <ListItem button>
+                    <ListItemText primary="Appearance" sx={{color:'white'}}/>
+                    <DropDown themeSetting={themeSetting} handleThemeChange={handleThemeChange} menuItems={themeMenuItems} /> {/* Use dynamic menu items */}
+
+                  </ListItem>
+                  <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2,marginTop:-2, paddingLeft: 2 }}>
+                  Choose the appearance of the application.
+                </Typography>
+
                 </List>
-                <Divider sx={{ marginY: 2,borderColor:'grey',borderWidth:1}} /> {/* Divider between sections */}
+
+                
 
               </div>
             )}
@@ -257,10 +360,11 @@ const CenteredBox = () => {
 
               </div>
             )}
+            
             </Box>
         </Box>
     </Modal>
-</Box>
+  </Box>
   );
 };
 

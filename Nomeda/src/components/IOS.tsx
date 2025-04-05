@@ -1,5 +1,4 @@
 import React, { useState } from 'react'; // Import React and the useState hook
-import './settings.css'; // Import the external CSS file
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 

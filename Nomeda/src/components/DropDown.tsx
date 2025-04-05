@@ -15,17 +15,18 @@ interface ThemeSelectProps {
 const DropDown: React.FC<ThemeSelectProps> = ({ themeSetting, handleThemeChange, menuItems }) => {
   return (
     <ListItem button>
-      <ListItemText primary="Theme" />
+      <ListItemText/>
       <ListItemSecondaryAction>
         <FormControl variant="standard" sx={{ minWidth: 120 }}>
-          <InputLabel id="theme-select-label">Theme</InputLabel>
           <Select
             labelId="theme-select-label"
             id="theme-select"
             value={themeSetting}
             onChange={handleThemeChange}
-            label="Theme"
-            sx={{ color: 'white' }} // optional styling
+            sx={{ color: 'white',
+            left:20
+             }} // optional styling
+            displayEmpty
           >
             {menuItems.map((item) => (
               <MenuItem key={item.value} value={item.value}>

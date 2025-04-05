@@ -3,14 +3,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 1000px;
-    width: 1700px;
+    width: 50vw;  /* 80% of the viewport width */
+    height: 68vh;
     background-color: rgba(51, 45, 45, 0.795);
     padding: 4px;
     box-shadow: 40px;
     display: flex;
-    border: 6px solid #333333;
-    border-radius: 15px;
 
 }
 .nav-container {
@@ -32,7 +30,10 @@ user-select: none;
 .nav-container .Mui-selected  {
 background-color: #444444; 
 color: #ffffff; 
-border-radius: 10px; 
+border-radius: 5px; 
+border: 1px solid #ffffff;
+padding-top: 3px;    /* reduce top padding */
+padding-bottom: 3px;
 }
 .nav-container .MuiListItemIcon-root {
 margin-right: -18px; 

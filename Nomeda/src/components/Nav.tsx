@@ -1,4 +1,3 @@
-// MiniDrawerWithToggle.tsx
 import * as React from 'react';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -15,11 +14,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-
-const drawerWidth = 240;
-
-// Open drawer styles
+import CenteredBox from './settings'; // Import your Settings component
+const drawerWidth = 200;
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   backgroundColor: '#212121',
@@ -40,9 +36,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(5)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
+    width: `calc(${theme.spacing(7)} + 1px)`,
   },
 });
 
@@ -90,8 +86,6 @@ export default function MiniDrawerWithToggle() {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const primaryItems = ['Inbox', 'Starred', 'Send email', 'Drafts'];
-  const secondaryItems = ['All mail', 'Trash', 'Spam'];
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -99,7 +93,12 @@ export default function MiniDrawerWithToggle() {
 
       <Drawer variant="permanent" open={open}>
         <DrawerHeader open={open}>
-          <IconButton onClick={handleToggle} sx={{ color: '#fff' }}>
+          <IconButton onClick={handleToggle} sx={{ color: '#fff',
+            '&:focus': {
+        outline: 'none',
+        boxShadow: 'none',
+      },
+           }}>
             {open
               ? theme.direction === 'rtl'
                 ? <ChevronRightIcon />
@@ -108,75 +107,52 @@ export default function MiniDrawerWithToggle() {
             }
           </IconButton>
         </DrawerHeader>
-        <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
 
-        {/* First group of navigation items */}
+        {/* Inbox item */}
         <List>
-          {primaryItems.map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+              onClick={()=>CenteredBox}
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+                  color: '#fff',
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    color: '#fff',
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inbox" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          {/* Divider below Inbox */}
+          <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
 
-        <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
+          {/* CenteredBox (Settings) as another ListItem */}
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                mt: 2,
+              }}
+            >
+            </Box>
+            <CenteredBox/>
 
-        {/* Second group of navigation items */}
-        <List>
-          {secondaryItems.map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                  '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: '#fff',
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          </ListItem>
         </List>
       </Drawer>
-
-      {/* Optional main content */}
-     
+      
     </Box>
   );
 }
