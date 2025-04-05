@@ -5,6 +5,8 @@ import './style/App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Homepage from './pages/Homepage'
 import NavigationDrawer from './components/NavigationDrawer'
+import CenteredBox from './components/settings';
+import Routerpage from './pages/Router';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -13,6 +15,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/Home" element={<Homepage />} />
+          <Route path="/Settings" element={<Routerpage />} />
         </Routes>
       </Router>
     </>

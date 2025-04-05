@@ -84,15 +84,15 @@ const Drawer = styled(MuiDrawer, {
 const NavigationDrawer:React.FC=()=> {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const router = useRouter();
 
-  // Toggle the drawer open/closed
-  const handleToggle = () => {
+    const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
-  };
+    };
     const navigate = useNavigate();
-  
     const handleInboxClick = () => {
+      navigate('/Settings'); // or navigate to "/home" if that's your intended route
+    };
+    const handleInboxClickHome = () => {
       navigate('/Home'); // or navigate to "/home" if that's your intended route
     };
   return (
@@ -143,7 +143,30 @@ const NavigationDrawer:React.FC=()=> {
           </ListItem>
           {/* Divider below Inbox */}
           <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
+          <ListItem disablePadding sx={{ display: 'block' }}>
+            <ListItemButton
+                          onClick={handleInboxClickHome}
 
+                sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: '#fff',
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Inbox" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
           {/* CenteredBox (Settings) as another ListItem */}
           <ListItem disablePadding sx={{ display: 'block' }}>
             <Box

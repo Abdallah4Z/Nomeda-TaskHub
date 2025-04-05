@@ -5,7 +5,6 @@ function Homepage(){
     return (
         <div>
             <NavigationDrawer/>
-            {/* Add your homepage content here */}
             <h1>Welcome to the Homepage</h1>
         </div>
     )
