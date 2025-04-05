@@ -2,7 +2,7 @@ import { RefObject } from 'react';
 import { Box } from '@mui/material';
 import MessageBox from './MessageBox';
 import { Message } from '../types';
-import '../styles/chatbot.css';
+import '../../../style/chatbot.css';
 
 interface ChatDisplayProps {
   messages: Message[];

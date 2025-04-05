@@ -1,7 +1,7 @@
 import { RefObject, ChangeEvent, KeyboardEvent } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import InputContainer from './InputContainer';
-import '../styles/chatbot.css';
+import '../../../style/chatbot.css';
 
 interface BottomSectionProps {
   inputText: string;

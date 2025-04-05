@@ -1,8 +1,8 @@
 import React from 'react';
-import ChatToggleButton from './components/ChatToggleButton';
-import ChatContainer from './components/ChatContainer';
-import { useChatbot } from './hooks/useChatbot';
-import './styles/chatbot.css';
+import ChatToggleButton from '../components/chatbot/components/ChatToggleButton';
+import ChatContainer from '../components/chatbot/components/ChatContainer';
+import { useChatbot } from '../components/chatbot/hooks/useChatbot';
+import '../style/chatbot.css';
 
 const Chatbot: React.FC = () => {
   const {

@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import ChatIcon from '@mui/icons-material/TextsmsRounded';
-import '../styles/chatbot.css';
+import '../../../style/chatbot.css';
 
 interface ChatToggleButtonProps {
   toggleChat: () => void;

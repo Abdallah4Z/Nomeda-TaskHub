@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import '../styles/chatbot.css';
+import '../../../style/chatbot.css';
 
 interface ChatHeaderProps {
   toggleChat: () => void;

@@ -2,7 +2,7 @@ import { RefObject, ChangeEvent, KeyboardEvent } from 'react';
 import { Box, Button } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import '../styles/chatbot.css';
+import '../../../style/chatbot.css';
 
 interface InputContainerProps {
   inputText: string;
