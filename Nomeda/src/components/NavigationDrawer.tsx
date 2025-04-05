@@ -15,6 +15,10 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import CenteredBox from './settings'; // Import your Settings component
+import { useRouter } from 'next/router'; // Import useRouter from Next.js
+import { Navigate } from 'react-router-dom';
+import { useNavigate ,Link} from 'react-router-dom';
+
 const drawerWidth = 200;
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -77,19 +81,22 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawerWithToggle() {
+const NavigationDrawer:React.FC=()=> {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const router = useRouter();
 
   // Toggle the drawer open/closed
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
-
-
+    const navigate = useNavigate();
+  
+    const handleInboxClick = () => {
+      navigate('/Home'); // or navigate to "/home" if that's your intended route
+    };
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
 
       <Drawer variant="permanent" open={open}>
         <DrawerHeader open={open}>
@@ -112,8 +119,9 @@ export default function MiniDrawerWithToggle() {
         <List>
           <ListItem disablePadding sx={{ display: 'block' }}>
             <ListItemButton
-              onClick={()=>CenteredBox}
-              sx={{
+                          onClick={handleInboxClick}
+
+                sx={{
                 minHeight: 48,
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
@@ -155,4 +163,5 @@ export default function MiniDrawerWithToggle() {
       
     </Box>
   );
-}
+};
+export default NavigationDrawer;
