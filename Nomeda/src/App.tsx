@@ -11,7 +11,10 @@ import {ServerErrorPage} from './pages/errors/ServerErrorPage'
 import {ForbiddenPage} from './pages/errors/ForbiddenPage'
 import {UnauthorizedPage} from './pages/errors/UnauthorizedPage'
 import {BadRequestPage} from './pages/errors/BadRequestPage'
-import ContactPage from './pages/ContactPage'
+import ContactPage from './pages/ContactPage';
+import Homepage from './pages/Homepage';
+import Settings from './components/settings'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +24,7 @@ function App() {
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
+          <Route path="/" element={< Homepage/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<ContactPage />} />
