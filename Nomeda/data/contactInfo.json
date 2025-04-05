@@ -1,0 +1,23 @@
+{
+  "name": "Nomeda Task Hub",
+  "bio": "Nomeda Task Hub is an innovative project management platform designed to help teams streamline task management, improve productivity, and ensure seamless collaboration. Whether you're working on a big project or handling smaller tasks, Nomeda makes it easy to stay on top of things.",
+  "links": [
+    {
+      "label": "GitHub Repository",
+      "url": "https://github.com/Abdallah4Z/Nomeda-TaskHub"
+    },
+    {
+      "label": "Documentation",
+      "url": "https://example.com/docs"
+    },
+    {
+      "label": "Developers",
+      "url": "https://example.com/developers"
+    }
+    ,
+    {
+      "label": "Rules and Actions",
+      "url": "https://example.com/rulesndactions"
+    }
+  ]
+}

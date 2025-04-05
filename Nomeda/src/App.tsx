@@ -11,6 +11,7 @@ import {ServerErrorPage} from './pages/errors/ServerErrorPage'
 import {ForbiddenPage} from './pages/errors/ForbiddenPage'
 import {UnauthorizedPage} from './pages/errors/UnauthorizedPage'
 import {BadRequestPage} from './pages/errors/BadRequestPage'
+import ContactPage from './pages/ContactPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<ContactPage />} />
           {/* Account Routes - <Protected> */}
           <Route
             path="/account"
