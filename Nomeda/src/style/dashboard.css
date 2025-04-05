@@ -351,7 +351,7 @@ body {
   transition: all 0.3s ease;
   overflow: hidden;
   margin-top: 12px; /* Reduced margin */
-  margin-right: 48px;
+  margin-right: 40px;
 }
 
 .status-card:hover {

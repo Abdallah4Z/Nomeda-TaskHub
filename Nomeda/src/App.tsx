@@ -14,6 +14,7 @@ import {BadRequestPage} from './pages/errors/BadRequestPage'
 import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
 import Settings from './components/settings'
+import Dashboard from './pages/dashboard'
 
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+
           {/* Account Routes - <Protected> */}
           <Route
             path="/account"

@@ -27,7 +27,7 @@ const Status: React.FC<StatusProps> = ({
   ];
 
   return (
-    <Grid container spacing={2} mb={2}>
+    <Grid container spacing={2} mb={2} width={800}>
       {statusItems.map((item, index) => {
         const IconComponent = item.icon;
         return (
