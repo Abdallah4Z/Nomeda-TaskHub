@@ -1,15 +1,14 @@
-import { RefObject, ChangeEvent, KeyboardEvent } from 'react';
+import { RefObject, ChangeEvent, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Box, Button } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import '../../../style/chatbot.css';
 
 interface InputContainerProps {
   inputText: string;
   setInputText: (text: string) => void;
   sendMessage: () => void;
-  handleKeyPress: (event: KeyboardEvent<HTMLInputElement>) => void;
-  fileInputRef: RefObject<HTMLInputElement> | null;
+  handleKeyPress: (event: ReactKeyboardEvent<HTMLInputElement>) => void;
+  fileInputRef: RefObject<HTMLInputElement>;
   handleImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -27,7 +26,7 @@ function InputContainer({
         type="text"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyPress}
         placeholder="Type your message..."
         style={{
           flex: 1,
@@ -42,7 +41,7 @@ function InputContainer({
       
       <Button 
         sx={{ color: '#333', padding: 1, minWidth: 'auto' }}
-        onClick={(): void => fileInputRef.current?.click()}
+        onClick={() => fileInputRef.current?.click()}
       >
         <AttachFileIcon />
       </Button>

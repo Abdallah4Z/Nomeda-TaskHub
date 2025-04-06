@@ -14,7 +14,7 @@ import InfoIcon from '@mui/icons-material/Info'; // Import icon for About
 import BuildIcon from '@mui/icons-material/Build'; // Import icon for Services
 import ContactMailIcon from '@mui/icons-material/ContactMail'; // Import icon for Contact
 import IOSSwitchComponent from './IOS';
-import DropDown from './DropDown'; // Import the new ThemeSelect component
+import DropDown from './Common/DropDown'; // Import the new ThemeSelect component
 import { IconButton } from '@mui/material';
 
 interface CenteredBoxProps {
