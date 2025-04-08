@@ -1,7 +1,6 @@
 import {Box} from '@mui/material'
 import {Message} from '../../types'
-import {formatText} from '../chatbot/services/apiService'
-import '../../../style/chatbot.css'
+import {formatText} from '../../services/apiService'
 
 interface MessageBoxProps {
   message: Message

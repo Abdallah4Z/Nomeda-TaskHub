@@ -1,24 +1,18 @@
 import React from "react";
-import { Chip } from "@mui/material";
+import { Chip, Typography  } from "@mui/material";
+import { Label } from "@mui/icons-material";
 
 interface PriorityLabelProps {
-  level: "High" | "Normal" | "Low";
+  level: "High" | "Normal" | "Low" | null;
 }
 
 const PriorityLabel: React.FC<PriorityLabelProps> = ({ level }) => {
-  const colorMap = {
-    High: "error",
-    Normal: "warning",
-    Low: "success",
-  } as const;
-
   return (
-    <Chip
-      label={level}
-      color={colorMap[level]}
-      size="small"
-      sx={{ fontWeight: "bold", fontSize: "12px" }}
-    />
+    <>
+    <Typography sx={{ fontSize: 13 }}>
+    {level + ' Periotity'}
+    </Typography>
+    </>
   );
 };
 

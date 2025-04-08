@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClipLoader } from 'react-spinners'; // Import the ClipLoader component
 
 interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -21,48 +22,41 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   text = 'Loading...',
   textPosition = 'right',
 }) => {
-  // Size classes
-  const sizeClasses = {
-    xs: 'h-4 w-4 border-[1.5px]',
-    sm: 'h-6 w-6 border-2',
-    md: 'h-8 w-8 border-[2.5px]',
-    lg: 'h-10 w-10 border-[3px]',
-    xl: 'h-12 w-12 border-[4px]',
+  // Size mapping for the spinner
+  const sizeMapping = {
+    xs: 12,
+    sm: 18,
+    md: 24,
+    lg: 36,
+    xl: 48,
   };
 
-  // Color classes
-  const colorClasses = {
-    primary: 'border-blue-500',
-    secondary: 'border-gray-500',
-    danger: 'border-red-500',
-    success: 'border-green-500',
-    custom: customColor || 'border-blue-500',
+  // Color mapping for the spinner
+  const colorMapping = {
+    primary: '#1D4ED8', // blue
+    secondary: '#6B7280', // gray
+    danger: '#EF4444', // red
+    success: '#10B981', // green
+    custom: customColor || '#1D4ED8', // Default to blue if no custom color provided
   };
 
-  // Speed classes
-  const speedClasses = {
-    slow: 'animate-[spin_1.8s_linear_infinite]',
-    normal: 'animate-[spin_1.2s_linear_infinite]',
-    fast: 'animate-[spin_0.6s_linear_infinite]',
-  };
-
-  // Text position classes
-  const textPositionClasses = {
-    right: 'flex-row space-x-3',
-    bottom: 'flex-col space-y-2',
+  // Speed mapping for the spinner
+  const speedMapping = {
+    slow: 1.8,
+    normal: 1.2,
+    fast: 0.6,
   };
 
   return (
     <div className={`flex items-center justify-center ${className}`}>
-      <div className={`flex ${textPositionClasses[textPosition]}`}>
-        <div
-          className={`rounded-full ${sizeClasses[size]} ${colorClasses[color]} border-t-transparent ${speedClasses[speed]}`}
-          aria-label="Loading"
-          role="status"
-        >
-          <span className="sr-only">Loading...</span>
-        </div>
-        
+      <div className={`flex ${textPosition === 'bottom' ? 'flex-col space-y-2' : 'flex-row space-x-3'}`}>
+        <ClipLoader
+          size={sizeMapping[size]} // Apply size
+          color={colorMapping[color]} // Apply color
+          loading={true} // Spinner is always loading when this component is shown
+          speedMultiplier={speedMapping[speed]} // Apply speed
+        />
+
         {withText && (
           <span className={`text-${color.split('-')[0]}-600 text-${size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : 'base'}`}>
             {text}

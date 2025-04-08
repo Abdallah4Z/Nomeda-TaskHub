@@ -38,7 +38,7 @@ export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
             aria-label="Change profile photo"
           >
             {isUploading ? (
-              <LoadingSpinner size="xs" color="primary" />
+              <LoadingSpinner size="sm" color="secondary" />
             ) : (
               <img src={cameraLogo} alt="add" className='h-4 w-4' width={25} />
             )}

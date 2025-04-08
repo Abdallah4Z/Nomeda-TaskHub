@@ -61,7 +61,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ actions }) => {
             sx={{ minHeight: "32px", paddingY: "3px", paddingX: "2px" }}
           >
             {action.icon && (
-              <ListItemIcon sx={{ minWidth: "32px" }}>
+              <ListItemIcon sx={{ minWidth: "30px" }}>
                 {action.icon}
               </ListItemIcon>
             )}

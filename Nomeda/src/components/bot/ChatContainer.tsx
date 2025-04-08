@@ -4,7 +4,6 @@ import ChatHeader from './ChatHeader'
 import ChatDisplay from './ChatDisplay'
 import BottomSection from './BottomSection'
 import {Message} from '../../types'
-import '../../../style/chatbot.css'
 
 interface ChatContainerProps {
   isOpen: boolean
