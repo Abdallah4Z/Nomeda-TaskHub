@@ -14,15 +14,18 @@ import {BadRequestPage} from './pages/errors/BadRequestPage'
 import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
 import Settings from './components/settings'
+import Header from './components/Common/Header'
 
 
 function App() {
   const [count, setCount] = useState(0)
   const {isAuthenticated} = useAuth() // Assuming adding an auth hook
+  
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
+        <Header/>
         <Routes>
           <Route path="/" element={< Homepage/>} />
           <Route path="/login" element={<Login />} />

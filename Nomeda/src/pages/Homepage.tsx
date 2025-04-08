@@ -10,7 +10,8 @@ import TaskCard from '../components/Tasks/TaskCard'
 import Chatbot from '../components/Chatbot'
 import Board from '../components/Home/Project/Board/Board'
 import BoardView from '../components/Home/Project/Board/BoardView'
-import { Dashboard } from '@mui/icons-material'
+import {Dashboard} from '@mui/icons-material'
+import ListView from '../components/Home/Project/List/ListView'
 
 function Homepage() {
   // const actions = [
@@ -31,20 +32,20 @@ function Homepage() {
   //       },
   //   ];
   const boards = [
-    { id: "1", title: "To Do" },
-    { id: "2", title: "In Progress" },
-    { id: "3", title: "Done" },
-    { id: "4", title: "Blocked" },
-    { id: "4", title: "Blocked" },
-    { id: "4", title: "Blocked" },
-    { id: "1", title: "To Do" },
-    { id: "2", title: "In Progress" },
-    { id: "3", title: "Done" },
-    { id: "4", title: "Blocked" },
-    { id: "4", title: "Blocked" },
-    { id: "4", title: "Blocked" },
-  ];
-  
+    {id: '1', title: 'To Do'},
+    {id: '2', title: 'In Progress'},
+    {id: '3', title: 'Done'},
+    {id: '4', title: 'Blocked'},
+    {id: '4', title: 'Blocked'},
+    {id: '4', title: 'Blocked'},
+    {id: '1', title: 'To Do'},
+    {id: '2', title: 'In Progress'},
+    {id: '3', title: 'Done'},
+    {id: '4', title: 'Blocked'},
+    {id: '4', title: 'Blocked'},
+    {id: '4', title: 'Blocked'},
+  ]
+
   const actions = [
     {
       label: 'Edit Task',
@@ -61,7 +62,6 @@ function Homepage() {
     <div>
       <NavigationDrawer />
       <Chatbot />
-      <Dashboard/>
       {/* <TaskCard
         title="Design Landing Page"
         users={users}
@@ -76,6 +76,9 @@ function Homepage() {
 
       <LabelSelector selectedLabel={label} onChange={setLabel} /> */}
       {/* <BoardView boards={boards} /> */}
+      <div style={{height: '100vh', overflowY: 'auto', minWidth: '80vw'}}>
+        <ListView />
+      </div>
     </div>
   )
 }

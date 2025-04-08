@@ -2,7 +2,7 @@ import React from 'react'
 import SettingsMenu from '../../../Common/SettingsMenu'
 import TaskCard from '../../../Tasks/TaskCard'
 import useTasks from '../../../../hooks/useTasks'
-import './board.css'
+import '../../../../style/board.css'
 import {Add, Delete, Edit, LabelImportant} from '@mui/icons-material' // Import Material-UI icons
 import LoadingSpinner from '../../../Common/LoadingSpinner'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
