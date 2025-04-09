@@ -8,16 +8,13 @@ import LabelSelector from '../components/Home/Project/LabelSelector'
 import React, {useState} from 'react'
 import TaskCard from '../components/Tasks/TaskCard'
 import Chatbot from '../components/Chatbot'
-<<<<<<< HEAD
 import Projectboard from '../components/ProjectHeader/project'
-=======
 import Board from '../components/Home/Project/Board/Board'
 import BoardView from '../components/Home/Project/Board/BoardView'
 import {Dashboard} from '@mui/icons-material'
 import ListView from '../components/Home/Project/List/ListView'
 import './s.css'
 
->>>>>>> 8c23e6c54d3f2577fc7943e0a3926963f3e4c1db
 function Homepage() {
   // const actions = [
   //     {
@@ -64,18 +61,15 @@ function Homepage() {
     },
   ]
   return (
-<<<<<<< HEAD
     <div>
         <Projectboard/>
-      <NavigationDrawer />
-      < Chatbot/>
-      <h1>Welcome to the Homepage</h1>
-    </div>
-=======
-    <NavigationDrawer>
+        <NavigationDrawer />
+        <Chatbot/>
+        <h1>Welcome to the Homepage</h1>
+        <NavigationDrawer>
             <BoardView boards={boards} />
-    </NavigationDrawer>
->>>>>>> 8c23e6c54d3f2577fc7943e0a3926963f3e4c1db
+        </NavigationDrawer>
+    </div>
   )
 }
 export default Homepage
