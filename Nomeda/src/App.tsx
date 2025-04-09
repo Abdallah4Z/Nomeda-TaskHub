@@ -15,6 +15,7 @@ import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
 import Settings from './components/settings'
 import Dashboard from './pages/dashboard'
+import LandingPage from './pages/LandingPage'
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path='/landing' element={<LandingPage/>}/>
 
           {/* Account Routes - <Protected> */}
           <Route
