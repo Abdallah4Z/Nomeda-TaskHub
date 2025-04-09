@@ -13,7 +13,6 @@ import {UnauthorizedPage} from './pages/errors/UnauthorizedPage'
 import {BadRequestPage} from './pages/errors/BadRequestPage'
 import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
-// Removed unused and unresolved 'Settings' import
 import Dashboard from './pages/dashboard'
 import Footer from './components/Common/Footer'
 import Header from './components/Common/Header/Header'
