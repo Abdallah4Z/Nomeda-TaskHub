@@ -7,7 +7,7 @@ import AuthInput from '../components/Auth/AuthInput';
 import AuthError from '../components/Auth/AuthError';
 import SocialAuthButtons from '../components/Auth/SocialAuthButtons';
 import '../style/Auth.css';
-
+import NavigationDrawer from '../components/NavigationDrawer';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +42,9 @@ const Login: React.FC = () => {
   });
 
   return (
+    
     <div className="login-container">
+      <NavigationDrawer />
       <AuthHeader title="Log in to your account" subtitle="Welcome back! Please enter your details" />
       <AuthError message={error} />
       
