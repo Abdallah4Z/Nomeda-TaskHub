@@ -93,9 +93,14 @@ const NavigationDrawer:React.FC=()=> {
       navigate('/Home'); // or navigate to "/home" if that's your intended route
     };
   return (
-    <Box sx={{ display: 'flex' }}>
 
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open}
+      PaperProps={{
+        sx: {
+          height: '222px', // 👈 Set your custom height here
+          overflow: 'auto', // Optional: to allow scrolling inside if needed
+        },
+      }}>
         <DrawerHeader open={open}>
           <IconButton onClick={handleToggle} sx={{ color: '#fff',
             '&:focus': {
@@ -180,7 +185,6 @@ const NavigationDrawer:React.FC=()=> {
         </List>
       </Drawer>
       
-    </Box>
   );
 };
 export default NavigationDrawer;
