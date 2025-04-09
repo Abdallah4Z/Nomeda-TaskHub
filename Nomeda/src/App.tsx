@@ -11,42 +11,45 @@ import {ServerErrorPage} from './pages/errors/ServerErrorPage'
 import {ForbiddenPage} from './pages/errors/ForbiddenPage'
 import {UnauthorizedPage} from './pages/errors/UnauthorizedPage'
 import {BadRequestPage} from './pages/errors/BadRequestPage'
-import ContactPage from './pages/ContactPage';
-import Homepage from './pages/Homepage';
-import Settings from './components/settings'
-import Header from './components/Common/Header'
-
+import ContactPage from './pages/ContactPage'
+import Homepage from './pages/Homepage'
+import Settings from './components/Drawer/Settings/settings'
+import Header from './components/Common/Header/Header'
+import Footer from './components/Common/Footer'
 
 function App() {
   const [count, setCount] = useState(0)
   const {isAuthenticated} = useAuth() // Assuming adding an auth hook
-  
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  // Pass to both Header and NavigationDrawer
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
-        <Header/>
-        <Routes>
-          <Route path="/" element={< Homepage/>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/contact" element={<ContactPage />} />
-          {/* Account Routes - <Protected> */}
-          <Route
-            path="/account"
-            element={
-              <PrivateRoute isAuthenticated={isAuthenticated}>
-                <AccountDetailsPage />
-              </PrivateRoute>
-            }
-          />
-          {/* Errors Routes */}
-          <Route path="/400" element={<BadRequestPage />} />
-          <Route path="/401" element={<UnauthorizedPage />} />
-          <Route path="/403" element={<ForbiddenPage />} />
-          <Route path="/500" element={<ServerErrorPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+          <Header/>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/contact" element={<ContactPage />} />
+              {/* Account Routes - <Protected> */}
+              <Route
+                path="/account"
+                element={
+                  <PrivateRoute isAuthenticated={isAuthenticated}>
+                    <AccountDetailsPage />
+                  </PrivateRoute>
+                }
+              />
+              {/* Errors Routes */}
+              <Route path="/400" element={<BadRequestPage />} />
+              <Route path="/401" element={<UnauthorizedPage />} />
+              <Route path="/403" element={<ForbiddenPage />} />
+              <Route path="/500" element={<ServerErrorPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          <Footer/>
       </Router>
     </GoogleOAuthProvider>
   )

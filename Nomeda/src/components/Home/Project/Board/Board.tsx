@@ -3,8 +3,7 @@ import SettingsMenu from '../../../Common/SettingsMenu'
 import TaskCard from '../../../Tasks/TaskCard'
 import useTasks from '../../../../hooks/useTasks'
 import '../../../../style/board.css'
-import {Add, Delete, Edit, LabelImportant} from '@mui/icons-material' // Import Material-UI icons
-import LoadingSpinner from '../../../Common/LoadingSpinner'
+import {Add, Delete, Edit, LabelImportant} from '@mui/icons-material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import {Chip} from '@mui/material'
@@ -69,11 +68,6 @@ const Board: React.FC<{label: string}> = ({label}) => {
       onClick: () => console.log('View Task'),
     },
   ]
-
-  if (loading) {
-    return <LoadingSpinner />
-  }
-
   return (
     <div className="board">
       {/* Header */}

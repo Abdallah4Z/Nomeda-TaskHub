@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import useTasks from '../../../../hooks/useTasks'
 import Board from "./Board"; // adjust path based on your folder structure
+import LoadingSpinner from "../../../Common/LoadingSpinner";
 
 interface BoardData {
   id: string;
@@ -13,6 +15,12 @@ interface BoardViewProps {
 }
 
 const BoardView: React.FC<BoardViewProps> = ({ boards }) => {
+const {loading} = useTasks() // Use the custom hook for tasks
+
+  
+  if (loading) {
+    return <LoadingSpinner />
+  }
   return (
     <Box
       sx={{

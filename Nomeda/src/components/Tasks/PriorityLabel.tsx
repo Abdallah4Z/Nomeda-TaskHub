@@ -22,7 +22,6 @@ const PriorityLabel: React.FC<PriorityLabelProps> = ({ level }) => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {getIcon(level ?? '')}
       <Typography sx={{ fontSize: 13 }}>
         {level ? `${level} Priority` : 'No Priority'}
       </Typography>
