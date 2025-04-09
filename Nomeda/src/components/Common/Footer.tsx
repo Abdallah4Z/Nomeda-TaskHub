@@ -45,10 +45,10 @@ const Footer: React.FC = () => {
   ];
 
   const socialLinks = [
-    { icon: <GitHub />, url: 'https://github.com/nomeda', name: 'GitHub' },
-    { icon: <Twitter />, url: 'https://twitter.com/nomeda', name: 'Twitter' },
-    { icon: <Facebook />, url: 'https://facebook.com/nomeda', name: 'Facebook' },
-    { icon: <Instagram />, url: 'https://instagram.com/nomeda', name: 'Instagram' },
+    { icon: <GitHub />, url: 'https://github.com/', name: 'GitHub' },
+    { icon: <Twitter />, url: 'https://twitter.com/', name: 'Twitter' },
+    { icon: <Facebook />, url: 'https://facebook.com/', name: 'Facebook' },
+    { icon: <Instagram />, url: 'https://instagram.com/', name: 'Instagram' },
   ];
   return (
     <Box

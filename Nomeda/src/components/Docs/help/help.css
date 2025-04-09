@@ -1,0 +1,142 @@
+/* help.css */
+.help-center {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #1a1a1a;
+  }
+  
+  .help-center h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+    font-weight: 700;
+  }
+  
+  .help-topics {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .help-topic {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  .help-topic:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .help-topic button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    transition: background 0.2s ease;
+  }
+  
+  .help-topic button:hover {
+    background: #f1f5f9;
+  }
+  
+  .help-topic button span {
+    font-size: 1.25rem;
+    color: #4a5568;
+    transition: transform 0.2s ease;
+  }
+  
+  .help-topic button[aria-expanded="true"] span {
+    transform: rotate(45deg);
+  }
+  
+  .help-topic p {
+    padding: 1rem 1.5rem;
+    margin: 0;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .contact-support {
+    text-align: center;
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 1rem;
+  }
+  
+  .contact-support h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: #2d3748;
+  }
+  
+  .contact-support a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+  
+  .contact-support a:hover {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .help-center {
+      color: #f8fafc;
+    }
+  
+    .help-center h2,
+    .help-topic button,
+    .contact-support h3 {
+      color: #f8fafc;
+    }
+  
+    .help-topic button {
+      background: #1e293b;
+      color: #f8fafc;
+    }
+  
+    .help-topic button:hover {
+      background: #334155;
+    }
+  
+    .help-topic p {
+      background: #1e293b;
+      border-top-color: #334155;
+      color: #e2e8f0;
+    }
+  
+    .contact-support {
+      border-top-color: #334155;
+    }
+  
+    .help-topic button span {
+      color: #94a3b8;
+    }
+  }

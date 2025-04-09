@@ -14,6 +14,11 @@ import {BadRequestPage} from './pages/errors/BadRequestPage'
 import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
 import Dashboard from './pages/dashboard'
+import { HelpCenter } from './components/Docs/help/HelpCenter'
+import { CookieConsent } from './components/Docs/legal/CookieConsent'
+import { PrivacyPolicy } from './components/Docs/legal/PrivacyPolicy'
+import { SecurityInfo } from './components/Docs/legal/SecurityInfo'
+import { TermsOfService } from './components/Docs/legal/TermsOfService'
 
 
 function App() {
@@ -30,6 +35,11 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/cookies" element={<CookieConsent />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/security" element={<SecurityInfo />} />
+          <Route path="/terms" element={<TermsOfService />} />
 
           {/* Account Routes - <Protected> */}
           <Route
