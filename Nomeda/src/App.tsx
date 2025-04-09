@@ -15,6 +15,8 @@ import ContactPage from './pages/ContactPage';
 import Homepage from './pages/Homepage';
 import Settings from './components/settings'
 import Dashboard from './pages/dashboard'
+import Footer from './components/Common/Footer'
+import Header from './components/Common/Header/Header'
 
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
+      <Header/>
         <Routes>
           <Route path="/" element={< Homepage/>} />
           <Route path="/login" element={<Login />} />
@@ -47,6 +50,7 @@ function App() {
           <Route path="/500" element={<ServerErrorPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <Footer/>
       </Router>
     </GoogleOAuthProvider>
   )

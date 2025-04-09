@@ -54,13 +54,14 @@ const Footer: React.FC = () => {
     <Box
       component="footer"
       sx={{
+        mr:1,
         backgroundColor: '#212121',
         color: theme.palette.primary.contrastText,
         py: 6,
         mt: '10px',
         width: '100vw',
         mb: '-100px',
-        opacity: 0.9
+        opacity: 0.9,
       }}
     >
       <Container maxWidth="lg">

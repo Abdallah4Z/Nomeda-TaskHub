@@ -1,4 +1,4 @@
-import NavigationDrawer from '../components/Drawer/NavigationDrawer'
+import NavigationDrawer from '../components/NavigationDrawer'
 import SettingsMenu from '../components/Common/SettingsMenu'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -12,6 +12,7 @@ import Board from '../components/Home/Project/Board/Board'
 import BoardView from '../components/Home/Project/Board/BoardView'
 import {Dashboard} from '@mui/icons-material'
 import ListView from '../components/Home/Project/List/ListView'
+import './s.css'
 
 function Homepage() {
   // const actions = [
@@ -59,27 +60,9 @@ function Homepage() {
     },
   ]
   return (
-    <div>
-      {/* <NavigationDrawer />
-      <Chatbot /> */}
-      {/* <TaskCard
-        title="Design Landing Page"
-        users={users}
-        assignedAt="2025-04-05 14:30"
-        priority="Normal"
-        actions={actions}
-      />
-      <div style={{textAlign: 'right'}}>
-        <SettingsMenu actions={actions} />
-      </div>
-      <AddButton />
-
-      <LabelSelector selectedLabel={label} onChange={setLabel} /> */}
-      <BoardView boards={boards} />
-      {/* <div style={{height: '100vh', overflowY: 'auto', minWidth: '80vw'}}>
-        <ListView />
-      </div> */}
-    </div>
+    <NavigationDrawer>
+            <BoardView boards={boards} />
+    </NavigationDrawer>
   )
 }
 export default Homepage
