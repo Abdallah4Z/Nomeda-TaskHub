@@ -7,7 +7,7 @@ import AuthInput from '../components/Auth/AuthInput';
 import AuthError from '../components/Auth/AuthError';
 import SocialAuthButtons from '../components/Auth/SocialAuthButtons';
 import '../style/Auth.css';
-import NavigationDrawer from '../components/NavigationDrawer';
+import NavigationDrawer from '../components/Drawer/NavigationDrawer';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

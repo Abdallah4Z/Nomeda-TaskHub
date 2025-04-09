@@ -7,7 +7,7 @@ import {
   ListItemSecondaryAction,
   Divider
 } from '@mui/material';
-import IOSSwitchComponent from '../../IOS';
+import IOSSwitchComponent from '../../../IOS';
 import DropDown from './DropDown';
 
 const GeneralSettings: React.FC = () => {

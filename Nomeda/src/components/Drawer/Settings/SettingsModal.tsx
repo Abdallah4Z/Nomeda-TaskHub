@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Box } from '@mui/material';
 import SettingsNavigation from './SettingsNavigation';
 import SettingsContent from './SettingsContent';
-import '../../style/settings.css';
+import '../../../style/settings.css';
 
 interface SettingsModalProps {
   open: boolean;

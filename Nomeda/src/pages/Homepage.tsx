@@ -1,4 +1,4 @@
-import NavigationDrawer from '../components/NavigationDrawer'
+import NavigationDrawer from '../components/Drawer/NavigationDrawer'
 import SettingsMenu from '../components/Common/SettingsMenu'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -60,9 +60,29 @@ function Homepage() {
     },
   ]
   return (
-    <NavigationDrawer>
-            <BoardView boards={boards} />
-    </NavigationDrawer>
+    <div>
+      <div className='block'>
+      <NavigationDrawer />
+      </div>
+      <Chatbot />
+      {/* <TaskCard
+        title="Design Landing Page"
+        users={users}
+        assignedAt="2025-04-05 14:30"
+        priority="Normal"
+        actions={actions}
+      />
+      <div style={{textAlign: 'right'}}>
+        <SettingsMenu actions={actions} />
+      </div>
+      <AddButton />
+
+      <LabelSelector selectedLabel={label} onChange={setLabel} /> */}
+      <BoardView boards={boards} />
+      {/* <div style={{height: '100vh', overflowY: 'auto', minWidth: '80vw'}}>
+        <ListView />
+      </div> */}
+    </div>
   )
 }
 export default Homepage
