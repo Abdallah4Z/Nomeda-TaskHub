@@ -24,7 +24,7 @@ const DropDown: React.FC<ThemeSelectProps> = ({ themeSetting, handleThemeChange,
             value={themeSetting}
             onChange={handleThemeChange}
             sx={{ color: 'white',
-            left:20
+            left:30
              }} // optional styling
             displayEmpty
           >

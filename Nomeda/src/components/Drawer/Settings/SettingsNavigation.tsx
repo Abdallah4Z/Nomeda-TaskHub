@@ -32,16 +32,8 @@ const SettingsNavigation: React.FC<SettingsNavigationProps> = ({
         { id: 'Services', icon: <BuildIcon sx={{ color: '#ffffff' }} />, label: 'Services' },
         { id: 'Contact', icon: <ContactMailIcon sx={{ color: '#ffffff' }} />, label: 'Contact' }
       ]
-    },
-    {
-      title: 'Additional Settings',
-      items: [
-        { id: 'General', icon: <SettingsIcon sx={{ color: '#ffffff' }} />, label: 'General' },
-        { id: 'About', icon: <InfoIcon sx={{ color: '#ffffff' }} />, label: 'About' },
-        { id: 'Services', icon: <BuildIcon sx={{ color: '#ffffff' }} />, label: 'Services' },
-        { id: 'Contact', icon: <ContactMailIcon sx={{ color: '#ffffff' }} />, label: 'Contact' }
-      ]
     }
+    
   ];
 
   return (

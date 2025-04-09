@@ -23,28 +23,11 @@ const ContactSettings: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'black' }}>
-        Contact Support
-      </Typography>
-      <Typography variant="body2" sx={{ color: 'gray', marginBottom: 2 }}>
-        Get in touch with our support team for assistance.
+      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
+      Work in Progress
       </Typography>
       
-      <List>
-        <ListItem button>
-          <ListItemText primary="Email Support" />
-        </ListItem>
-        <ListItem button>
-          <ListItemText primary="Live Chat" />
-          <ListItemSecondaryAction>
-            <Switch
-              edge="end"
-              checked={toggleStates.liveChat}
-              onChange={handleToggleChange('liveChat')}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
-      </List>
+      
       
       <Divider sx={{ marginY: 2, borderColor: 'grey', borderWidth: 1 }} />
     </div>
