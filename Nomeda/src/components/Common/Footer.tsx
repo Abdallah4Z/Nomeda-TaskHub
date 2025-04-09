@@ -54,7 +54,6 @@ const Footer: React.FC = () => {
     <Box
       component="footer"
       sx={{
-        mr:1,
         backgroundColor: '#212121',
         color: theme.palette.primary.contrastText,
         py: 6,

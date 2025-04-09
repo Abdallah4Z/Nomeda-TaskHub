@@ -12,9 +12,6 @@ const ListView: React.FC = () => {
   return (
     <div
       style={{
-        width: '90%',
-        height: '100vh',
-        padding: '16px',
         overflowY: 'auto',
         margin:'auto'
       }}

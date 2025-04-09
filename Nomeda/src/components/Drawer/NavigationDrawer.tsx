@@ -18,7 +18,7 @@ const NavigationDrawer: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}}>
       <StyledDrawer variant="permanent" open={open}>
         <DrawerHeader open={open} handleToggle={handleToggle} />
         <NavigationItems 
