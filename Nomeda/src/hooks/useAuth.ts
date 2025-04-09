@@ -12,11 +12,11 @@ interface User {
 // Mock user data
 const MOCK_USER: User = {
   id: 'user-123',
-  name: 'John Doe',
-  email: 'john.doe@example.com',
+  name: 'Fierst User',
+  email: 'user.mail@mail.co',
   phone: '+20 1551934703',
   joinedDate: new Date('2023-01-15').toISOString(),
-  photoUrl: 'https://i.pravatar.cc/300?img=12' // Using a random avatar
+  photoUrl: 'https://i.pravatar.cc/200?img=12' // Using a random avatar
 }
 
 export const useAuth = () => {

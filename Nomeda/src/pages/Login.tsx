@@ -44,7 +44,6 @@ const Login: React.FC = () => {
   return (
     
     <div className="login-container">
-      <NavigationDrawer />
       <AuthHeader title="Log in to your account" subtitle="Welcome back! Please enter your details" />
       <AuthError message={error} />
       

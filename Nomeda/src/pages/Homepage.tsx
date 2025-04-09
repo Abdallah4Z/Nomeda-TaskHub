@@ -35,6 +35,7 @@ function Homepage() {
       <Header/>
       <Project />
       <NavigationDrawer />
+      <Footer/>
     </div>
   )
 }
