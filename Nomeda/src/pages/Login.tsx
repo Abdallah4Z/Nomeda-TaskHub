@@ -6,43 +6,74 @@ import AuthHeader from '../components/Auth/AuthHeader';
 import AuthInput from '../components/Auth/AuthInput';
 import AuthError from '../components/Auth/AuthError';
 import SocialAuthButtons from '../components/Auth/SocialAuthButtons';
+import { useAuth } from '../hooks/useAuth';
 import '../style/Auth.css';
-import NavigationDrawer from '../components/Drawer/NavigationDrawer';
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, socialAuth } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
-    // Simulate login
-    setTimeout(() => navigate('/dashboard'), 1000);
+    try {
+      setIsLoading(true);
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => {
+    onSuccess: async tokenResponse => {
       try {
-        const decoded = jwtDecode(tokenResponse.access_token);
-        console.log(decoded);
+        setIsLoading(true);
+        console.log('Google login success, token:', tokenResponse);
+        
+        // Send the token to our backend
+        await socialAuth(tokenResponse.access_token, 'google');
         navigate('/dashboard');
-      } catch (err) {
-        setError('Google login failed. Please try again.');
+      } catch (err: any) {
+        console.error('Google login error:', err);
+        setError(err.message || 'Google login failed. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     },
     onError: err => {
+      console.error('Google login error:', err);
       setError('Google login failed. Please try again.');
-    }
+    },
+    scope: 'email profile'
   });
 
+  const loginWithGithub = async () => {
+    try {
+      // GitHub OAuth flow - redirect to GitHub for authorization
+      const githubClientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+      const redirectUri = `${window.location.origin}/github-callback`;
+      const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}&scope=user:email`;
+      
+      window.location.href = githubAuthUrl;
+    } catch (err: any) {
+      setError('GitHub login failed. Please try again.');
+    }
+  };
+
   return (
-    
     <div className="login-container">
       <AuthHeader title="Log in to your account" subtitle="Welcome back! Please enter your details" />
       <AuthError message={error} />
@@ -64,12 +95,22 @@ const Login: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" className="login-btn">Log In</button>
+        <button 
+          type="submit" 
+          className="login-btn" 
+          disabled={isLoading}
+        >
+          {isLoading ? 'Logging in...' : 'Log In'}
+        </button>
       </form>
 
       <div className="social-login">
         <div className="social-login-divider">or</div>
-        <SocialAuthButtons onGoogleClick={loginWithGoogle} isLoading={false} />
+        <SocialAuthButtons 
+          onGoogleClick={loginWithGoogle} 
+          onGithubClick={loginWithGithub}
+          isLoading={isLoading} 
+        />
       </div>
 
       <div className="account-prompt">

@@ -1,5 +1,4 @@
 import React from 'react';
-import { ClipLoader } from 'react-spinners'; // Import the ClipLoader component
 
 interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -42,23 +41,44 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   // Speed mapping for the spinner
   const speedMapping = {
-    slow: 1.8,
-    normal: 1.2,
-    fast: 0.6,
+    slow: '1.8s',
+    normal: '1.2s',
+    fast: '0.6s',
   };
+
+  const spinnerSize = sizeMapping[size];
+  const spinnerColor = colorMapping[color];
+  const spinnerSpeed = speedMapping[speed];
+
+  // CSS for the spinner
+  const spinnerStyle = {
+    width: `${spinnerSize}px`,
+    height: `${spinnerSize}px`,
+    borderRadius: '50%',
+    border: `2px solid ${spinnerColor}`,
+    borderTopColor: 'transparent',
+    animation: `spin ${spinnerSpeed} linear infinite`,
+  };
+
+  // Add keyframes for the animation
+  const keyframes = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
 
   return (
     <div className={`flex items-center justify-center ${className}`}>
-      <div className={`flex ${textPosition === 'bottom' ? 'flex-col space-y-2' : 'flex-row space-x-3'}`}>
-        <ClipLoader
-          size={sizeMapping[size]} // Apply size
-          color={colorMapping[color]} // Apply color
-          loading={true} // Spinner is always loading when this component is shown
-          speedMultiplier={speedMapping[speed]} // Apply speed
-        />
-
+      <style>{keyframes}</style>
+      <div className={`flex ${textPosition === 'bottom' ? 'flex-col space-y-2' : 'flex-row space-x-3'} items-center`}>
+        <div style={spinnerStyle} />
+        
         {withText && (
-          <span className={`text-${color.split('-')[0]}-600 text-${size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : 'base'}`}>
+          <span 
+            className={`text-${size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : 'base'}`}
+            style={{ color: spinnerColor }}
+          >
             {text}
           </span>
         )}

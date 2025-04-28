@@ -1,4 +1,165 @@
+// API base URL
+const API_BASE_URL = 'http://localhost:5000/api';
 
+// Interface for user registration data
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
+// Interface for user login data
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+// Interface for social authentication data
+interface SocialAuthData {
+  token: string;
+  provider: 'google' | 'github';
+}
+
+// Authentication endpoints
+export const authAPI = {
+  // Register a new user
+  register: async (userData: RegisterData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  },
+
+  // Login a user
+  login: async (loginData: LoginData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  // Social authentication (Google, GitHub)
+  socialAuth: async (authData: SocialAuthData) => {
+    try {
+      const endpoint = `${API_BASE_URL}/auth/${authData.provider}`;
+      
+      console.log(`Authenticating with ${authData.provider}`, { token: authData.token && 'Token provided' });
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: authData.token }),
+      });
+
+      // Check if content type is JSON before trying to parse
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error(`Server returned non-JSON response: ${contentType}`);
+        const text = await response.text();
+        console.error('Raw response:', text.substring(0, 500) + (text.length > 500 ? '...' : ''));
+        throw new Error(`${authData.provider} authentication failed: Server returned non-JSON response`);
+      }
+      
+      const data = await response.json();
+      console.log(`${authData.provider} auth response:`, data);
+      
+      if (!response.ok) {
+        throw new Error(data.message || `${authData.provider} authentication failed`);
+      }
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Social authentication error:', error);
+      throw error;
+    }
+  },
+
+  // Get current user profile
+  getCurrentUser: async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No auth token found');
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to get user data');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Get current user error:', error);
+      throw error;
+    }
+  },
+
+  // Logout user
+  logout: () => {
+    localStorage.removeItem('token');
+  },
+};
+
+// Function to get auth header for protected routes
+export const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
 
 export const sendMessageToAPI = async (inputText: string, imagePreview: string | null): Promise<string> => {
   // Prepare API message format

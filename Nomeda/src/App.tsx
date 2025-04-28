@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import {GoogleOAuthProvider} from '@react-oauth/google'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import GitHubCallback from './pages/GitHubCallback'
 import {AccountDetailsPage} from './pages/account/AccountDetailsPage'
 import {PrivateRoute} from './components/Auth/PrivateRoute'
 import {useAuth} from './hooks/useAuth'
@@ -20,7 +21,6 @@ import { PrivacyPolicy } from './components/Docs/legal/PrivacyPolicy'
 import { SecurityInfo } from './components/Docs/legal/SecurityInfo'
 import { TermsOfService } from './components/Docs/legal/TermsOfService'
 
-
 function App() {
   const [count, setCount] = useState(0)
   const {isAuthenticated} = useAuth() // Assuming adding an auth hook
@@ -33,6 +33,7 @@ function App() {
           <Route path="/" element={< Homepage/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/github-callback" element={<GitHubCallback />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/help" element={<HelpCenter />} />
