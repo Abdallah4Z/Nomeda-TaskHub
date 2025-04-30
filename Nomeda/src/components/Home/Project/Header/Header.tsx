@@ -9,7 +9,7 @@ import OverviewContent from './views/OverviewContent';
 import ListView from '../List/ListView';
 import BoardView from '../Board/BoardView';
 import CalendarView from './views/CalendarView';
-import FilesView from './views/FilesView';
+import FilesView from '../Files/FilesView';
 import useTasks from '../../../../hooks/useTasks';
 
 const Header = ({ projectName = "Design Project", onEdit = () => {} }) => {
