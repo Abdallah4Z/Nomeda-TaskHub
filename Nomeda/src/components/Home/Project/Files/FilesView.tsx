@@ -7,6 +7,7 @@ import FilePreviewDialog from './FilePreviewDialog';
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import { mockFiles } from './mockData';
 import { File } from './types';
+import { Start } from '@mui/icons-material';
 
 const FilesView: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -135,7 +136,7 @@ const FilesView: React.FC = () => {
       </Button>
       
       {/* Files Grid */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent={'center'}>
         {filteredAndSortedFiles.map(file => (
           <Grid item xs={12} sm={6} md={4} key={file.id}>
             <FileCard 

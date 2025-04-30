@@ -21,7 +21,8 @@ const FileCard: React.FC<FileCardProps> = ({ file, onFileClick, onDownload, onDe
         '&:hover': {
           transform: 'translateY(-4px)',
           boxShadow: 3
-        }
+        }, 
+        width: 250,
       }}
       onClick={() => onFileClick(file)}
     >
