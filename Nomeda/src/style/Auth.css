@@ -161,6 +161,209 @@ body {
   text-decoration: underline;
 }
 
+/* GitHub callback styling */
+.auth-callback-container {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.auth-error-container {
+  width: 100%;
+  text-align: center;
+}
+
+.auth-help-text {
+  color: #666;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.auth-callback-debug {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Debug information styling */
+.debug-info {
+  margin: 1rem 0;
+  text-align: left;
+  width: 100%;
+}
+
+.debug-info summary {
+  cursor: pointer;
+  color: #666;
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.debug-info pre {
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+/* Error message styling */
+.error-message {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.auth-error-box {
+  display: flex;
+  align-items: center;
+  background-color: rgba(211, 47, 47, 0.08);
+  border-left: 4px solid #d32f2f;
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 4px;
+}
+
+.auth-error-icon {
+  color: #d32f2f;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.auth-error-content {
+  flex: 1;
+}
+
+.auth-error-message {
+  color: #d32f2f;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.auth-error-hint {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+/* Different error types styling */
+.auth-error-box.user-not-found {
+  border-left-color: #ff9800;
+  background-color: rgba(255, 152, 0, 0.08);
+}
+
+.auth-error-box.user-not-found .auth-error-icon,
+.auth-error-box.user-not-found .auth-error-message {
+  color: #e65100;
+}
+
+.auth-error-box.incorrect-password {
+  border-left-color: #f44336;
+  background-color: rgba(244, 67, 54, 0.08);
+}
+
+.auth-error-box.incorrect-password .auth-error-icon,
+.auth-error-box.incorrect-password .auth-error-message {
+  color: #d32f2f;
+}
+
+.auth-error-box.server-error {
+  border-left-color: #673ab7;
+  background-color: rgba(103, 58, 183, 0.08);
+}
+
+.auth-error-box.server-error .auth-error-icon,
+.auth-error-box.server-error .auth-error-message {
+  color: #512da8;
+}
+
+/* Password Requirements Styling */
+.password-requirements {
+  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin: 8px 0 16px 0;
+  font-size: 0.9rem;
+}
+
+.requirements-title {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.requirements-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.requirements-list li {
+  padding: 4px 0;
+}
+
+.password-input-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #777;
+}
+
+.password-strength-indicator {
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.password-strength-weak {
+  background-color: #f44336;
+  width: 25%;
+}
+
+.password-strength-medium {
+  background-color: #ff9800;
+  width: 50%;
+}
+
+.password-strength-good {
+  background-color: #2196f3;
+  width: 75%;
+}
+
+.password-strength-strong {
+  background-color: #4caf50;
+  width: 100%;
+}
+
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .login-container {

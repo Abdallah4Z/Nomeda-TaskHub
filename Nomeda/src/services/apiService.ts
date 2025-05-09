@@ -1,8 +1,175 @@
+import axios from 'axios';
 
+// API base URL
+const API_BASE_URL = process.env.VITE_API_URL;
+
+// Interface for user registration data
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
+// Interface for user login data
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+// Interface for social authentication data
+interface SocialAuthData {
+  token: string;
+  provider: 'google' | 'github';
+}
+
+// Authentication endpoints
+export const authAPI = {  // Register a new user
+  register: async (userData: RegisterData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData);
+
+      const data = response.data;
+
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      // Axios automatically throws errors for non-2xx responses
+      console.error('Registration error:', error);
+      
+      // Format the error for consistency with our error handling
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        const customError = new Error(data.message) as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        customError.response = { data };
+        throw customError;
+      }
+      
+      throw error;
+    }
+  },  // Login a user
+  login: async (loginData: LoginData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, loginData);
+      // Success! The data is directly available in response.data
+      const data = response.data;
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      // Axios automatically throws errors for non-2xx responses
+      console.error('Login error:', error);
+      
+      // Format the error for consistency with our error handling
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        const customError = new Error(data.message || 'Login failed') as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        customError.response = { data };
+        throw customError;
+      }
+      
+      throw error;
+    }
+  },
+  // Social authentication (Google, GitHub)
+  socialAuth: async (authData: SocialAuthData) => {
+    try {
+      const endpoint = `${API_BASE_URL}/auth/${authData.provider}`;
+      
+      console.log(`Authenticating with ${authData.provider}`, { token: authData.token && 'Token provided' });
+      
+      const response = await axios.post(endpoint, { token: authData.token },);
+      
+      const data = response.data;
+      console.log(`${authData.provider} auth response:`, data);
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Social authentication error:', error);
+      
+      // Handle axios errors
+      if (axios.isAxiosError(error)) {
+        if (!error.response) {
+          // Network error
+          throw new Error(`${authData.provider} authentication failed: Network error`);
+        }
+        
+        if (error.response.status === 401 || error.response.status === 403) {
+          throw new Error(`${authData.provider} authentication failed: Invalid token`);
+        }
+        
+        if (error.response.data) {
+          throw new Error(error.response.data.message || `${authData.provider} authentication failed`);
+        }
+      }
+      
+      throw error;
+    }
+  },
+  // Get current user profile
+  getCurrentUser: async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error('No auth token found');
+      }
+      
+      const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error('Get current user error:', error);
+      
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        throw new Error(data.message || 'Failed to get user data');
+      }
+      
+      throw error;
+    }
+  },
+
+  // Logout user
+  logout: () => {
+    localStorage.removeItem('token');
+  },
+};
+
+// Function to get auth header for protected routes
+export const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
 
 export const sendMessageToAPI = async (inputText: string, imagePreview: string | null): Promise<string> => {
+  // Define types for the message structure
+  type MessageContent = { type: string; text?: string; image_url?: { url: string } };
+  type APIMessage = { role: string; content: MessageContent[] };
+  
   // Prepare API message format
-  const apiMessages: any[] = [{ 
+  const apiMessages: APIMessage[] = [{ 
     role: "user", 
     content: [{ type: "text", text: inputText }] 
   }];
@@ -30,24 +197,31 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
       }
     ]
   };
-
   apiMessages.unshift(systemMessage);
-  const response = await fetch( "https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer API_KEY`,
-      "HTTP-Referer": SITE_URL,
-      "X-Title": SITE_NAME,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "qwen/qwen2.5-vl-72b-instruct:free",
-      messages: apiMessages
-    })
-  });
-
-  const data = await response.json();
-  return data.choices ? data.choices[0].message.content : "Error: No response";
+  try {
+    const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", 
+      {
+        model: "qwen/qwen2.5-vl-72b-instruct:free",
+        messages: apiMessages
+      },
+      {
+        headers: {
+          "Authorization": `Bearer API_KEY`,
+          "HTTP-Referer": SITE_URL,
+          "X-Title": SITE_NAME,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    
+    return response.data.choices ? response.data.choices[0].message.content : "Error: No response";
+  } catch (error) {
+    console.error("Chat API error:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("API error response:", error.response.data);
+    }
+    return "Sorry, I couldn't process your request at the moment.";
+  }
 };
 
 export const formatText = (text: string): string => {

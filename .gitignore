@@ -1,4 +1,8 @@
+.env
+settings.json
 Nomeda/.env
-Nomeda/.env
+# Ignore all .env files
+# Ignore all .env files in any subdirectory
+**/.env
+backend/node_modules
 Nomeda/node_modules
-
