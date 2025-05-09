@@ -1,18 +1,28 @@
-import * as React from 'react'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import Divider from '@mui/material/Divider'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import Box from '@mui/material/Box'
-import CenteredBox from './Settings/settings' // Import your Settings component
+import * as React from 'react';
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Box,
+} from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
+import FolderIcon from '@mui/icons-material/Folder';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import CenteredBox from './Settings/settings';
 
 interface NavigationItemsProps {
-  open: boolean
-  onNavigate: (path: string) => void
+  open: boolean;
+  onNavigate: (path: string) => void;
 }
+
+const sampleProjects = [
+  { id: '1', name: 'Project Alpha' },
+  { id: '2', name: 'Project Beta' },
+];
 
 const NavigationItems: React.FC<NavigationItemsProps> = ({
   open,
@@ -20,61 +30,109 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
 }) => {
   return (
     <List>
-      {/* Settings navigation item */}
-      <ListItem disablePadding sx={{display: 'block'}}>
-        <ListItemButton
-          onClick={() => onNavigate('/Settings')}
-          sx={{
-            minHeight: 48,
-            justifyContent: open ? 'initial' : 'center',
-            px: 2.5,
-            '&:hover': {backgroundColor: 'rgba(255,255,255,0.1)'},
-          }}
-        >
-          <ListItemIcon
-            sx={{
-              color: '#fff',
-              minWidth: 0,
-              mr: open ? 3 : 'auto',
-              justifyContent: 'center',
-            }}
-          >
-            <InboxIcon />
-          </ListItemIcon>
-          <ListItemText primary="Settings" sx={{opacity: open ? 1 : 0}} />
-        </ListItemButton>
-      </ListItem>
-
-      {/* Divider below first item */}
-      <Divider sx={{borderColor: 'rgba(255,255,255,0.12)'}} />
-
-      {/* Home navigation item */}
-      <ListItem disablePadding sx={{display: 'block'}}>
+      {/* Home */}
+      <ListItem disablePadding sx={{ display: 'block' }}>
         <ListItemButton
           onClick={() => onNavigate('/Home')}
           sx={{
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
             px: 2.5,
-            '&:hover': {backgroundColor: 'rgba(255,255,255,0.1)'},
+            '&:hover': { opacity: 0.8 },
           }}
         >
           <ListItemIcon
             sx={{
-              color: '#fff',
               minWidth: 0,
               mr: open ? 3 : 'auto',
               justifyContent: 'center',
             }}
           >
-            <InboxIcon />
+            <HomeIcon />
           </ListItemIcon>
-          <ListItemText primary="Home" sx={{opacity: open ? 1 : 0}} />
+          <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
         </ListItemButton>
       </ListItem>
 
-      {/* CenteredBox (Settings) as another ListItem */}
-      <ListItem disablePadding sx={{display: 'block'}}>
+      {/* Settings */}
+      <ListItem disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+          onClick={() => onNavigate('/Settings')}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': { opacity: 0.8 },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Settings" sx={{ opacity: open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
+
+      {/* Divider */}
+      <Divider sx={{ my: 1 }} />
+
+      {/* Create New Project */}
+      <ListItem disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+          onClick={() => onNavigate('/create-project')}
+          sx={{
+            minHeight: 40,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': { opacity: 0.8 },
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <AddBoxIcon />
+          </ListItemIcon>
+          <ListItemText primary="New Project" sx={{ opacity: open ? 1 : 0 }} />
+        </ListItemButton>
+      </ListItem>
+
+      {/* Projects Section */}
+      {sampleProjects.map((project) => (
+        <ListItem disablePadding key={project.id} sx={{ display: 'block' }}>
+          <ListItemButton
+            onClick={() => onNavigate(`/project/${project.id}`)}
+            sx={{
+              minHeight: 40,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+              '&:hover': { opacity: 0.8 },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <FolderIcon />
+            </ListItemIcon>
+            <ListItemText primary={project.name} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+
+      {/* Bottom Settings Toggle or Custom Component */}
+      <ListItem disablePadding sx={{ display: 'block' }}>
         <Box
           sx={{
             display: 'flex',
@@ -87,7 +145,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
         </Box>
       </ListItem>
     </List>
-  )
-}
+  );
+};
 
-export default NavigationItems
+export default NavigationItems;

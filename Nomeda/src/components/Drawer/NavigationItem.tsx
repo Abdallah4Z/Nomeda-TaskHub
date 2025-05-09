@@ -20,12 +20,11 @@ const NavigationItem: React.FC<NavigationItemProps> = ({ open, icon, text, onCli
           minHeight: 48,
           justifyContent: open ? 'initial' : 'center',
           px: 2.5,
-          '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+          '&:hover': {Opacity: '0.8'},
         }}
       >
         <ListItemIcon
           sx={{
-            color: '#fff',
             minWidth: 0,
             mr: open ? 3 : 'auto',
             justifyContent: 'center',

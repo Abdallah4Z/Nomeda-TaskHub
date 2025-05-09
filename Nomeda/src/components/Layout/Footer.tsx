@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Container, Grid, Link, Typography, Divider, IconButton } from '@mui/material';
+import { Box, Container, Grid, Link, Typography, Divider, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import { TaskAlt, GitHub, Twitter, HelpOutline, Email, Facebook, Instagram } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
 
 interface FooterLink {
   title: string;
@@ -16,7 +15,9 @@ interface FooterSection {
 
 const Footer: React.FC = () => {
   const theme = useTheme();
-  
+  const isDark = theme.palette.mode === 'dark';
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const footerSections: FooterSection[] = [
     {
       title: 'Nomeda',
@@ -50,28 +51,23 @@ const Footer: React.FC = () => {
     { icon: <Facebook />, url: 'https://facebook.com/', name: 'Facebook' },
     { icon: <Instagram />, url: 'https://instagram.com/', name: 'Instagram' },
   ];
+
   return (
     <Box
       component="footer"
       sx={{
-        backgroundColor: '#212121',
-        color: theme.palette.primary.contrastText,
+        backgroundColor: isDark ? '#121212' : '#f5f5f5',
+        color: isDark ? '#fff' : '#333',
         py: 6,
-        mt: '10px',
-        width: '100vw',
-        mb: '-100px',
-        opacity: 0.9,
+        width: '100%',
+        borderTop: `1px solid ${isDark ? '#333' : '#ccc'}`,
       }}
     >
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           {footerSections.map((section) => (
             <Grid item xs={12} sm={6} md={4} key={section.title}>
-              <Typography 
-                variant="h6" 
-                gutterBottom
-                sx={{ fontWeight: 600 }}
-              >
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
                 {section.title}
               </Typography>
               <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
@@ -86,11 +82,11 @@ const Footer: React.FC = () => {
                         alignItems: 'center',
                         gap: 1,
                         '&:hover': {
-                          color: '#d32f2f',
-                        }
+                          color: theme.palette.primary.main,
+                        },
                       }}
                     >
-                      {link.icon && React.cloneElement(link.icon, { sx: { opacity: 0.7 } })}
+                      {link.icon && React.cloneElement(link.icon as React.ReactElement, { sx: { opacity: 0.7 } })}
                       {link.title}
                     </Link>
                   </li>
@@ -99,12 +95,12 @@ const Footer: React.FC = () => {
             </Grid>
           ))}
         </Grid>
-        
-        <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.1)' }} />
-        
+
+        <Divider sx={{ my: 4, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }} />
+
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6}>
-            <Typography variant="h5" component="div" sx={{ fontWeight: 700 }}>
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>
               <TaskAlt sx={{ verticalAlign: 'middle', mr: 1 }} />
               Nomeda
             </Typography>
@@ -112,8 +108,8 @@ const Footer: React.FC = () => {
               Your productive task manager
             </Typography>
           </Grid>
-          
-          <Grid item xs={12} sm={6} sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
+
+          <Grid item xs={12} sm={6} sx={{ textAlign: { xs: 'left', sm: 'right' }, mt: { xs: 2, sm: 0 } }}>
             <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
               {socialLinks.map((social, index) => (
                 <IconButton
@@ -122,11 +118,11 @@ const Footer: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  sx={{ 
+                  sx={{
                     color: 'inherit',
                     '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.1)',
-                    }
+                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                    },
                   }}
                 >
                   {social.icon}
@@ -135,12 +131,19 @@ const Footer: React.FC = () => {
             </Box>
           </Grid>
         </Grid>
-        
+
         <Box mt={4}>
-          <Typography variant="body2" align="center" sx={{ opacity: 1, color: '#d32f2f'}}>
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{
+              opacity: 0.8,
+              color: isDark ? '#bbb' : '#666',
+              fontSize: isMobile ? '0.75rem' : '0.875rem',
+            }}
+          >
             {'© '}
-            {new Date().getFullYear()}
-            {' Nomeda Task Hub. All rights reserved.'}
+            {new Date().getFullYear()} Nomeda Task Hub. All rights reserved.
           </Typography>
         </Box>
       </Container>

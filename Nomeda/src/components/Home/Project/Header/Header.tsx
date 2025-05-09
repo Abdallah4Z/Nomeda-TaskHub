@@ -5,11 +5,11 @@ import FilterControls from './FilterControls';
 import ProjectTitle from './ProjectTitle';
 import ProjectActions from './ProjectActions';
 import NavigationTabs from './NavigationTabs';
-import OverviewContent from './views/OverviewContent';
+import OverviewPage from '../Overview/OverviewPage';
 import ListView from '../List/ListView';
 import BoardView from '../Board/BoardView';
-import CalendarView from './views/CalendarView';
-import FilesView from './views/FilesView';
+import CalendarView from '../Calender/UpcomingDeadlines';
+import FilesView from '../Files/FilesView';
 import useTasks from '../../../../hooks/useTasks';
 
 const Header = ({ projectName = "Design Project", onEdit = () => {} }) => {
@@ -45,7 +45,7 @@ const Header = ({ projectName = "Design Project", onEdit = () => {} }) => {
       {/* Tab Content Panels */}
       <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
         <TabPanel value={tabValue} index={0}>
-          <OverviewContent />
+          <OverviewPage />
         </TabPanel>
 
         <TabPanel value={tabValue} index={1}>
