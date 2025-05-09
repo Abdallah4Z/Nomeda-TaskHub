@@ -21,6 +21,7 @@ import { SecurityInfo } from './components/Docs/legal/SecurityInfo'
 import { TermsOfService } from './components/Docs/legal/TermsOfService'
 import { ThemeProviderWrapper } from './context/ThemeContext' // 👈 Add this line
 import ProjectView from './components/Home/Project/ProjectView'
+import MainLayout from './components/Layout/MainLayout'
 
 function App() {
   const { isAuthenticated } = useAuth()

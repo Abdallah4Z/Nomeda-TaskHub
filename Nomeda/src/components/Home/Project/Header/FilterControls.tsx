@@ -1,70 +1,101 @@
-import React from 'react';
-import { Box, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Stack,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-const FilterControls = ({ 
-  dueDateFilter, 
-  assigneeFilter, 
-  priorityFilter, 
-  setDueDateFilter, 
-  setAssigneeFilter, 
-  setPriorityFilter 
+import TaskDialog from './TaskDialog';
+import useTasks from '../../../../hooks/useTasks';
+
+const FilterControls = ({
+  dueDateFilter,
+  assigneeFilter,
+  priorityFilter,
+  setDueDateFilter,
+  setAssigneeFilter,
+  setPriorityFilter,
 }) => {
-  const handleFilterChange = (event, setState) => {
-    setState(event.target.value);
+  const [openDialog, setOpenDialog] = useState(false);
+  const { tasks, loading } = useTasks();
+  const [localTasks, setLocalTasks] = useState(tasks);
+
+  const handleFilterChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
+
+  const handleAddTask = (newTask) => {
+    setLocalTasks((prev) => [...prev, newTask]);
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', pb: 2, pt:2 }}>
-      <FormControl size="small">
-        <InputLabel>Due Date</InputLabel>
-        <Select
-          value={dueDateFilter}
-          onChange={(event) => handleFilterChange(event, setDueDateFilter)}
-          label="Due Date"
-          sx={{ minWidth: '120px' }}
+    <Box sx={{ pb: 2, pt: 2 }}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <FormControl size="small" sx={{ minWidth: 140 }}>
+          <InputLabel>Due Date</InputLabel>
+          <Select
+            value={dueDateFilter}
+            onChange={handleFilterChange(setDueDateFilter)}
+            label="Due Date"
+          >
+            <MenuItem value="all">All Dates</MenuItem>
+            <MenuItem value="upcoming">Upcoming</MenuItem>
+            <MenuItem value="overdue">Overdue</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 140 }}>
+          <InputLabel>Assignee</InputLabel>
+          <Select
+            value={assigneeFilter}
+            onChange={handleFilterChange(setAssigneeFilter)}
+            label="Assignee"
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="john">John</MenuItem>
+            <MenuItem value="jane">Jane</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl size="small" sx={{ minWidth: 140 }}>
+          <InputLabel>Priority</InputLabel>
+          <Select
+            value={priorityFilter}
+            onChange={handleFilterChange(setPriorityFilter)}
+            label="Priority"
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="high">High</MenuItem>
+            <MenuItem value="normal">Normal</MenuItem>
+            <MenuItem value="low">Low</MenuItem>
+          </Select>
+        </FormControl>
+
+        <Button variant="outlined" size="small">
+          Advanced Filters
+        </Button>
+
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setOpenDialog(true)}
         >
-          <MenuItem value="all">All Dates</MenuItem>
-          <MenuItem value="upcoming">Upcoming</MenuItem>
-          <MenuItem value="overdue">Overdue</MenuItem>
-        </Select>
-      </FormControl>
+          Add New
+        </Button>
+      </Stack>
 
-      <FormControl size="small">
-        <InputLabel>Assignee</InputLabel>
-        <Select
-          value={assigneeFilter}
-          onChange={(event) => handleFilterChange(event, setAssigneeFilter)}
-          label="Assignee"
-          sx={{ minWidth: '120px' }}
-        >
-          <MenuItem value="all">All</MenuItem>
-          <MenuItem value="john">John</MenuItem>
-          <MenuItem value="jane">Jane</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl size="small">
-        <InputLabel>Priority</InputLabel>
-        <Select
-          value={priorityFilter}
-          onChange={(event) => handleFilterChange(event, setPriorityFilter)}
-          label="Priority"
-          sx={{ minWidth: '120px' }}
-        >
-          <MenuItem value="all">All</MenuItem>
-          <MenuItem value="high">High</MenuItem>
-          <MenuItem value="normal">Normal</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Button variant="outlined" size="small">
-        Advanced Filters
-      </Button>
-
-      <Button variant="contained" color="primary" sx={{ marginLeft: 'auto' }}>
-        <AddIcon fontSize="small" /> Add New
-      </Button>
+      <TaskDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onAddTask={handleAddTask}
+      />
     </Box>
   );
 };
