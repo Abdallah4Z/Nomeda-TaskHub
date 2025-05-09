@@ -1,7 +1,7 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import '../../style/dashboard.css'; 
+  import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+  import '../../style/dashboard.css'; 
 
 interface CalendarProps {
   currentMonth: number;

@@ -4,6 +4,7 @@ import LineChart from "../components/dashboard/LineChart";
 import PieChart from "../components/dashboard/PieChart";
 import Status from "../components/dashboard/Status";
 import ProjectsList from "../components/dashboard/TasksList";
+import MainLayout from "../components/Layout/MainLayout";
 import '../style/dashboard.css'; 
 import { useState } from "react";
 
@@ -30,7 +31,8 @@ export default function Dashboard() {
     };  
 
   return (
-    <div className="dashboard-container">
+    <MainLayout>
+      <div className="dashboard-container">
       <DashboardHeader />
 
       <div className="dashboard-row">
@@ -69,6 +71,7 @@ export default function Dashboard() {
       </div>
       
     </div>
+    </MainLayout>
   );
 }
 
