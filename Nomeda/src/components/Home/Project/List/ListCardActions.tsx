@@ -6,7 +6,7 @@ const taskActions = [
   {
     label: 'Edit',
     icon: <Edit fontSize="small" />,
-    onClick: () => console.log('Edit Task'),
+    onClick: (onEdit: () => void) => onEdit(), // Pass the onEdit function to the onClick
   },
   {
     label: 'Delete',
@@ -20,9 +20,18 @@ const taskActions = [
   },
 ]
 
-const ListCardActions = () => (
+interface ListCardActionsProps {
+  onEdit: () => void
+}
+
+const ListCardActions = ({ onEdit }: ListCardActionsProps) => (
   <Box sx={{ width: 48 }}>
-    <SettingsMenu actions={taskActions} />
+    <SettingsMenu
+      actions={taskActions.map((action) => ({
+        ...action,
+        onClick: () => action.onClick(onEdit), // Pass onEdit to Edit action
+      }))}
+    />
   </Box>
 )
 
