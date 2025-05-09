@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 import AuthHeader from '../components/Auth/AuthHeader';
 import AuthInput from '../components/Auth/AuthInput';
 import AuthError from '../components/Auth/AuthError';
@@ -16,10 +15,12 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login, socialAuth } = useAuth();
+  const [errorType, setErrorType] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setErrorType('');
 
     if (!email || !password) {
       setError('Please fill in all fields');
@@ -31,7 +32,13 @@ const Login: React.FC = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.');
+      // Check if the error has a response with error type
+      if (err.response?.data?.errorType) {
+        setErrorType(err.response.data.errorType);
+        setError(err.response.data.message);
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +55,7 @@ const Login: React.FC = () => {
         navigate('/dashboard');
       } catch (err: any) {
         console.error('Google login error:', err);
-        setError(err.message || 'Google login failed. Please try again.');
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -72,28 +79,25 @@ const Login: React.FC = () => {
       setError('GitHub login failed. Please try again.');
     }
   };
-
   return (
     <div className="login-container">
       <AuthHeader title="Log in to your account" subtitle="Welcome back! Please enter your details" />
-      <AuthError message={error} />
+      <AuthError message={error} errorType={errorType} />
       
-      <form onSubmit={handleSubmit}>
-        <AuthInput
+      <form onSubmit={handleSubmit}>        <AuthInput
           label="Email"
           type="email"
           id="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <AuthInput
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+        />        <AuthInput
           label="Password"
           type="password"
           id="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
         />
         <button 
           type="submit" 

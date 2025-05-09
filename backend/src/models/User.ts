@@ -17,8 +17,6 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: [true, 'Please provide a name'],
     trim: true,
-    minlength: 3,
-    maxlength: 50
   },
   email: {
     type: String,
@@ -28,11 +26,9 @@ const UserSchema: Schema = new Schema({
       /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
       'Please provide a valid email'
     ]
-  },
-  password: {
+  },  password: {
     type: String,
-    required: [true, 'Please provide a password'],
-    minlength: 6
+    required: [true, 'Please provide a password']
   },
   phone: {
     type: String,

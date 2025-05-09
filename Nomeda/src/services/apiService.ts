@@ -1,5 +1,5 @@
 // API base URL
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Interface for user registration data
 interface RegisterData {
@@ -22,8 +22,7 @@ interface SocialAuthData {
 }
 
 // Authentication endpoints
-export const authAPI = {
-  // Register a new user
+export const authAPI = {  // Register a new user
   register: async (userData: RegisterData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -36,7 +35,12 @@ export const authAPI = {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        // Create an error object with the response data for better error handling
+        const error = new Error(data.message) as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        error.response = { data };
+        throw error;
       }
       
       // Save token to local storage
@@ -50,7 +54,6 @@ export const authAPI = {
       throw error;
     }
   },
-
   // Login a user
   login: async (loginData: LoginData) => {
     try {
@@ -64,7 +67,12 @@ export const authAPI = {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        // Create an error object with the response data for better error handling
+        const error = new Error(data.message) as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        error.response = { data };
+        throw error;
       }
       
       // Save token to local storage

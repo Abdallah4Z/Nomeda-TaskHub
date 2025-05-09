@@ -22,18 +22,15 @@ export const createToken = (user: IUser) => {
 };
 
 // Register a new user
-export const register = async (req: Request, res: Response) => {
-  try {
-    const { name, email, password, phone } = req.body;
-
-    const emailExists = await User.findOne({ email });
+export const register = async (req: Request, res: Response) => {  try {
+    const { name, email, password, phone } = req.body;    const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({ 
         success: false, 
-        message: 'Email already exists' 
+        message: 'This email address is already registered.',
+        errorType: 'email_exists'
       });
-    }
-
+    } 
     // Create user
     const user = await User.create({ 
       name, 
@@ -57,12 +54,39 @@ export const register = async (req: Request, res: Response) => {
         joinedDate: user.joinedDate
       },
       token
-    });
-  } catch (error) {
+    });  } catch (error: any) {
     console.error('Register error:', error);
+    
+    // Check if the error is a validation error
+    if (error.name === 'ValidationError') {
+      // Extract error message from Mongoose validation error
+      const passwordError = error.errors?.password?.message;
+      
+      if (passwordError) {
+        return res.status(400).json({ 
+          success: false, 
+          message: passwordError,
+          errorType: 'invalid_password'
+        });
+      }
+      
+      // For other validation errors
+      const errorMessage = Object.values(error.errors)
+        .map((err: any) => err.message)
+        .join(', ');
+        
+      return res.status(400).json({ 
+        success: false, 
+        message: errorMessage,
+        errorType: 'validation_error'
+      });
+    }
+    
+    // Default server error
     res.status(500).json({ 
       success: false, 
-      message: 'Something went wrong' 
+      message: 'Registration failed. Please try again later or contact support.',
+      errorType: 'server_error'
     });
   }
 };
@@ -70,14 +94,13 @@ export const register = async (req: Request, res: Response) => {
 // Login user
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-
-    // Check if user exists
+    const { email, password } = req.body;    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ 
         success: false, 
-        message: 'Invalid credentials' 
+        message: 'User not found. Please check your email address.', 
+        errorType: 'user_not_found'
       });
     }
 
@@ -86,7 +109,8 @@ export const login = async (req: Request, res: Response) => {
     if (!isPasswordCorrect) {
       return res.status(401).json({ 
         success: false, 
-        message: 'Invalid credentials' 
+        message: 'Incorrect password. Please try again.',
+        errorType: 'incorrect_password'
       });
     }
 
@@ -105,12 +129,12 @@ export const login = async (req: Request, res: Response) => {
         joinedDate: user.joinedDate
       },
       token
-    });
-  } catch (error) {
+    });  } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ 
       success: false, 
-      message: 'Something went wrong' 
+      message: 'Login failed. Please try again later or contact support.',
+      errorType: 'server_error'
     });
   }
 };
@@ -120,11 +144,11 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   try {
     // User is attached to req by auth middleware
     const userId = (req as any).user?.userId;
-    
-    if (!userId) {
+      if (!userId) {
       return res.status(401).json({
         success: false,
-        message: 'Authentication invalid'
+        message: 'Authentication invalid. Please login again.',
+        errorType: 'auth_invalid'
       });
     }
 
@@ -133,7 +157,8 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User profile not found. Account may have been deleted.',
+        errorType: 'user_not_found'
       });
     }
 
@@ -147,12 +172,12 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         photoUrl: user.photoUrl,
         joinedDate: user.joinedDate
       }
-    });
-  } catch (error) {
+    });  } catch (error) {
     console.error('Get current user error:', error);
     res.status(500).json({
       success: false,
-      message: 'Something went wrong'
+      message: 'Failed to retrieve user profile. Please try again.',
+      errorType: 'server_error'
     });
   }
 };
