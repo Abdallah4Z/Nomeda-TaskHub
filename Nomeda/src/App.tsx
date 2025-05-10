@@ -21,7 +21,11 @@ import { SecurityInfo } from './components/Docs/legal/SecurityInfo'
 import { TermsOfService } from './components/Docs/legal/TermsOfService'
 import { ThemeProviderWrapper } from './context/ThemeContext' // 👈 Add this line
 import ProjectView from './components/Home/Project/ProjectView'
+import ProjectViewPage from './pages/ProjectViewPage'
 import MainLayout from './components/Layout/MainLayout'
+import TeamPage from './pages/TeamPage'
+import TasksPage from './pages/TasksPage'
+import ChatPage from './pages/ChatPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -31,7 +35,7 @@ function App() {
       <ThemeProviderWrapper> {/* 👈 Wrap entire app */}
         <Router>
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/Home" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<ContactPage />} />
@@ -41,7 +45,13 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/security" element={<SecurityInfo />} />
             <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/create-project" element={<ProjectView />} />
+            {/* <Route path="/create-project" element={<ProjectView />} /> */}
+            <Route path="/project" element={<ProjectViewPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+
+
 
 
             <Route

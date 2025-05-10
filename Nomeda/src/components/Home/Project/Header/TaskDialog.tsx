@@ -27,7 +27,6 @@ const TaskDialog: React.FC<TaskDialogProps> = ({ open, onClose, onAddTask }) => 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderBottom: '1px solid #eee',
         }}
       >
         <Typography variant="h6" fontWeight={600}>Create New Task</Typography>

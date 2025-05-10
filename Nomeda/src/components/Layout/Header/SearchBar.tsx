@@ -5,16 +5,11 @@ import { Search as SearchIcon } from '@mui/icons-material';
 const SearchContainer = styled('div')({
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: '#f4f5f7',
   borderRadius: '4px',
   padding: '0 16px',
   maxWidth: '500px',
   width: '100%',
   transition: 'all 0.2s ease',
-  '&:focus-within': {
-    backgroundColor: 'rgba(120, 20, 20, 0.2)',
-    boxShadow: '0 0 0 2px rgba(120, 20, 20, 0.4)',
-  },
 });
 
 const StyledInput = styled(InputBase)({

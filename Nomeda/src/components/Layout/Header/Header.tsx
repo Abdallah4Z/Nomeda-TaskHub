@@ -26,38 +26,44 @@ import SearchBar from './SearchBar'
 import ActionButton from './ActionButton'
 
 // Styled components
-const HeaderContainer = styled(Box)({
+const HeaderContainer = styled(Box)(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '0 24px',
   height: '44px',
-  backgroundColor: '#ffffff',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+  backgroundColor:
+    theme.palette.mode === 'dark' ? theme.palette.background.paper : '#ffffff',
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? '0 2px 4px rgba(0,0,0,0.2)'
+      : '0 2px 4px rgba(0,0,0,0.05)',
   position: 'fixed',
   top: 0,
   left: 40,
   width: '98vw',
   boxSizing: 'border-box',
   zIndex: 1100,
-})
+  transition: 'background-color 0.3s, box-shadow 0.3s',
+}))
 
 const LogoWrapper = styled(Box)({
   display: 'flex',
   alignItems: 'center',
 })
 
-const Logo = styled(Link)({
+const Logo = styled(Link)(({theme}) => ({
   fontSize: '20px',
   fontWeight: 700,
-  color: 'gray',
+  color: theme.palette.mode === 'dark' ? theme.palette.text.primary : 'gray',
   textDecoration: 'none',
   cursor: 'pointer',
   letterSpacing: '-0.5px',
+  transition: 'color 0.3s, opacity 0.2s',
   '&:hover': {
     opacity: 0.7,
   },
-})
+}))
 
 const ActionsContainer = styled(Box)({
   display: 'flex',
@@ -75,7 +81,7 @@ const UserAvatar = styled(Avatar)({
   },
 })
 
-const MobileHeaderContainer = styled(Box)({
+const MobileHeaderContainer = styled(Box)(({theme}) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -83,7 +89,8 @@ const MobileHeaderContainer = styled(Box)({
   height: '40px',
   width: '100%',
   boxSizing: 'border-box',
-})
+  color: theme.palette.text.primary,
+}))
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -202,7 +209,20 @@ const Header: React.FC = () => {
         <Logo to="/">Nomeda Task-Hub</Logo>
       </LogoWrapper>
 
-      <Box sx={{flexGrow: 1, mx: 4, maxWidth: '600px'}}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          mx: 4,
+          maxWidth: '600px',
+          '& .MuiInputBase-root': {
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? theme.palette.background.default
+                : theme.palette.background.paper,
+            color: theme.palette.text.primary,
+          },
+        }}
+      >
         <SearchBar placeholder="Search..." onSearch={handleSearch} />
       </Box>
 
@@ -211,6 +231,15 @@ const Header: React.FC = () => {
           icon={<LogsIcon fontSize="small" />}
           label="View logs"
           onClick={() => navigate('/logs')}
+          sx={{
+            color: theme.palette.text.primary,
+            '&:hover': {
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          }}
         />
 
         <ActionButton
@@ -218,6 +247,15 @@ const Header: React.FC = () => {
           label="Notifications"
           badgeCount={notificationCount}
           onClick={() => navigate('/notifications')}
+          sx={{
+            color: theme.palette.text.primary,
+            '&:hover': {
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          }}
         />
 
         <UserAvatar
@@ -233,14 +271,59 @@ const Header: React.FC = () => {
         onClose={handleUserMenuClose}
         transformOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+        PaperProps={{
+          sx: {
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? theme.palette.background.paper
+                : '#ffffff',
+            color: theme.palette.text.primary,
+            boxShadow:
+              theme.palette.mode === 'dark'
+                ? '0 2px 8px rgba(0,0,0,0.3)'
+                : '0 2px 8px rgba(0,0,0,0.1)',
+          },
+        }}
       >
-        <MenuItem onClick={() => handleNavigate('/account')}>
+        <MenuItem
+          onClick={() => handleNavigate('/account')}
+          sx={{
+            '&:hover': {
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          }}
+        >
           My Account
         </MenuItem>
-        <MenuItem onClick={() => handleNavigate('/settings')}>
+        <MenuItem
+          onClick={() => handleNavigate('/settings')}
+          sx={{
+            '&:hover': {
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          }}
+        >
           Settings
         </MenuItem>
-        <MenuItem onClick={() => handleNavigate('/logout')}>Logout</MenuItem>
+        <MenuItem
+          onClick={() => handleNavigate('/logout')}
+          sx={{
+            '&:hover': {
+              backgroundColor:
+                theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.08)'
+                  : 'rgba(0, 0, 0, 0.04)',
+            },
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </HeaderContainer>
   )

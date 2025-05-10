@@ -35,7 +35,6 @@ const NavigationTabs = ({ tabValue, setTabValue }) => (
         </Box>
       }
       value={2}
-      sx={{ color: tabValue === 2 ? '#007bff' : undefined }}
     />
     <Tab
       label={

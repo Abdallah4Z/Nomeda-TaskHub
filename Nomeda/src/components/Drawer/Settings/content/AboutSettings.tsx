@@ -1,116 +1,162 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react'
 import {
   Typography,
   List,
   ListItem,
   ListItemText,
   Divider,
-  ListItemSecondaryAction
-} from '@mui/material';
-import DropDown from './DropDown';
-import IOSSwitchComponent from '../../../IOS';
+  ListItemSecondaryAction,
+  Paper,
+  Box,
+  useTheme,
+  Link,
+  Chip,
+  Stack,
+} from '@mui/material'
+import DropDown from './DropDown'
+import IOSSwitchComponent from '../../../IOS'
+import InfoIcon from '@mui/icons-material/Info'
+import TimelineIcon from '@mui/icons-material/Timeline'
 
 const AboutSettings: React.FC = () => {
-  const [themeSetting, setThemeSetting] = useState<string>('system');
-
-  const handleThemeChange = (event: any) => {
-    setThemeSetting(event.target.value);
-  };
-const [toggleStates, setToggleStates] = useState({
-    enableNotifications: false,
-    startWeekOnMonday: false,
+  const theme = useTheme()
+  const [version, setVersion] = useState<string>('V.1')
+  const [toggleStates, setToggleStates] = useState({
+    autoUpdate: false,
+    telemetry: false,
     TimeZone: false,
-  });
+  })
 
-  const themeMenuItems = [
-    { value: 'V.1', label: 'V1   (Early access)' },
-    { value: 'V.2', label: 'V1.1 (Early access)' },
-    { value: 'V.3', label: 'V1.2 (Early access)' },
-    { value: 'V.4', label: 'V1.3 (Early access)' },
-  ];
+  const handleVersionChange = (event: any) => {
+    setVersion(event.target.value)
+  }
 
-  const handleToggleChange = (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setToggleStates({
-      ...toggleStates,
-      [key]: event.target.checked,
-    });
-  };
+  const versionMenuItems = [
+    {value: 'V.1', label: 'Version 1.0.0 (Stable)'},
+    {value: 'V.2', label: 'Version 1.1.0 (Beta)'},
+    {value: 'V.3', label: 'Version 1.2.0 (Alpha)'},
+    {value: 'V.4', label: 'Version 1.3.0 (Development)'},
+  ]
+
+  const handleToggleChange =
+    (key: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setToggleStates({
+        ...toggleStates,
+        [key]: event.target.checked,
+      })
+    }
+
   return (
-    <div>
-      <Typography variant="h6" sx={{ fontSize:"3vh",fontWeight: 'bold',paddingLeft: 2,marginBottom: 2 }}>
-        General Information
+    <Box>
+      <Typography
+        variant="h6"
+        sx={{
+          fontSize: '3vh',
+          fontWeight: 'bold',
+          paddingLeft: 2,
+          marginBottom: 2,
+        }}
+      >
+        About Nomeda Task Manager
       </Typography>
-      
-      <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
+      <Divider />
+
+      <Paper
+        elevation={0}
+        sx={{
+          bgcolor:
+            theme.palette.mode === 'dark'
+              ? 'rgba(255, 255, 255, 0.05)'
+              : 'rgba(0, 0, 0, 0.02)',
+          borderRadius: 2,
+          p: 2,
+          mt: 2,
+          mb: 3,
+        }}
+      >
+        <Stack spacing={1}>
+          <Typography variant="body1">
+            Nomeda Task Manager is a real-time collaborative task management
+            platform designed to enhance team productivity through AI-powered
+            features.
+          </Typography>
+
+          <Stack direction="row" spacing={1} sx={{mt: 1}}>
+            <Chip
+              icon={<InfoIcon sx={{fontSize: 16}} />}
+              label={version === 'V.1' ? 'Stable Release' : 'Preview Release'}
+              color={version === 'V.1' ? 'success' : 'warning'}
+              size="small"
+            />
+            <Chip
+              icon={<TimelineIcon sx={{fontSize: 16}} />}
+              label="Active Development"
+              color="info"
+              size="small"
+            />
+          </Stack>
+        </Stack>
+      </Paper>
+
+      <Typography
+        variant="h6"
+        sx={{
+          fontSize: '2.5vh',
+          fontWeight: 'bold',
+          paddingLeft: 2,
+          marginBottom: 2,
+        }}
+      >
+        Version Control
+      </Typography>
+      <Divider />
 
       <List>
-        <Typography sx={{ fontSize:"3vh",fontWeight: 'bold', paddingLeft: 2,marginBottom: 2 }}
-        >        Nomeda Task Manager
-          </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'gray',
-            marginBottom: 2,
-            marginTop: -2,
-            paddingLeft: 2,
-          }}
-        >
-        This is the real time editor for our company Nomeda it is designed to help you 
-        manage your tasks efficiently, collaborate with teams, and stay organized while 
-        utilizing advanced AI Features to enhance your productivity.
-        </Typography>
-      <ListItem button>
-          <ListItemText primary="Version"  />
+        <ListItem>
+          <ListItemText
+            primary="Application Version"
+            secondary="Select the version of Nomeda you want to use"
+          />
           <DropDown
-            themeSetting={themeSetting}
-            handleThemeChange={handleThemeChange}
-            menuItems={themeMenuItems}
+            themeSetting={version}
+            handleThemeChange={handleVersionChange}
+            menuItems={versionMenuItems}
           />
         </ListItem>
-        <Typography
-          variant="body2"
-          sx={{
-            marginBottom: 2,
-            marginTop: -2,
-            paddingLeft: 2,
-          }}
-        >
-          Choose the Version of the website (Task Management, Dashboard , Ai features).
-        </Typography>
-        
-      
-        <Typography variant="h6" sx={{ fontWeight: 'bold',
-        paddingLeft: 2 ,marginTop: 6
-        ,marginBottom: 2
-        ,fontSize:"3vh"}}>
-        Language & Time
-      </Typography>
-      <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
 
-      
-        <ListItem button>
-          <ListItemText primary="Start Week On Monday" sx={{ color: 'white' }} />
+        <ListItem>
+          <ListItemText
+            primary="Automatic Updates"
+            secondary="Keep Nomeda up to date automatically"
+          />
           <ListItemSecondaryAction>
             <IOSSwitchComponent
               edge="end"
-              checked={toggleStates.startWeekOnMonday}
-              onChange={handleToggleChange('startWeekOnMonday')}
+              checked={toggleStates.autoUpdate}
+              onChange={handleToggleChange('autoUpdate')}
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <Typography
-          variant="body2"
-          sx={{
-            marginBottom: 2,
-            marginTop: -2,
-            paddingLeft: 2,
-          }}
-        >
-          This will make your calendar start on Monday instead of Sunday.
-        </Typography>
-        <ListItem button>
-          <ListItemText primary="TimeZone"  />
+
+        <ListItem>
+          <ListItemText
+            primary="Usage Statistics"
+            secondary="Help improve Nomeda by sending anonymous usage data"
+          />
+          <ListItemSecondaryAction>
+            <IOSSwitchComponent
+              edge="end"
+              checked={toggleStates.telemetry}
+              onChange={handleToggleChange('telemetry')}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+
+        <ListItem>
+          <ListItemText
+            primary="Time Zone"
+            secondary="Sync reminders and notifications with your time zone"
+          />
           <ListItemSecondaryAction>
             <IOSSwitchComponent
               edge="end"
@@ -119,23 +165,78 @@ const [toggleStates, setToggleStates] = useState({
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <Typography
-          variant="body2"
-          sx={{
-            marginBottom: 2,
-            marginTop: -2,
-            paddingLeft: 2,
-          }}
-        >
-          Reminders, notifications and emails are delivered based on your time zone
-        </Typography>
-        <Divider variant="middle"  />
-
-        {/* Appearance Dropdown */}
-        
       </List>
-    </div>
-  );
-};
 
-export default AboutSettings;
+      <Typography
+        variant="h6"
+        sx={{
+          fontSize: '2.5vh',
+          fontWeight: 'bold',
+          paddingLeft: 2,
+          marginTop: 2,
+          marginBottom: 2,
+        }}
+      >
+        Additional Information
+      </Typography>
+      <Divider />
+
+      <Paper
+        elevation={0}
+        sx={{
+          bgcolor:
+            theme.palette.mode === 'dark'
+              ? 'rgba(255, 255, 255, 0.05)'
+              : 'rgba(0, 0, 0, 0.02)',
+          borderRadius: 2,
+          p: 2,
+          mt: 2,
+        }}
+      >
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="subtitle2" color="primary">
+              License
+            </Typography>
+            <Typography variant="body2">
+              © 2024 Nomeda. All rights reserved.
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" color="primary">
+              Support
+            </Typography>
+            <Typography variant="body2">
+              For support, visit our{' '}
+              <Link href="#" color="primary">
+                Help Center
+              </Link>{' '}
+              or contact{' '}
+              <Link href="#" color="primary">
+                support@nomeda.com
+              </Link>
+            </Typography>
+          </Box>
+
+          <Box>
+            <Typography variant="subtitle2" color="primary">
+              Legal
+            </Typography>
+            <Stack direction="row" spacing={1}>
+              <Link href="#" color="primary" variant="body2">
+                Privacy Policy
+              </Link>
+              <Typography variant="body2">•</Typography>
+              <Link href="#" color="primary" variant="body2">
+                Terms of Service
+              </Link>
+            </Stack>
+          </Box>
+        </Stack>
+      </Paper>
+    </Box>
+  )
+}
+
+export default AboutSettings

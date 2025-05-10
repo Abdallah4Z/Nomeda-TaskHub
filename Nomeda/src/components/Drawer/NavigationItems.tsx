@@ -10,6 +10,7 @@ import {
   Typography,
   Collapse,
   IconButton,
+  useTheme,
 } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -22,6 +23,9 @@ import PeopleIcon from '@mui/icons-material/People'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import StarIcon from '@mui/icons-material/Star'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
+import Brightness7Icon from '@mui/icons-material/Brightness7'
+import {ColorModeContext} from '../Layout/MainLayout'
 import CenteredBox from './Settings/settings'
 import MainLayout from '../Layout/MainLayout'
 
@@ -41,6 +45,8 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   open,
   onNavigate,
 }) => {
+  const theme = useTheme()
+  const colorMode = React.useContext(ColorModeContext)
   const [projectsExpanded, setProjectsExpanded] = React.useState(true)
   const [workspacesExpanded, setWorkspacesExpanded] = React.useState(false)
 
@@ -264,7 +270,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
       {/* Settings */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
-          onClick={() => onNavigate('/Settings')}
           sx={{
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
@@ -279,7 +284,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
               justifyContent: 'center',
             }}
           >
-            <SettingsIcon />
+            <CenteredBox />
           </ListItemIcon>
           <ListItemText primary="Settings" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
@@ -287,17 +292,33 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
 
       {/* Theme Toggle */}
       <ListItem disablePadding sx={{display: 'block'}}>
-        <Box
+        <ListItemButton
+          onClick={colorMode.toggleColorMode}
           sx={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            mt: 2,
-            mx: 2,
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': {opacity: 0.8},
           }}
         >
-          <CenteredBox />
-        </Box>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            {theme.palette.mode === 'dark' ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </ListItemIcon>
+          <ListItemText
+            primary={`${theme.palette.mode === 'dark' ? 'Light' : 'Dark'} Mode`}
+            sx={{opacity: open ? 1 : 0}}
+          />
+        </ListItemButton>
       </ListItem>
     </List>
   )

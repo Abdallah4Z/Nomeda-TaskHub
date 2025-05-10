@@ -9,11 +9,6 @@ interface SettingsButtonProps {
 const SettingsButton: React.FC<SettingsButtonProps> = ({ onOpen }) => {
   return (
     <Box
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        width: '100%',
-      }}
     >
       <IconButton
         onClick={onOpen}
