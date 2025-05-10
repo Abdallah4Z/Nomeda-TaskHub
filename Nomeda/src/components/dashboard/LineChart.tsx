@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Box, Select, MenuItem, Typography } from '@mui/material';
-import '../../style/dashboard.css'; 
 
 const TaskCompletionChart = () => {
   const [duration, setDuration] = useState<string>('month');

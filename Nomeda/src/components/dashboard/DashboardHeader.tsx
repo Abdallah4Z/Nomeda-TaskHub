@@ -1,6 +1,5 @@
 import { TextField, InputAdornment, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import '../../style/dashboard.css'; 
 
 const DashboardHeader = () => {
   const today = new Date().toLocaleDateString("en-US", {

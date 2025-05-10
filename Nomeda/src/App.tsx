@@ -22,6 +22,7 @@ import { TermsOfService } from './components/Docs/legal/TermsOfService'
 import { ThemeProviderWrapper } from './context/ThemeContext' // 👈 Add this line
 import ProjectView from './components/Home/Project/ProjectView'
 import MainLayout from './components/Layout/MainLayout'
+import ProjectViewPage from './pages/ProjectViewPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -41,7 +42,8 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/security" element={<SecurityInfo />} />
             <Route path="/terms" element={<TermsOfService />} />
-            <Route path="/create-project" element={<ProjectView />} />
+            {/* <Route path="/create-project" element={<ProjectView />} /> */}
+            <Route path="/project" element={<ProjectViewPage />} />
 
 
             <Route
