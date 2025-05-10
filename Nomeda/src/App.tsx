@@ -26,6 +26,7 @@ import MainLayout from './components/Layout/MainLayout'
 import TeamPage from './pages/TeamPage'
 import TasksPage from './pages/TasksPage'
 import ChatPage from './pages/ChatPage'
+import Chatbot from './components/Chatbot'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -50,6 +51,8 @@ function App() {
             <Route path="/team" element={<TeamPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chatbot" element={<Chatbot />} />
+
 
 
 

@@ -25,10 +25,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import StarIcon from '@mui/icons-material/Star'
 import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {ColorModeContext} from '../Layout/MainLayout'
 import CenteredBox from './Settings/settings'
-import MainLayout from '../Layout/MainLayout'
-
 interface NavigationItemsProps {
   open: boolean
   onNavigate: (path: string) => void
@@ -48,14 +47,9 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   const theme = useTheme()
   const colorMode = React.useContext(ColorModeContext)
   const [projectsExpanded, setProjectsExpanded] = React.useState(true)
-  const [workspacesExpanded, setWorkspacesExpanded] = React.useState(false)
 
   const handleProjectsToggle = () => {
     setProjectsExpanded(!projectsExpanded)
-  }
-
-  const handleWorkspacesToggle = () => {
-    setWorkspacesExpanded(!workspacesExpanded)
   }
 
   return (
@@ -153,6 +147,30 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
             <ChatIcon />
           </ListItemIcon>
           <ListItemText primary="Chat" sx={{opacity: open ? 1 : 0}} />
+        </ListItemButton>
+      </ListItem>
+
+      {/* Chatbot */}
+      <ListItem disablePadding sx={{display: 'block'}}>
+        <ListItemButton
+          onClick={() => onNavigate('/chatbot')}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': {opacity: 0.8},
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <SmartToyIcon />
+          </ListItemIcon>
+          <ListItemText primary="Chatbot" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
 
