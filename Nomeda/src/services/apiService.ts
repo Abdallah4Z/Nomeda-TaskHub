@@ -32,11 +32,10 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
     ]
   };
 
-  apiMessages.unshift(systemMessage);
-  const response = await fetch( "https://openrouter.ai/api/v1/chat/completions", {
+  apiMessages.unshift(systemMessage);  const response = await fetch( "https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer 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`,
+      "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
       "HTTP-Referer": SITE_URL,
       "X-Title": SITE_NAME,
       "Content-Type": "application/json"
