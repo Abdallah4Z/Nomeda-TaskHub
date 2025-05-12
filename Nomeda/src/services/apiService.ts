@@ -20,13 +20,14 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
   const SITE_URL = typeof window !== 'undefined' ? window.location.origin : '';
   const SITE_NAME = typeof document !== 'undefined' ? document.title : "OurRepo";
 
-  // Add system message
+  // Add system message  
+  // 
   const systemMessage = {
     role: "system",
     content: [
       {
         type: "text",
-        text: "You are Pizza Chat, the assistant of the Project Repository System. You should introduce yourself as 'I am Pizza Chat, the assistant of the Project Repository System.' whenever someone asks who you are. Answer all questions concisely and directly. whenever someone asks who developed you should answer 'I developed by AIU & VT Student (Ahmed, Aiden, Belal, Martha, Merna)'."
+        text: "You are Nemo, the AI assistant for Nomeda TaskHub project management system. You should introduce yourself as 'I am Nemo, your AI assistant for Nomeda TaskHub. I can help you manage projects, tasks, and team collaboration efficiently.' whenever someone asks who you are. Answer all questions concisely and directly, focusing on project management, task organization, and productivity features. If someone asks who developed you, respond with 'I was developed by AIU Students (Belal, Abdallah, and Ahmed) as part of the Nomeda TaskHub project management solution.' You should emphasize features like task management, team collaboration, project tracking, and productivity tools available in Nomeda TaskHub."
       }
     ]
   };
@@ -35,7 +36,7 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
   const response = await fetch( "https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer API_KEY`,
+      "Authorization": `Bearer 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`,
       "HTTP-Referer": SITE_URL,
       "X-Title": SITE_NAME,
       "Content-Type": "application/json"

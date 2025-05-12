@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Box, useTheme} from '@mui/material'
+import {Box, Chip, Divider, useTheme} from '@mui/material'
 import TabPanel from './TabPanel'
 import FilterControls from './FilterControls'
 import ProjectTitle from './ProjectTitle'
@@ -45,12 +45,7 @@ const Header = ({projectName = 'Design Project', onEdit = () => {}}) => {
           borderRadius: '8px',
           p: 2,
           flexShrink: 0,
-          width: '90%',
-          boxShadow:
-            theme.palette.mode === 'dark'
-              ? '0 4px 6px rgba(0, 0, 0, 0.3)'
-              : '0 2px 4px rgba(0, 0, 0, 0.1)',
-          transition: 'background-color 0.3s, box-shadow 0.3s',
+          width: '100%',
         }}
       >
         <Box
@@ -76,13 +71,13 @@ const Header = ({projectName = 'Design Project', onEdit = () => {}}) => {
           setPriorityFilter={setPriorityFilter}
         />
       </Box>
+      <Divider  sx={{width:'100%'}}/>
 
       {/* Tab Content Panels */}
       <Box
         sx={{
           flexGrow: 1,
           overflow: 'hidden',
-          width: '90%',
           backgroundColor:
             theme.palette.mode === 'dark'
               ? theme.palette.background.default

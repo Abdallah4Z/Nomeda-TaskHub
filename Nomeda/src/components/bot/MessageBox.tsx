@@ -14,10 +14,25 @@ function MessageBox({message}: MessageBoxProps) {
       className={
         isUser ? 'message-box user-message' : 'message-box bot-message'
       }
+      sx={{
+        maxWidth: '100%',
+        width: 'fit-content',
+        wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
+        overflowWrap: 'break-word',
+      }}
     >
-      <div dangerouslySetInnerHTML={{__html: formatText(text)}} />
+      <div
+        style={{width: '100%'}}
+        dangerouslySetInnerHTML={{__html: formatText(text)}}
+      />
       {imageUrl && (
-        <img className="uploaded-image" src={imageUrl} alt="Uploaded content" />
+        <img
+          className="uploaded-image"
+          src={imageUrl}
+          alt="Uploaded content"
+          style={{maxWidth: '100%', height: 'auto'}}
+        />
       )}
     </Box>
   )

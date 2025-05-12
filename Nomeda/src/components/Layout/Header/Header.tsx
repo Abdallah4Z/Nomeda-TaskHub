@@ -21,9 +21,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListItemButton,
 } from '@mui/material'
 import SearchBar from './SearchBar'
 import ActionButton from './ActionButton'
+import LogsPanel from '../../Logs/LogsPanel'
+import NotificationsPanel from '../../Notifications/NotificationsPanel'
 
 // Styled components
 const HeaderContainer = styled(Box)(({theme}) => ({
@@ -101,6 +104,13 @@ const Header: React.FC = () => {
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null)
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
 
+  // Add logs panel state
+  const [isLogsOpen, setIsLogsOpen] = useState(false)
+  const [isLogsFullscreen, setIsLogsFullscreen] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [isNotificationsFullscreen, setIsNotificationsFullscreen] =
+    useState(false)
+
   // Notification count (simulated data)
   const notificationCount = 5
 
@@ -127,30 +137,91 @@ const Header: React.FC = () => {
     setMobileDrawerOpen(!mobileDrawerOpen)
   }
 
+  const handleLogsToggle = () => {
+    setIsLogsOpen(!isLogsOpen)
+  }
+
+  const handleLogsFullscreen = () => {
+    setIsLogsFullscreen(!isLogsFullscreen)
+  }
+
+  const handleNotificationsToggle = () => {
+    setIsNotificationsOpen(!isNotificationsOpen)
+  }
+
+  const handleNotificationsFullscreen = () => {
+    setIsNotificationsFullscreen(!isNotificationsFullscreen)
+  }
+
   // Mobile drawer content
   const drawerContent = (
     <Box sx={{width: 250, pt: 2, maxWidth: '20vw'}}>
       <List>
-        <ListItem button onClick={() => handleNavigate('/dashboard')}>
-          <ListItemIcon>
-            <LogsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
+        {' '}
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              handleLogsToggle()
+              setMobileDrawerOpen(false)
+            }}
+          >
+            <ListItemIcon>
+              <LogsIcon />
+            </ListItemIcon>
+            <ListItemText primary="View Logs" />
+          </ListItemButton>
+        </ListItem>{' '}
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigate('/dashboard')}>
+            <ListItemIcon>
+              <LogsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+        </ListItem>{' '}
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              handleNotificationsToggle()
+              setMobileDrawerOpen(false)
+            }}
+          >
+            <ListItemIcon>
+              <NotificationsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Notifications" />
+          </ListItemButton>
         </ListItem>
-        <ListItem button onClick={() => handleNavigate('/notifications')}>
-          <ListItemIcon>
-            <NotificationsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Notifications" />
-        </ListItem>
-        <ListItem button onClick={() => handleNavigate('/account')}>
-          <ListItemIcon>
-            <Avatar sx={{width: 24, height: 24}} />
-          </ListItemIcon>
-          <ListItemText primary="My Account" />
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => handleNavigate('/account')}>
+            <ListItemIcon>
+              <Avatar sx={{width: 24, height: 24}} />
+            </ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItemButton>
         </ListItem>
       </List>
     </Box>
+  )
+
+  // Add LogsPanel component to both mobile and desktop views
+  const logsPanel = (
+    <LogsPanel
+      isOpen={isLogsOpen}
+      isFullscreen={isLogsFullscreen}
+      onClose={() => setIsLogsOpen(false)}
+      onToggleFullscreen={handleLogsFullscreen}
+    />
+  )
+
+  // Add NotificationsPanel component
+  const notificationsPanel = (
+    <NotificationsPanel
+      isOpen={isNotificationsOpen}
+      isFullscreen={isNotificationsFullscreen}
+      onClose={() => setIsNotificationsOpen(false)}
+      onToggleFullscreen={handleNotificationsFullscreen}
+    />
   )
 
   // Render mobile view
@@ -171,7 +242,7 @@ const Header: React.FC = () => {
 
             <UserAvatar
               alt="User Avatar"
-              src="https://i.pravatar.cc/160?img=70"
+              src="https://i.pravatar.cc/190?img=70"
               onClick={handleUserMenuOpen}
             />
           </MobileHeaderContainer>
@@ -198,134 +269,127 @@ const Header: React.FC = () => {
           </MenuItem>
           <MenuItem onClick={() => handleNavigate('/logout')}>Logout</MenuItem>
         </Menu>
+        {logsPanel}
+        {notificationsPanel}
       </>
     )
   }
 
   // Render desktop view
   return (
-    <HeaderContainer>
-      <LogoWrapper>
-        <Logo to="/">Nomeda Task-Hub</Logo>
-      </LogoWrapper>
+    <>
+      <HeaderContainer>
+        <LogoWrapper>
+          <Logo to="/">Nomeda Task-Hub</Logo>
+        </LogoWrapper>
 
-      <Box
-        sx={{
-          flexGrow: 1,
-          mx: 4,
-          maxWidth: '600px',
-          '& .MuiInputBase-root': {
-            backgroundColor:
-              theme.palette.mode === 'dark'
-                ? theme.palette.background.default
-                : theme.palette.background.paper,
-            color: theme.palette.text.primary,
-          },
-        }}
-      >
-        <SearchBar placeholder="Search..." onSearch={handleSearch} />
-      </Box>
-
-      <ActionsContainer>
-        <ActionButton
-          icon={<LogsIcon fontSize="small" />}
-          label="View logs"
-          onClick={() => navigate('/logs')}
+        <Box
           sx={{
-            color: theme.palette.text.primary,
-            '&:hover': {
+            flexGrow: 1,
+            mx: 4,
+            maxWidth: '600px',
+            '& .MuiInputBase-root': {
               backgroundColor:
                 theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
-        />
-
-        <ActionButton
-          icon={<NotificationsIcon fontSize="small" />}
-          label="Notifications"
-          badgeCount={notificationCount}
-          onClick={() => navigate('/notifications')}
-          sx={{
-            color: theme.palette.text.primary,
-            '&:hover': {
-              backgroundColor:
-                theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
-        />
-
-        <UserAvatar
-          alt="User Avatar"
-          src="https://i.pravatar.cc/160?img=70"
-          onClick={handleUserMenuOpen}
-        />
-      </ActionsContainer>
-
-      <Menu
-        anchorEl={userMenuAnchor}
-        open={Boolean(userMenuAnchor)}
-        onClose={handleUserMenuClose}
-        transformOrigin={{horizontal: 'right', vertical: 'top'}}
-        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-        PaperProps={{
-          sx: {
-            backgroundColor:
-              theme.palette.mode === 'dark'
-                ? theme.palette.background.paper
-                : '#ffffff',
-            color: theme.palette.text.primary,
-            boxShadow:
-              theme.palette.mode === 'dark'
-                ? '0 2px 8px rgba(0,0,0,0.3)'
-                : '0 2px 8px rgba(0,0,0,0.1)',
-          },
-        }}
-      >
-        <MenuItem
-          onClick={() => handleNavigate('/account')}
-          sx={{
-            '&:hover': {
-              backgroundColor:
-                theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.04)',
+                  ? theme.palette.background.default
+                  : theme.palette.background.paper,
+              color: theme.palette.text.primary,
             },
           }}
         >
-          My Account
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleNavigate('/settings')}
-          sx={{
-            '&:hover': {
+          <SearchBar placeholder="Search..." onSearch={handleSearch} />
+        </Box>
+
+        <ActionsContainer>
+          <ActionButton
+            icon={<LogsIcon fontSize="small" />}
+            label="View logs"
+            onClick={handleLogsToggle}
+            sx={{
+              color: theme.palette.text.primary,
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          />
+
+          <ActionButton
+            icon={<NotificationsIcon fontSize="small" />}
+            label="Notifications"
+            badgeCount={notificationCount}
+            onClick={handleNotificationsToggle}
+            sx={{
+              color: theme.palette.text.primary,
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          />
+
+          <UserAvatar
+            alt="User Avatar"
+            src="https://i.pravatar.cc/160?img=70"
+            onClick={handleUserMenuOpen}
+          />
+        </ActionsContainer>
+
+        <Menu
+          anchorEl={userMenuAnchor}
+          open={Boolean(userMenuAnchor)}
+          onClose={handleUserMenuClose}
+          transformOrigin={{horizontal: 'right', vertical: 'top'}}
+          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+          PaperProps={{
+            sx: {
               backgroundColor:
                 theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.04)',
+                  ? theme.palette.background.paper
+                  : '#ffffff',
+              color: theme.palette.text.primary,
+              boxShadow:
+                theme.palette.mode === 'dark'
+                  ? '0 2px 8px rgba(0,0,0,0.3)'
+                  : '0 2px 8px rgba(0,0,0,0.1)',
             },
           }}
         >
-          Settings
-        </MenuItem>
-        <MenuItem
-          onClick={() => handleNavigate('/logout')}
-          sx={{
-            '&:hover': {
-              backgroundColor:
-                theme.palette.mode === 'dark'
-                  ? 'rgba(255, 255, 255, 0.08)'
-                  : 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
-        >
-          Logout
-        </MenuItem>
-      </Menu>
-    </HeaderContainer>
+          <MenuItem
+            onClick={() => handleNavigate('/account')}
+            sx={{
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            My Account
+          </MenuItem>
+          <MenuItem
+            onClick={() => handleNavigate('/logout')}
+            sx={{
+              '&:hover': {
+                backgroundColor:
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(255, 255, 255, 0.08)'
+                    : 'rgba(0, 0, 0, 0.04)',
+              },
+            }}
+          >
+            Logout
+          </MenuItem>
+        </Menu>
+      </HeaderContainer>
+      {logsPanel}
+      {notificationsPanel}
+    </>
   )
 }
 

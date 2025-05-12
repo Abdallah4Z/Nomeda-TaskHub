@@ -28,6 +28,8 @@ import Brightness7Icon from '@mui/icons-material/Brightness7'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import {ColorModeContext} from '../Layout/MainLayout'
 import CenteredBox from './Settings/settings'
+import Chatbot from '../Chatbot'
+
 interface NavigationItemsProps {
   open: boolean
   onNavigate: (path: string) => void
@@ -47,6 +49,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   const theme = useTheme()
   const colorMode = React.useContext(ColorModeContext)
   const [projectsExpanded, setProjectsExpanded] = React.useState(true)
+  const [isChatbotVisible, setIsChatbotVisible] = React.useState(false)
 
   const handleProjectsToggle = () => {
     setProjectsExpanded(!projectsExpanded)
@@ -77,7 +80,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Home" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Dashboard */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -101,7 +103,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Dashboard" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Tasks */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -125,7 +126,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="My Tasks" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Chat */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -148,12 +148,11 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </ListItemIcon>
           <ListItemText primary="Chat" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
-      </ListItem>
-
+      </ListItem>{' '}
       {/* Chatbot */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
-          onClick={() => onNavigate('/chatbot')}
+          onClick={() => setIsChatbotVisible(!isChatbotVisible)}
           sx={{
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
@@ -173,7 +172,8 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Chatbot" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
+      {/* Render Chatbot component */}
+      {isChatbotVisible && <Chatbot />}
       {/* Team */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -197,9 +197,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Team" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       <Divider sx={{my: 1}} />
-
       {/* Projects Section Header */}
       {open && (
         <ListItem sx={{px: 2.5, py: 0.5}}>
@@ -215,7 +213,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </IconButton>
         </ListItem>
       )}
-
       {/* Create New Project */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -239,7 +236,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="New Project" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Projects List */}
       <Collapse in={projectsExpanded} timeout="auto" unmountOnExit>
         {sampleProjects.map(project => (
@@ -282,9 +278,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </ListItem>
         ))}
       </Collapse>
-
       <Divider sx={{my: 1}} />
-
       {/* Settings */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -307,7 +301,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Settings" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Theme Toggle */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -318,6 +311,9 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
             px: 2.5,
             '&:hover': {opacity: 0.8},
           }}
+          aria-label={`Switch to ${
+            theme.palette.mode === 'dark' ? 'light' : 'dark'
+          } mode`}
         >
           <ListItemIcon
             sx={{

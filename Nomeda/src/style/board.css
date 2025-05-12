@@ -1,8 +1,8 @@
 /* Board.css */
 .board {
     width: 100;
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 21vw;
+    max-width: 21vw;
     background-color: rgba(128, 128, 128, 0.073);
     border-radius: 8px;
     padding: 8px;
@@ -20,9 +20,13 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    justify-content: center;
+    align-items: center;
   }
   .task-cards > .MuiCard-root {
     transition: all 1s ease;
+    min-width: 19vw;
+
   }
   
   .task-cards > .MuiCard-root:hover {

@@ -1,7 +1,7 @@
 import { Avatar, AvatarGroup, Box, Tooltip } from '@mui/material'
 
 const ListCardAssignees = ({ users }: { users: { name: string, avatar: string }[] }) => (
-  <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: '-1', cursor: 'pointer'}}>
+  <Box sx={{ flex: 1, display: 'flex', alignItems: 'center',  cursor: 'pointer'}}>
     <AvatarGroup max={3}>
       {users.map((user, index) => (
         <Tooltip key={index} title={user.name} placement="top">

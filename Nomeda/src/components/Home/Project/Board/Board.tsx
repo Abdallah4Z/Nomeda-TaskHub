@@ -146,7 +146,7 @@ const Board: React.FC<{label: string}> = ({label}) => {
       onClick: handleOpenAddDialog,
     },
     {
-      label: 'Delete',
+      label: 'clear',
       icon: <Delete sx={{fontSize: 18}} />,
       onClick: handleDeleteBoard,
     },
@@ -219,7 +219,7 @@ const Board: React.FC<{label: string}> = ({label}) => {
     };
 
     return (
-      <Dialog open={isOpen} onClose={onClose}>
+      <Dialog open={isOpen} onClose={onClose} >
         <DialogTitle>{mode === 'add' ? 'Add New Task' : 'Edit Task'}</DialogTitle>
         <DialogContent>
           <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, pt: 2}}>

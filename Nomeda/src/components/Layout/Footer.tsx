@@ -1,116 +1,232 @@
-import React from 'react';
-import { Box, Container, Grid, Link, Typography, Divider, IconButton, useTheme, useMediaQuery } from '@mui/material';
-import { TaskAlt, GitHub, Twitter, HelpOutline, Email, Facebook, Instagram } from '@mui/icons-material';
+import React from 'react'
+import {
+  Box,
+  Container,
+  Grid,
+  Link as MuiLink,
+  Typography,
+  Divider,
+  IconButton,
+  useTheme,
+  useMediaQuery,
+  Button,
+} from '@mui/material'
+import {
+  TaskAlt,
+  GitHub,
+  Twitter,
+  HelpOutline,
+  Email,
+  Facebook,
+  Instagram,
+  KeyboardArrowUp,
+} from '@mui/icons-material'
+import {Link as RouterLink} from 'react-router-dom'
 
 interface FooterLink {
-  title: string;
-  url: string;
-  icon?: React.ReactNode;
+  title: string
+  url: string
+  icon?: React.ReactNode
 }
 
 interface FooterSection {
-  title: string;
-  links: FooterLink[];
+  title: string
+  links: FooterLink[]
 }
 
 const Footer: React.FC = () => {
-  const theme = useTheme();
-  const isDark = theme.palette.mode === 'dark';
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMedium = useMediaQuery(theme.breakpoints.down('md'))
+
+  const scrollToTop = () => {
+    window.scrollTo({top: 0, behavior: 'smooth'})
+  }
 
   const footerSections: FooterSection[] = [
     {
       title: 'Nomeda',
       links: [
-        { title: 'Features', url: '/features', icon: <TaskAlt fontSize="small" /> },
-        { title: 'Pricing', url: '/pricing' },
-        { title: 'Roadmap', url: '/roadmap' },
+        {title: 'Home', url: '/Home', icon: <TaskAlt fontSize="small" />},
+        {title: 'Dashboard', url: '/dashboard'},
+        {title: 'Tasks', url: '/tasks'},
+        {title: 'Team', url: '/team'},
       ],
     },
     {
       title: 'Support',
       links: [
-        { title: 'Help Center', url: '/help', icon: <HelpOutline fontSize="small" /> },
-        { title: 'Contact Us', url: '/contact', icon: <Email fontSize="small" /> },
-        { title: 'API Docs', url: '/docs' },
+        {
+          title: 'Help Center',
+          url: '/help',
+          icon: <HelpOutline fontSize="small" />,
+        },
+        {
+          title: 'Contact Us',
+          url: '/contact',
+          icon: <Email fontSize="small" />,
+        },
+        {title: 'Documentation', url: '/docs'},
       ],
     },
     {
       title: 'Legal',
       links: [
-        { title: 'Privacy Policy', url: '/privacy' },
-        { title: 'Terms of Service', url: '/terms' },
-        { title: 'Security', url: '/security' },
+        {title: 'Privacy Policy', url: '/privacy'},
+        {title: 'Terms of Service', url: '/terms'},
+        {title: 'Security', url: '/security'},
       ],
     },
-  ];
+  ]
 
   const socialLinks = [
-    { icon: <GitHub />, url: 'https://github.com/', name: 'GitHub' },
-    { icon: <Twitter />, url: 'https://twitter.com/', name: 'Twitter' },
-    { icon: <Facebook />, url: 'https://facebook.com/', name: 'Facebook' },
-    { icon: <Instagram />, url: 'https://instagram.com/', name: 'Instagram' },
-  ];
+    {icon: <GitHub />, url: 'https://github.com/', name: 'GitHub'},
+    {icon: <Twitter />, url: 'https://twitter.com/', name: 'Twitter'},
+    {icon: <Facebook />, url: 'https://facebook.com/', name: 'Facebook'},
+    {icon: <Instagram />, url: 'https://instagram.com/', name: 'Instagram'},
+  ]
 
   return (
     <Box
       component="footer"
       sx={{
-        backgroundColor: isDark ? '#121212' : '#f5f5f5',
-        color: isDark ? '#fff' : '#333',
-        py: 6,
+        bgcolor: isDark ? 'background.paper' : '#ffffff',
+        color: isDark ? 'text.primary' : 'text.primary',
+        pt: {xs: 4, md: 6},
+        pb: {xs: 4, md: 6},
         width: '100%',
-        borderTop: `1px solid ${isDark ? '#333' : '#ccc'}`,
+        borderTop: 1,
+        borderColor: isDark ? 'divider' : 'grey.200',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+        },
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          {footerSections.map((section) => (
+        <Grid container spacing={isMobile ? 4 : 8}>
+          {footerSections.map(section => (
             <Grid item xs={12} sm={6} md={4} key={section.title}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  fontWeight: 600,
+                  color: 'primary.main',
+                  mb: 2,
+                }}
+              >
                 {section.title}
               </Typography>
-              <Box component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
-                {section.links.map((link) => (
-                  <li key={link.title} style={{ marginBottom: '0.5rem' }}>
-                    <Link
-                      href={link.url}
-                      color="inherit"
-                      underline="hover"
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        '&:hover': {
-                          color: theme.palette.primary.main,
-                        },
-                      }}
-                    >
-                      {link.icon && React.cloneElement(link.icon as React.ReactElement, { sx: { opacity: 0.7 } })}
-                      {link.title}
-                    </Link>
-                  </li>
+              <Box component="ul" sx={{listStyle: 'none', p: 0, m: 0, display: 'flex', flexDirection: 'column', alignItems: 'start'}}> 
+                {section.links.map(link => (
+                  <Button component="li" key={link.title} sx={{mb: 1.5}}>
+                    {link.url.startsWith('http') ? (
+                      <MuiLink
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        underline="none"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          color: 'text.secondary',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            color: 'primary.main',
+                            transform: 'translateX(4px)',
+                          },
+                        }}
+                      >
+                        {link.icon &&
+                          React.cloneElement(link.icon as React.ReactElement, {
+                            sx: {fontSize: '0.9rem'},
+                          })}
+                        <Typography variant="body2">{link.title}</Typography>
+                      </MuiLink>
+                    ) : (
+                      <RouterLink
+                        to={link.url}
+                        style={{textDecoration: 'none'}}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            color: 'text.secondary',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              color: 'primary.main',
+                              transform: 'translateX(4px)',
+                            },
+                          }}
+                        >
+                          {link.icon &&
+                            React.cloneElement(
+                              link.icon as React.ReactElement,
+                              {
+                                sx: {fontSize: '0.9rem'},
+                              },
+                            )}
+                          <Typography variant="body2">{link.title}</Typography>
+                        </Box>
+                      </RouterLink>
+                    )}
+                  </Button>
                 ))}
               </Box>
             </Grid>
           ))}
         </Grid>
 
-        <Divider sx={{ my: 4, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }} />
+        <Divider sx={{my: 4, opacity: isDark ? 0.1 : 0.2}} />
 
-        <Grid container spacing={2} alignItems="center">
+        <Grid
+          container
+          spacing={2}
+          alignItems="center"
+          direction={isMedium ? 'column' : 'row'}
+        >
           <Grid item xs={12} sm={6}>
-            <Typography variant="h5" sx={{ fontWeight: 700 }}>
-              <TaskAlt sx={{ verticalAlign: 'middle', mr: 1 }} />
-              Nomeda
-            </Typography>
-            <Typography variant="subtitle1" sx={{ opacity: 0.8 }}>
-              Your productive task manager
-            </Typography>
+            <Box
+              sx={{display: 'flex', alignItems: 'center', mb: isMedium ? 2 : 0}}
+            >
+              <TaskAlt
+                sx={{
+                  fontSize: 32,
+                  color: 'primary.main',
+                  mr: 1,
+                }}
+              />
+              <Box>
+                <Typography variant="h5" sx={{fontWeight: 700}}>
+                  Nomeda
+                </Typography>
+                <Typography variant="body2" sx={{color: 'text.secondary'}}>
+                  Your productive task manager
+                </Typography>
+              </Box>
+            </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} sx={{ textAlign: { xs: 'left', sm: 'right' }, mt: { xs: 2, sm: 0 } }}>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{
+              display: 'flex',
+              justifyContent: isMedium ? 'center' : 'flex-end',
+            }}
+          >
+            <Box sx={{display: 'flex', gap: 1}}>
               {socialLinks.map((social, index) => (
                 <IconButton
                   key={index}
@@ -119,9 +235,11 @@ const Footer: React.FC = () => {
                   rel="noopener noreferrer"
                   aria-label={social.name}
                   sx={{
-                    color: 'inherit',
+                    color: 'text.secondary',
+                    transition: 'all 0.2s',
                     '&:hover': {
-                      backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                      color: 'primary.main',
+                      transform: 'translateY(-2px)',
                     },
                   }}
                 >
@@ -132,23 +250,46 @@ const Footer: React.FC = () => {
           </Grid>
         </Grid>
 
-        <Box mt={4}>
+        <Box
+          mt={4}
+          sx={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: isMobile ? 'column' : 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
           <Typography
             variant="body2"
-            align="center"
             sx={{
-              opacity: 0.8,
-              color: isDark ? '#bbb' : '#666',
+              color: 'text.secondary',
               fontSize: isMobile ? '0.75rem' : '0.875rem',
+              textAlign: isMobile ? 'center' : 'left',
             }}
           >
-            {'© '}
-            {new Date().getFullYear()} Nomeda Task Hub. All rights reserved.
+            © {new Date().getFullYear()} Nomeda Task Hub. All rights reserved.
           </Typography>
+
+          <IconButton
+            onClick={scrollToTop}
+            size="small"
+            sx={{
+              position: isMobile ? 'relative' : 'absolute',
+              right: isMobile ? 'auto' : 0,
+              bgcolor: 'action.selected',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
+            }}
+          >
+            <KeyboardArrowUp fontSize="small" />
+          </IconButton>
         </Box>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

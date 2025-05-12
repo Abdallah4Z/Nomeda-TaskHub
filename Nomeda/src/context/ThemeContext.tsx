@@ -87,4 +87,5 @@ export const ThemeProviderWrapper: React.FC<{children: React.ReactNode}> = ({
     </ThemeContext.Provider>
   )
 }
+
 export default ThemeProviderWrapper

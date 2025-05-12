@@ -9,7 +9,7 @@ import Pricing from '../components/landingPage/Pricing';
 import Features from '../components/landingPage/Features';
 import Testimonials from '../components/landingPage/Testimonials';
 import FAQ from '../components/landingPage/FAQ';
-import Footer from '../components/landingPage/Footer';
+import Footer from '../components/LandingPage/Footer';
 
 export default function MarketingPage(props: { disableCustomTheme?: boolean }) {
   return (

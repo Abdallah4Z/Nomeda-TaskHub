@@ -27,6 +27,9 @@ import TeamPage from './pages/TeamPage'
 import TasksPage from './pages/TasksPage'
 import ChatPage from './pages/ChatPage'
 import Chatbot from './components/Chatbot'
+import LandingPage from './pages/LandingPage'
+import { Documentation } from './components/Docs/Documentation'
+import AccountViewPage from './pages/AccountViewPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -36,6 +39,7 @@ function App() {
       <ThemeProviderWrapper> {/* 👈 Wrap entire app */}
         <Router>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/Home" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -46,6 +50,7 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/security" element={<SecurityInfo />} />
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/docs" element={<Documentation />} />
             {/* <Route path="/create-project" element={<ProjectView />} /> */}
             <Route path="/project" element={<ProjectViewPage />} />
             <Route path="/team" element={<TeamPage />} />
@@ -61,7 +66,7 @@ function App() {
               path="/account"
               element={
                 <PrivateRoute isAuthenticated={isAuthenticated}>
-                  <AccountDetailsPage />
+                  <AccountViewPage />
                 </PrivateRoute>
               }
             />
