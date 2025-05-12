@@ -10,6 +10,7 @@ import {
   Typography,
   Collapse,
   IconButton,
+  useTheme,
 } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -22,8 +23,12 @@ import PeopleIcon from '@mui/icons-material/People'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import StarIcon from '@mui/icons-material/Star'
+import Brightness4Icon from '@mui/icons-material/Brightness4'
+import Brightness7Icon from '@mui/icons-material/Brightness7'
+import SmartToyIcon from '@mui/icons-material/SmartToy'
+import {ColorModeContext} from '../Layout/MainLayout'
 import CenteredBox from './Settings/settings'
-import MainLayout from '../Layout/MainLayout'
+import Chatbot from '../Chatbot'
 
 interface NavigationItemsProps {
   open: boolean
@@ -41,15 +46,13 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
   open,
   onNavigate,
 }) => {
+  const theme = useTheme()
+  const colorMode = React.useContext(ColorModeContext)
   const [projectsExpanded, setProjectsExpanded] = React.useState(true)
-  const [workspacesExpanded, setWorkspacesExpanded] = React.useState(false)
+  const [isChatbotVisible, setIsChatbotVisible] = React.useState(false)
 
   const handleProjectsToggle = () => {
     setProjectsExpanded(!projectsExpanded)
-  }
-
-  const handleWorkspacesToggle = () => {
-    setWorkspacesExpanded(!workspacesExpanded)
   }
 
   return (
@@ -77,7 +80,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Home" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Dashboard */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -101,7 +103,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Dashboard" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Tasks */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -125,7 +126,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="My Tasks" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Chat */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -148,8 +148,32 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </ListItemIcon>
           <ListItemText primary="Chat" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
+      </ListItem>{' '}
+      {/* Chatbot */}
+      <ListItem disablePadding sx={{display: 'block'}}>
+        <ListItemButton
+          onClick={() => setIsChatbotVisible(!isChatbotVisible)}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': {opacity: 0.8},
+          }}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <SmartToyIcon />
+          </ListItemIcon>
+          <ListItemText primary="Chatbot" sx={{opacity: open ? 1 : 0}} />
+        </ListItemButton>
       </ListItem>
-
+      {/* Render Chatbot component */}
+      {isChatbotVisible && <Chatbot />}
       {/* Team */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -173,9 +197,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="Team" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       <Divider sx={{my: 1}} />
-
       {/* Projects Section Header */}
       {open && (
         <ListItem sx={{px: 2.5, py: 0.5}}>
@@ -191,7 +213,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </IconButton>
         </ListItem>
       )}
-
       {/* Create New Project */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
@@ -215,7 +236,6 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           <ListItemText primary="New Project" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Projects List */}
       <Collapse in={projectsExpanded} timeout="auto" unmountOnExit>
         {sampleProjects.map(project => (
@@ -258,13 +278,10 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
           </ListItem>
         ))}
       </Collapse>
-
       <Divider sx={{my: 1}} />
-
       {/* Settings */}
       <ListItem disablePadding sx={{display: 'block'}}>
         <ListItemButton
-          onClick={() => onNavigate('/Settings')}
           sx={{
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
@@ -279,25 +296,43 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
               justifyContent: 'center',
             }}
           >
-            <SettingsIcon />
+            <CenteredBox />
           </ListItemIcon>
           <ListItemText primary="Settings" sx={{opacity: open ? 1 : 0}} />
         </ListItemButton>
       </ListItem>
-
       {/* Theme Toggle */}
       <ListItem disablePadding sx={{display: 'block'}}>
-        <Box
+        <ListItemButton
+          onClick={colorMode.toggleColorMode}
           sx={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            mt: 2,
-            mx: 2,
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+            '&:hover': {opacity: 0.8},
           }}
+          aria-label={`Switch to ${
+            theme.palette.mode === 'dark' ? 'light' : 'dark'
+          } mode`}
         >
-          <CenteredBox />
-        </Box>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            {theme.palette.mode === 'dark' ? (
+              <Brightness7Icon />
+            ) : (
+              <Brightness4Icon />
+            )}
+          </ListItemIcon>
+          <ListItemText
+            primary={`${theme.palette.mode === 'dark' ? 'Light' : 'Dark'} Mode`}
+            sx={{opacity: open ? 1 : 0}}
+          />
+        </ListItemButton>
       </ListItem>
     </List>
   )

@@ -12,6 +12,9 @@ const Chatbot: React.FC = () => {
     imagePreview,
     chatDisplayRef,
     fileInputRef,
+    voiceEnabled,
+    isListening,
+    interimTranscript,
     toggleChat,
     setInputText,
     handleImageChange,
@@ -19,12 +22,14 @@ const Chatbot: React.FC = () => {
     handleKeyPress,
     setImageFile,
     setImagePreview,
+    toggleVoice,
+    startListening,
+    stopListening,
   } = useChatbot()
 
   return (
     <>
       <ChatToggleButton toggleChat={toggleChat} />
-
       <ChatContainer
         isOpen={isOpen}
         toggleChat={toggleChat}
@@ -39,6 +44,12 @@ const Chatbot: React.FC = () => {
         setImageFile={setImageFile}
         setImagePreview={setImagePreview}
         handleImageChange={handleImageChange}
+        voiceEnabled={voiceEnabled}
+        isListening={isListening}
+        toggleVoice={toggleVoice}
+        startListening={startListening}
+        stopListening={stopListening}
+        interimTranscript={interimTranscript || ''}
       />
     </>
   )

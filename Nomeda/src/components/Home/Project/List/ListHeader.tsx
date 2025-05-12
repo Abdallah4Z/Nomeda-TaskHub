@@ -10,7 +10,6 @@ const ListHeader: React.FC = () => {
           fontWeight: 600,
           paddingY: 1,
           paddingX: 2,
-          backgroundColor: '#f9f9f9',
           borderRadius: 1,
         }}
       >

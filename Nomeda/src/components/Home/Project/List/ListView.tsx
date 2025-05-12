@@ -13,7 +13,8 @@ const ListView: React.FC = () => {
     <div
       style={{
         overflowY: 'auto',
-        margin:'auto'
+        margin:'auto',
+        width: '100%',
       }}
     >
       <ListHeader />

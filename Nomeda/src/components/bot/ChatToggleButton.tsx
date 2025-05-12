@@ -15,6 +15,6 @@ function ChatToggleButton({ toggleChat }: ChatToggleButtonProps) {
       <ChatIcon fontSize="large" />
     </Button>
   );
-}
+};
 
 export default ChatToggleButton;
