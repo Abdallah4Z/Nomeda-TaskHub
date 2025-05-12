@@ -6,3 +6,4 @@ Nomeda/.env
 **/.env
 backend/node_modules
 Nomeda/node_modules
+backend/.env
