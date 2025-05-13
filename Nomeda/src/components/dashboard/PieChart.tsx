@@ -1,6 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Card, CardContent, Typography } from "@mui/material";
-import '../../style/dashboard.css'; 
 
 interface TaskPieChartProps {
   completed: number;

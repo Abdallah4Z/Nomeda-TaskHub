@@ -2,13 +2,11 @@ import { styled, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 
 // Constants
-const drawerWidth = 200;
+const drawerWidth = '200px';
 
 // Opened drawer styles
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
-  backgroundColor: '#212121',
-  color: '#fff',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -18,8 +16,6 @@ const openedMixin = (theme: Theme): CSSObject => ({
 
 // Closed drawer styles
 const closedMixin = (theme: Theme): CSSObject => ({
-  backgroundColor: '#212121',
-  color: '#fff',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom'
-import {ErrorLayout} from '../../components/ErrorLayout'
+import {ErrorLayout} from '../../components/Layout/ErrorLayout'
 
 export const UnauthorizedPage = () => {
   return (

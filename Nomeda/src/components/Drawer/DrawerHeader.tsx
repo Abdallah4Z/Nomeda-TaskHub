@@ -11,7 +11,7 @@ const StyledDrawerHeader = styled('div', {
 })<{open?: boolean}>(({ theme, open }) => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: open ? 'flex-start' : 'center',
+  justifyContent: 'flex-start',
   width: '100%',
   padding: 0,
   margin: 0,
@@ -31,7 +31,6 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({ open, handleToggle }) => {
       <IconButton
         onClick={handleToggle}
         sx={{
-          color: '#fff',
           '&:focus': {
             outline: 'none',
             boxShadow: 'none',

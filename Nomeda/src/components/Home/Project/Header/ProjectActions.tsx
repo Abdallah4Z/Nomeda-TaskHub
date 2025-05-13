@@ -1,13 +1,28 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import UserAvatars from '../../../Common/UserAvatars';
 
-const ProjectActions = ({ users }) => (
+interface ProjectActionsProps {
+  users: any[];
+  onAddTask?: () => void;
+}
+
+const ProjectActions: React.FC<ProjectActionsProps> = ({ users, onAddTask }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px'}}>
     <UserAvatars users={users} size={25} />
     <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'grey', opacity: 0.5, fontSize: '20px' }}>
       |
     </Typography>
+    <Button 
+      variant="contained" 
+      size="small" 
+      startIcon={<AddIcon />} 
+      onClick={onAddTask}
+      sx={{ mr: 1 }}
+    >
+      Add Task
+    </Button>
     <Button variant="outlined" size="small">
       Share
     </Button>

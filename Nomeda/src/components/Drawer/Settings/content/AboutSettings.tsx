@@ -37,14 +37,14 @@ const [toggleStates, setToggleStates] = useState({
   };
   return (
     <div>
-      <Typography variant="h6" sx={{ fontSize:"3vh",fontWeight: 'bold', color: 'white', paddingLeft: 2,marginBottom: 2 }}>
+      <Typography variant="h6" sx={{ fontSize:"3vh",fontWeight: 'bold',paddingLeft: 2,marginBottom: 2 }}>
         General Information
       </Typography>
       
       <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
 
       <List>
-        <Typography sx={{ fontSize:"3vh",fontWeight: 'bold', color: 'white', paddingLeft: 2,marginBottom: 2 }}
+        <Typography sx={{ fontSize:"3vh",fontWeight: 'bold', paddingLeft: 2,marginBottom: 2 }}
         >        Nomeda Task Manager
           </Typography>
         <Typography
@@ -61,7 +61,7 @@ const [toggleStates, setToggleStates] = useState({
         utilizing advanced AI Features to enhance your productivity.
         </Typography>
       <ListItem button>
-          <ListItemText primary="Version" sx={{ color: 'white'}} />
+          <ListItemText primary="Version"  />
           <DropDown
             themeSetting={themeSetting}
             handleThemeChange={handleThemeChange}
@@ -71,7 +71,6 @@ const [toggleStates, setToggleStates] = useState({
         <Typography
           variant="body2"
           sx={{
-            color: 'gray',
             marginBottom: 2,
             marginTop: -2,
             paddingLeft: 2,
@@ -82,7 +81,6 @@ const [toggleStates, setToggleStates] = useState({
         
       
         <Typography variant="h6" sx={{ fontWeight: 'bold',
-         color: 'white', 
         paddingLeft: 2 ,marginTop: 6
         ,marginBottom: 2
         ,fontSize:"3vh"}}>
@@ -104,7 +102,6 @@ const [toggleStates, setToggleStates] = useState({
         <Typography
           variant="body2"
           sx={{
-            color: 'gray',
             marginBottom: 2,
             marginTop: -2,
             paddingLeft: 2,
@@ -113,7 +110,7 @@ const [toggleStates, setToggleStates] = useState({
           This will make your calendar start on Monday instead of Sunday.
         </Typography>
         <ListItem button>
-          <ListItemText primary="TimeZone" sx={{ color: 'white' }} />
+          <ListItemText primary="TimeZone"  />
           <ListItemSecondaryAction>
             <IOSSwitchComponent
               edge="end"
@@ -125,7 +122,6 @@ const [toggleStates, setToggleStates] = useState({
         <Typography
           variant="body2"
           sx={{
-            color: 'gray',
             marginBottom: 2,
             marginTop: -2,
             paddingLeft: 2,
@@ -133,7 +129,7 @@ const [toggleStates, setToggleStates] = useState({
         >
           Reminders, notifications and emails are delivered based on your time zone
         </Typography>
-        <Divider variant="middle" sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
+        <Divider variant="middle"  />
 
         {/* Appearance Dropdown */}
         

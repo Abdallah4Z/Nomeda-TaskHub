@@ -1,70 +1,93 @@
-import React from 'react';
-import { Box, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Stack,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import TaskDialog from './TaskDialog';
+import useTasks from '../../../../hooks/useTasks';
 
-const FilterControls = ({ 
-  dueDateFilter, 
-  assigneeFilter, 
-  priorityFilter, 
-  setDueDateFilter, 
-  setAssigneeFilter, 
-  setPriorityFilter 
-}) => {
-  const handleFilterChange = (event, setState) => {
-    setState(event.target.value);
+
+interface FilterControlsProps {
+  dueDateFilter: string;
+  assigneeFilter: string;
+  priorityFilter: string;
+  setDueDateFilter: (value: string) => void;
+  setAssigneeFilter: (value: string) => void;
+  setPriorityFilter: (value: string) => void;
+  onSave?: () => void;
+}
+
+const FilterControls: React.FC<FilterControlsProps> = ({
+  dueDateFilter,
+  assigneeFilter,
+  priorityFilter,
+  setDueDateFilter,
+  setAssigneeFilter,
+  setPriorityFilter,
+  onSave = () => console.log('Save changes'),
+}) => {  const [openDialog, setOpenDialog] = useState(false);
+  const { tasks, addTask, refreshTasks } = useTasks();
+
+  const handleFilterChange = (setter: (value: string) => void) => (event: React.ChangeEvent<{ value: unknown }>) => {
+    setter(event.target.value as string);
+  };
+  const handleAddTask = async (task: {
+    title: string;
+    description?: string;
+    priority: 'High' | 'Normal' | 'Low';
+    assignedAt?: string;
+    users: Array<{ name: string; avatar: string; }>
+  }) => {
+    try {
+      if (!task.title) {
+        throw new Error('Task title is required');
+      }
+      
+      await addTask({
+        title: task.title,
+        description: task.description || '',
+        status: 'todo',
+        priority: task.priority || 'Normal',
+        dueDate: task.assignedAt || null,
+        assignees: task.users ? task.users.map(user => user.name) : [],
+        labels: []
+      });
+      refreshTasks();
+      setOpenDialog(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', pb: 2, pt:2 }}>
-      <FormControl size="small">
-        <InputLabel>Due Date</InputLabel>
-        <Select
-          value={dueDateFilter}
-          onChange={(event) => handleFilterChange(event, setDueDateFilter)}
-          label="Due Date"
-          sx={{ minWidth: '120px' }}
+    <Box sx={{ pb: 2, pt: 2 }}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Box sx={{ flexGrow: 1 }} />        <Button
+          variant="contained"
+          onClick={onSave}
         >
-          <MenuItem value="all">All Dates</MenuItem>
-          <MenuItem value="upcoming">Upcoming</MenuItem>
-          <MenuItem value="overdue">Overdue</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl size="small">
-        <InputLabel>Assignee</InputLabel>
-        <Select
-          value={assigneeFilter}
-          onChange={(event) => handleFilterChange(event, setAssigneeFilter)}
-          label="Assignee"
-          sx={{ minWidth: '120px' }}
+          Save Changes
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setOpenDialog(true)}
         >
-          <MenuItem value="all">All</MenuItem>
-          <MenuItem value="john">John</MenuItem>
-          <MenuItem value="jane">Jane</MenuItem>
-        </Select>
-      </FormControl>
+          Add New
+        </Button>
+      </Stack>
 
-      <FormControl size="small">
-        <InputLabel>Priority</InputLabel>
-        <Select
-          value={priorityFilter}
-          onChange={(event) => handleFilterChange(event, setPriorityFilter)}
-          label="Priority"
-          sx={{ minWidth: '120px' }}
-        >
-          <MenuItem value="all">All</MenuItem>
-          <MenuItem value="high">High</MenuItem>
-          <MenuItem value="normal">Normal</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Button variant="outlined" size="small">
-        Advanced Filters
-      </Button>
-
-      <Button variant="contained" color="primary" sx={{ marginLeft: 'auto' }}>
-        <AddIcon fontSize="small" /> Add New
-      </Button>
+      <TaskDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onAddTask={handleAddTask}
+      />
     </Box>
   );
 };

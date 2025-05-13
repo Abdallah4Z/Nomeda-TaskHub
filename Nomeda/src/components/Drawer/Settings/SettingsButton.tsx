@@ -25,12 +25,11 @@ const SettingsButton: React.FC<SettingsButtonProps> = ({ onOpen }) => {
             boxShadow: 'none',
           },
           '&:hover': {
-            color: '#fff',
             backgroundColor: 'transparent',
           },
         }}
       >
-        <SettingsIcon sx={{ color: '#fff' }} />
+        <SettingsIcon  />
       </IconButton>
     </Box>
   );

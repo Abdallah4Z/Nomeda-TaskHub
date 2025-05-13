@@ -1,51 +1,61 @@
 import React from 'react'
-import {Box, Typography} from '@mui/material'
+import { Box } from '@mui/material'
 import useTasks from '../../../../hooks/useTasks'
-import Board from './Board' // adjust path based on your folder structure
+import Board from './Board'
 import LoadingSpinner from '../../../Common/LoadingSpinner'
 
-interface BoardData {
-  id: string
-  title: string
-  // Add more fields if your Board needs them
-}
-
 interface BoardViewProps {
-  boards: BoardData[]
+  projectId?: string
 }
 
-const BoardView: React.FC<BoardViewProps> = () => {
-  const {loading} = useTasks() // Use the custom hook for tasks
+const BoardView: React.FC<BoardViewProps> = ({ projectId }) => {
+  const { tasks, loading } = useTasks(projectId)
 
   if (loading) {
-    return <LoadingSpinner color='danger'/>
+    return <LoadingSpinner color="danger" />
+  }
+
+  if (!projectId) {
+    return <div>No project selected</div>
   }
 
   const boards = [
-    {id: '1', title: 'To Do'},
-    {id: '2', title: 'In Progress'},
-    {id: '3', title: 'Done'},
-    {id: '4', title: 'Blocked'},
-    {id: '1', title: 'To Do'},
-    {id: '2', title: 'In Progress'},
-    {id: '3', title: 'Done'},
-    {id: '4', title: 'Blocked'},
+    {
+      id: 'todo',
+      title: 'To Do',
+      tasks: tasks.filter((task) => task.status === 'todo'),
+    },
+    {
+      id: 'in-progress',
+      title: 'In Progress',
+      tasks: tasks.filter((task) => task.status === 'in-progress'),
+    },
+    {
+      id: 'review',
+      title: 'Review',
+      tasks: tasks.filter((task) => task.status === 'review'),
+    },
+    {
+      id: 'done',
+      title: 'Done',
+      tasks: tasks.filter((task) => task.status === 'done'),
+    },
   ]
+
   return (
     <Box
       sx={{
         display: 'flex',
-        flexWrap: 'wrap', // allows wrapping
-        gap: 2, // spacing between boards
-        p: 2,
-        pl: 2, // padding around the container
-        overflowX: 'auto', // optional: scrollable horizontally on small screens
+        flexWrap: 'wrap',
+        gap: 2,
+        padding: 2,
+        overflowX: 'auto',
         width: '100%',
       }}
     >
-      {boards.map(board => (
+      {boards.map((board) => (
         <Box key={board.id}>
-          <Board label={board.title} />
+          <Board label={board.title} tasks={board.tasks} />
         </Box>
       ))}
     </Box>

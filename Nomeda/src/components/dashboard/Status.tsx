@@ -4,7 +4,6 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
-import '../../style/dashboard.css'; 
 
 interface StatusProps {
   totalTasks?: number;

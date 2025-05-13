@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { StyledDrawer } from './StyledDrawer';
 import DrawerHeader from './DrawerHeader';
@@ -8,6 +8,7 @@ import NavigationItems from './NavigationItems';
 const NavigationDrawer: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleToggle = () => {
     setOpen(prevOpen => !prevOpen);
@@ -18,7 +19,13 @@ const NavigationDrawer: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        height: '100vh',
+      }}
+    >
       <StyledDrawer variant="permanent" open={open}>
         <DrawerHeader open={open} handleToggle={handleToggle} />
         <NavigationItems 

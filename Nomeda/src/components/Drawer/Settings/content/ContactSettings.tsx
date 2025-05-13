@@ -23,13 +23,16 @@ const ContactSettings: React.FC = () => {
 
   return (
     <div>
-      <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white' }}>
-      Work in Progress
+      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+      Contact
       </Typography>
       
       
       
-      <Divider sx={{ marginY: 2, borderColor: 'grey', borderWidth: 1 }} />
+      <Divider sx={{ marginY: 2, borderWidth: 1 }} />
+      <Typography  sx={{ fontWeight: 'bold' }}>
+      Work in Progress
+      </Typography>
     </div>
   );
 };
