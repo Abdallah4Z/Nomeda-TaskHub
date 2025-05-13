@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-import { AccountDetailsPage } from './pages/account/AccountDetailsPage'
 import { PrivateRoute } from './components/Auth/PrivateRoute'
 import { useAuth } from './hooks/useAuth'
 import { NotFoundPage } from './pages/errors/NotFoundPage'
@@ -20,6 +19,10 @@ import { SecurityInfo } from './components/Docs/legal/SecurityInfo'
 import { TermsOfService } from './components/Docs/legal/TermsOfService'
 import { ThemeProviderWrapper } from './context/ThemeContext'
 import ProjectViewPage from './pages/ProjectViewPage'
+import AccountViewPage from './pages/AccountViewPage'
+import LandingPage from './pages/LandingPage'
+import TasksPage from './pages/TasksPage'
+import TeamPage from './pages/TeamPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -29,25 +32,31 @@ function App() {
       <ThemeProviderWrapper> {/* 👈 Wrap entire app */}
         <Router>
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/home" element={<Homepage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/help" element={<HelpCenter />} />            <Route path="/cookies" element={<CookieConsent />} />
+            <Route path="/help" element={<HelpCenter />} />            
+            <Route path="/cookies" element={<CookieConsent />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/security" element={<SecurityInfo />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/create-project" element={<ProjectViewPage />} />
             <Route path="/project" element={<ProjectViewPage />} />
             <Route path="/projects/:id" element={<ProjectViewPage />} />
+            <Route path="/tasks" element={<TasksPage />} />
+            <Route path="/team" element={<TeamPage />} />
+
+
 
 
             <Route
               path="/account"
               element={
                 <PrivateRoute isAuthenticated={isAuthenticated}>
-                  <AccountDetailsPage />
+                  <AccountViewPage />
                 </PrivateRoute>
               }
             />

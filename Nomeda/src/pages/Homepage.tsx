@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import dashboardImage from '../assets/dashboard.png';
 import tasksImage from '../assets/tasks.png';
 import chatbotImage from '../assets/chatbot.png';
+import MainLayout from '../components/Layout/MainLayout';
 
 export default function Homepage() {
   const theme = useTheme();
@@ -39,6 +40,7 @@ export default function Homepage() {
   ];
 
   return (
+    <MainLayout>
     <Box sx={{ flexGrow: 1, minHeight: '100vh', bgcolor: 'background.default' }}>
       {/* Hero Section */}
       <Box
@@ -162,5 +164,6 @@ export default function Homepage() {
         </Paper>
       </Container>
     </Box>
+    </MainLayout>
   );
 }
