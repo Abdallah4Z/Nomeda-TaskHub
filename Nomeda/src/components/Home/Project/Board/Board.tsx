@@ -23,6 +23,7 @@ import {
   Snackbar,
   Alert,
   CircularProgress,
+  Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -52,10 +53,10 @@ interface Task {
 const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tasks = [] }) => {  const { id: routeProjectId } = useParams<{ id: string }>();
   const projectId = routeProjectId || (window.location.pathname.split('/projects/')[1] || '').split('/')[0];
   
-  const { addTask, refreshTasks } = useTasks(projectId);
-  const [localTasks, setLocalTasks] = useState<Task[]>([]);
-  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
+  const { addTask, updateTask, refreshTasks } = useTasks(projectId);
+  const [localTasks, setLocalTasks] = useState<Task[]>([]);  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const [isEditTaskDialogOpen, setIsEditTaskDialogOpen] = useState(false);
+  const [isViewTaskDialogOpen, setIsViewTaskDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);  const [showFeedback, setShowFeedback] = useState(false);
@@ -135,11 +136,67 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
     });
     setIsEditTaskDialogOpen(true);
   };
-
   const handleCloseEditDialog = () => {
     setIsEditTaskDialogOpen(false);
     setSelectedTask(null);
-  };  // All task handling logic has been moved to the TaskDialog component's handleSubmit function  // Handler for deleting all tasks in the current board
+  };
+  
+  const handleOpenViewDialog = (task: Task) => {
+    setSelectedTask(task);
+    setIsViewTaskDialogOpen(true);
+  };
+  const handleCloseViewDialog = () => {
+    setIsViewTaskDialogOpen(false);
+    setSelectedTask(null);
+  };
+  
+  const handleUpdateTaskStatus = async (taskId: string, newStatus: 'todo' | 'in-progress' | 'review' | 'done') => {
+    if (!selectedTask) return;
+    
+    setIsBoardLoading(true);
+    setError(null);
+    
+    try {
+      // Prepare task data for API update
+      const taskData = {
+        status: newStatus,
+      };
+      
+      // Call the API to update the task
+      const success = await updateTask(taskId, taskData);
+      
+      if (success) {
+        // For immediate UI update without waiting for refresh
+        setLocalTasks(prevTasks => 
+          prevTasks.filter(task => task.id !== taskId)
+        );
+        
+        setFeedback({
+          message: `Task moved to ${newStatus === 'todo' ? 'To Do' : 
+                    newStatus === 'in-progress' ? 'In Progress' : 
+                    newStatus === 'review' ? 'Review' : 'Done'} board`,
+          severity: 'success'
+        });
+        setShowFeedback(true);
+        
+        // Refresh tasks from backend to ensure we have the latest data
+        refreshTasks();
+        handleCloseViewDialog(); // Close the dialog
+      } else {
+        throw new Error('Failed to update task status');
+      }
+    } catch (err) {
+      console.error('Error updating task status:', err);
+      setError('Failed to update task status. Please try again.');
+      setFeedback({
+        message: 'Failed to update task status',
+        severity: 'error'
+      });
+      setShowFeedback(true);
+    } finally {
+      setIsBoardLoading(false);
+    }
+  };// All task handling logic has been moved to the TaskDialog component's handleSubmit function  // Handler for deleting all tasks in the current board
   const handleDeleteBoard = async () => {
     // Show confirmation dialog before proceeding
     const confirmDelete = window.confirm(`Are you sure you want to delete all tasks in the "${label}" board?`);
@@ -355,34 +412,55 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
         // For edit mode, handle it directly
         if (selectedTask) {
           setIsSubmitting(true);
+          setIsBoardLoading(true);
           setError(null);
           
           try {
-            // Apply the form changes directly
-            const assigneesData = formData.assignees
-              .map(name => availableAssignees.find(a => a.name === name))
-              .filter(Boolean);
-            
-            const updatedTask: Task = {
-              ...selectedTask,
+            // Prepare task data for API update
+            const taskData = {
               title: formData.title,
-              users: assigneesData as { name: string; avatar: string }[],
+              description: selectedTask.description || '',
+              status: formData.status,
               priority: formData.priority,
-              deadline: formData.deadline || undefined,
-              assignees: formData.assignees,
-              status: formData.status
+              dueDate: formData.deadline || undefined,
+              assignees: formData.assignees || []
             };
             
-            setLocalTasks(prevTasks => 
-              prevTasks.map(task => task.id === selectedTask.id ? updatedTask : task)
-            );
+            // Call the API to update the task
+            const success = await updateTask(selectedTask.id, taskData);
             
-            setFeedback({
-              message: 'Task updated successfully!',
-              severity: 'success'
-            });
-            setShowFeedback(true);
-            onClose(); // Close the dialog
+            if (success) {
+              // For immediate UI update without waiting for refresh
+              const assigneesData = formData.assignees
+                .map(name => availableAssignees.find(a => a.name === name))
+                .filter(Boolean);
+              
+              const updatedTask: Task = {
+                ...selectedTask,
+                title: formData.title,
+                users: assigneesData as { name: string; avatar: string }[],
+                priority: formData.priority,
+                deadline: formData.deadline || undefined,
+                assignees: formData.assignees,
+                status: formData.status
+              };
+              
+              setLocalTasks(prevTasks => 
+                prevTasks.map(task => task.id === selectedTask.id ? updatedTask : task)
+              );
+              
+              setFeedback({
+                message: 'Task updated successfully!',
+                severity: 'success'
+              });
+              setShowFeedback(true);
+              
+              // Refresh tasks from backend to ensure we have the latest data
+              refreshTasks();
+              onClose(); // Close the dialog
+            } else {
+              throw new Error('Failed to update task');
+            }
           } catch (err) {
             console.error('Error updating task:', err);
             setError('Failed to update task. Please try again.');
@@ -393,6 +471,7 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
             setShowFeedback(true);
           } finally {
             setIsSubmitting(false);
+            setIsBoardLoading(false);
           }
         }
       }    };
@@ -553,14 +632,10 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
                 label: 'Delete',
                 icon: <Delete sx={{ fontSize: 18 }} />,
                 onClick: () => handleDeleteTask(task.id),
-              },
-              {
+              },              {
                 label: 'View',
                 icon: <LabelImportant sx={{ fontSize: 18 }} />,
-                onClick: () => {
-                  // Show task details in a dialog or modal
-                  console.log('View Task', task);
-                },
+                onClick: () => handleOpenViewDialog(task),
               },
             ]}
           />
@@ -572,14 +647,154 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
         isOpen={isAddTaskDialogOpen}
         onClose={handleCloseAddDialog}
         mode="add"
-      />
-
-      {/* Edit Task Dialog */}
+      />      {/* Edit Task Dialog */}
       <TaskDialog
         isOpen={isEditTaskDialogOpen}
         onClose={handleCloseEditDialog}
         mode="edit"
       />
+      
+      {/* View Task Dialog */}
+      <Dialog open={isViewTaskDialogOpen} onClose={handleCloseViewDialog} maxWidth="sm" fullWidth>
+        {selectedTask && (
+          <>
+            <DialogTitle>Task Details</DialogTitle>
+            <DialogContent>
+              <Box sx={{ my: 2 }}>
+                <Typography variant="h5" gutterBottom>{selectedTask.title}</Typography>
+                
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, mb: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '100px' }}>
+                    Priority:
+                  </Typography>
+                  <Chip 
+                    label={selectedTask.priority} 
+                    color={
+                      selectedTask.priority === 'High' ? 'error' : 
+                      selectedTask.priority === 'Low' ? 'success' : 'warning'
+                    }
+                    size="small"
+                  />
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '100px' }}>
+                    Status:
+                  </Typography>
+                  <Chip 
+                    label={
+                      selectedTask.status === 'todo' ? 'To Do' : 
+                      selectedTask.status === 'in-progress' ? 'In Progress' : 
+                      selectedTask.status === 'review' ? 'Review' : 
+                      selectedTask.status === 'done' ? 'Done' : 'To Do'
+                    } 
+                    color={getColorByLabel(
+                      selectedTask.status === 'todo' ? 'To Do' : 
+                      selectedTask.status === 'in-progress' ? 'In Progress' : 
+                      selectedTask.status === 'review' ? 'Review' : 
+                      selectedTask.status === 'done' ? 'Done' : 'To Do'
+                    )}
+                    size="small"
+                  />
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '100px' }}>
+                    Deadline:
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedTask.deadline ? new Date(selectedTask.deadline).toLocaleDateString() : 'No deadline set'}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', minWidth: '100px' }}>
+                    Assigned:
+                  </Typography>
+                  <Typography variant="body1">{selectedTask.assignedAt}</Typography>
+                </Box>
+
+                <Box sx={{ my: 1 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    Assignees:
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {selectedTask.users.map((user, index) => (
+                      <Box key={index} sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                        <Avatar src={user.avatar} sx={{ width: 24, height: 24, mr: 1 }} />
+                        <Typography variant="body2">{user.name}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1.5 }}>
+                    Change Status:
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Button 
+                      variant={selectedTask.status === 'todo' ? 'contained' : 'outlined'} 
+                      color="warning"
+                      size="small"
+                      onClick={() => handleUpdateTaskStatus(selectedTask.id, 'todo')}
+                      disabled={selectedTask.status === 'todo'}
+                    >
+                      To Do
+                    </Button>
+                    <Button 
+                      variant={selectedTask.status === 'in-progress' ? 'contained' : 'outlined'} 
+                      color="info"
+                      size="small"
+                      onClick={() => handleUpdateTaskStatus(selectedTask.id, 'in-progress')}
+                      disabled={selectedTask.status === 'in-progress'}
+                    >
+                      In Progress
+                    </Button>
+                    <Button 
+                      variant={selectedTask.status === 'review' ? 'contained' : 'outlined'} 
+                      color="secondary"
+                      size="small"
+                      onClick={() => handleUpdateTaskStatus(selectedTask.id, 'review')}
+                      disabled={selectedTask.status === 'review'}
+                    >
+                      Review
+                    </Button>
+                    <Button 
+                      variant={selectedTask.status === 'done' ? 'contained' : 'outlined'} 
+                      color="success"
+                      size="small"
+                      onClick={() => handleUpdateTaskStatus(selectedTask.id, 'done')}
+                      disabled={selectedTask.status === 'done'}
+                    >
+                      Done
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button 
+                onClick={() => handleOpenEditDialog(selectedTask)} 
+                startIcon={<Edit />}
+              >
+                Edit
+              </Button>
+              <Button 
+                onClick={() => {
+                  handleCloseViewDialog();
+                  handleDeleteTask(selectedTask.id);
+                }} 
+                color="error"
+                startIcon={<Delete />}
+              >
+                Delete
+              </Button>
+              <Button onClick={handleCloseViewDialog}>Close</Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
       
       {/* Feedback Snackbar */}
       <Snackbar
