@@ -9,10 +9,10 @@ import {
   Divider,
 } from '@mui/material'
 import UserAvatars from '../Common/UserAvatars'
-import PriorityLabel from './PriorityLabel'
-import SettingsMenu from '../Common/SettingsMenu' // your existing component
+import SettingsMenu from '../Common/SettingsMenu'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import LabelImportantIcon from '@mui/icons-material/LabelImportant'
+
 interface User {
   name: string
   avatar: string
@@ -58,9 +58,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
           <Box display="flex" justifyContent="flex-start">
             <UserAvatars users={users} size={25} />
           </Box>
-          {/* Row: Assigned */}
+          {/* Row: Due Date */}
           <Stack direction="row" alignItems="center">
-            <Tooltip title="Assigned">
+            <Tooltip title="Due Date">
               <AssignmentIcon sx={{mr: 1, fontSize: 14, color: 'grey.600'}} />
             </Tooltip>
             <Typography variant="body2" color="text.secondary" fontSize={13}>
@@ -77,18 +77,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   color:
                     priority === 'High'
                       ? 'error.main'
-                      : priority === 'Normal'
-                      ? 'warning.main'
-                      : 'success.main',
+                      : priority === 'Low'
+                      ? 'success.main'
+                      : 'warning.main',
                 }}
               />
             </Tooltip>
-            <PriorityLabel level={priority} />
+            <Typography variant="body2" color="text.secondary" fontSize={13}>
+              {priority}
+            </Typography>
           </Stack>
         </Stack>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export default TaskCard
+export default TaskCard;

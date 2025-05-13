@@ -20,7 +20,7 @@ const MonthViewGrid: React.FC<MonthViewGridProps> = ({
       {/* Day Names */}
       <Grid container spacing={1} sx={{ mb: 1 }}>
         {DAY_NAMES.map((day, index) => (
-          <Grid item key={index} xs={12/7}>
+          <Grid item key={index} xs={12/7} width={190}>
             <Typography 
               align="center" 
               variant="subtitle2" 
@@ -28,7 +28,7 @@ const MonthViewGrid: React.FC<MonthViewGridProps> = ({
                 color: 'text.main',
                 fontWeight: 500
               }}
-              width={170}
+              width={'20w'}
             >
               {day}
             </Typography>
@@ -39,11 +39,11 @@ const MonthViewGrid: React.FC<MonthViewGridProps> = ({
       {/* Calendar Days */}
       <Grid container spacing={1}>
         {calendarDays.map((day, index) => (
-          <Grid item key={index} xs={12/7}>
-            <CalendarDayCell 
-              day={day} 
-              priorityColors={priorityColors} 
-              statusColors={statusColors} 
+          <Grid item key={index} width={190}>
+            <CalendarDayCell
+              day={day}
+              priorityColors={priorityColors}
+              statusColors={statusColors}
             />
           </Grid>
         ))}

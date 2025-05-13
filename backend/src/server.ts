@@ -6,6 +6,8 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
+import projectRoutes from './routes/projectRoutes';
+import fileRoutes from './routes/fileRoutes';
 
 // Log environment variables for debugging
 console.log('Environment variables check:');
@@ -25,6 +27,8 @@ app.use(express.json());
 
 // Mount routes
 app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api', fileRoutes);
 
 // Health check route
 app.get('/', (req, res) => {

@@ -16,10 +16,11 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
   const authHeader = req.headers.authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ 
+    res.status(401).json({ 
       success: false, 
       message: 'Authentication invalid' 
     });
+    return;
   }
   
   const token = authHeader.split(' ')[1];
@@ -28,16 +29,17 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
     // Using explicit typing for verify method
     const secret = String(JWT_SECRET);
     const decoded = jwt.verify(token, secret) as JwtPayload;
-    
+
     // Add user to request object
     (req as any).user = decoded;
     
     next();
   } catch (error) {
     console.error('Auth error:', error);
-    return res.status(401).json({ 
+    res.status(401).json({ 
       success: false, 
       message: 'Authentication invalid' 
     });
+    return;
   }
 };

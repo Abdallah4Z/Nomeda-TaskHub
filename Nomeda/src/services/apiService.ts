@@ -1,111 +1,175 @@
+import axios from 'axios';
 
+// API base URL
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-import { User } from '../hooks/useAuth';
+// Interface for user registration data
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
 
-// Authentication API endpoints
-export const authAPI = {
-  login: async ({ email, password }: { email: string; password: string }) => {
+// Interface for user login data
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+// Interface for social authentication data
+interface SocialAuthData {
+  token: string;
+  provider: 'google' | 'github';
+}
+
+// Authentication endpoints
+export const authAPI = {  // Register a new user
+  register: async (userData: RegisterData) => {
     try {
-      // Simulating API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, userData);
+
+      const data = response.data;
+
+      // Save token to local storage
+      if (data.token) {
         localStorage.setItem('token', data.token);
-        return { success: true, user: data.user };
-      } else {
-        return { success: false, message: data.message };
       }
+      
+      return data;
     } catch (error) {
-      console.error('Login API error:', error);
-      return { success: false, message: 'Network error' };
+      // Axios automatically throws errors for non-2xx responses
+      console.error('Registration error:', error);
+      
+      // Format the error for consistency with our error handling
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        const customError = new Error(data.message) as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        customError.response = { data };
+        throw customError;
+      }
+      
+      throw error;
+    }
+  },  // Login a user
+  login: async (loginData: LoginData) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, loginData);
+      // Success! The data is directly available in response.data
+      const data = response.data;
+      
+      // Save token to local storage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      
+      return data;
+    } catch (error) {
+      // Axios automatically throws errors for non-2xx responses
+      console.error('Login error:', error);
+      
+      // Format the error for consistency with our error handling
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        const customError = new Error(data.message || 'Login failed') as Error & {
+          response?: { data: { message: string; errorType?: string; success: boolean } }
+        };
+        customError.response = { data };
+        throw customError;
+      }
+      
+      throw error;
     }
   },
-
-  register: async ({ name, email, password }: { name: string; email: string; password: string }) => {
+  // Social authentication (Google, GitHub)
+  socialAuth: async (authData: SocialAuthData) => {
     try {
-      // Simulating API call
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const endpoint = `${API_BASE_URL}/auth/${authData.provider}`;
       
-      const data = await response.json();
+      console.log(`Authenticating with ${authData.provider}`, { token: authData.token && 'Token provided' });
       
-      if (response.ok) {
+      const response = await axios.post(endpoint, { token: authData.token },);
+      
+      const data = response.data;
+      console.log(`${authData.provider} auth response:`, data);
+      
+      // Save token to local storage
+      if (data.token) {
         localStorage.setItem('token', data.token);
-        return { success: true, user: data.user };
-      } else {
-        return { success: false, message: data.message };
       }
+      
+      return data;
     } catch (error) {
-      console.error('Register API error:', error);
-      return { success: false, message: 'Network error' };
+      console.error('Social authentication error:', error);
+      
+      // Handle axios errors
+      if (axios.isAxiosError(error)) {
+        if (!error.response) {
+          // Network error
+          throw new Error(`${authData.provider} authentication failed: Network error`);
+        }
+        
+        if (error.response.status === 401 || error.response.status === 403) {
+          throw new Error(`${authData.provider} authentication failed: Invalid token`);
+        }
+        
+        if (error.response.data) {
+          throw new Error(error.response.data.message || `${authData.provider} authentication failed`);
+        }
+      }
+      
+      throw error;
     }
   },
-
-  socialAuth: async ({ token, provider }: { token: string; provider: 'google' | 'github' }) => {
-    try {
-      // Simulating API call
-      const response = await fetch(`/api/auth/${provider}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        return { success: true, user: data.user };
-      } else {
-        return { success: false, message: data.message };
-      }
-    } catch (error) {
-      console.error(`${provider} auth API error:`, error);
-      return { success: false, message: 'Network error' };
-    }
-  },
-
+  // Get current user profile
   getCurrentUser: async () => {
     try {
       const token = localStorage.getItem('token');
+      
       if (!token) {
-        return { success: false, message: 'No token found' };
+        throw new Error('No auth token found');
       }
-
-      // Simulating API call
-      const response = await fetch('/api/auth/me', {
-        headers: { 'Authorization': `Bearer ${token}` },
+      
+      const response = await axios.get(`${API_BASE_URL}/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
       
-      const data = await response.json();
-      
-      if (response.ok) {
-        return { success: true, user: data.user };
-      } else {
-        return { success: false, message: data.message };
-      }
+      return response.data;
     } catch (error) {
-      console.error('Get current user API error:', error);
-      return { success: false, message: 'Network error' };
+      console.error('Get current user error:', error);
+      
+      if (axios.isAxiosError(error) && error.response) {
+        const data = error.response.data;
+        throw new Error(data.message || 'Failed to get user data');
+      }
+      
+      throw error;
     }
   },
 
+  // Logout user
   logout: () => {
     localStorage.removeItem('token');
-  }
+  },
+};
+
+// Function to get auth header for protected routes
+export const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
 export const sendMessageToAPI = async (inputText: string, imagePreview: string | null): Promise<string> => {
+  // Define types for the message structure
+  type MessageContent = { type: string; text?: string; image_url?: { url: string } };
+  type APIMessage = { role: string; content: MessageContent[] };
+  
   // Prepare API message format
-  const apiMessages: any[] = [{ 
+  const apiMessages: APIMessage[] = [{ 
     role: "user", 
     content: [{ type: "text", text: inputText }] 
   }];
@@ -123,35 +187,41 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
   const SITE_URL = typeof window !== 'undefined' ? window.location.origin : '';
   const SITE_NAME = typeof document !== 'undefined' ? document.title : "OurRepo";
 
-  // Add system message  
-  // 
+  // Add system message
   const systemMessage = {
     role: "system",
     content: [
       {
         type: "text",
-        text: "You are Nemo, the AI assistant for Nomeda TaskHub project management system. You should introduce yourself as 'I am Nemo, your AI assistant for Nomeda TaskHub. I can help you manage projects, tasks, and team collaboration efficiently.' whenever someone asks who you are. Answer all questions concisely and directly, focusing on project management, task organization, and productivity features. If someone asks who developed you, respond with 'I was developed by AIU Students (Belal, Abdallah, and Ahmed) as part of the Nomeda TaskHub project management solution.' You should emphasize features like task management, team collaboration, project tracking, and productivity tools available in Nomeda TaskHub."
+        text: "You are Pizza Chat, the assistant of the Project Repository System. You should introduce yourself as 'I am Pizza Chat, the assistant of the Project Repository System.' whenever someone asks who you are. Answer all questions concisely and directly. whenever someone asks who developed you should answer 'I developed by AIU & VT Student (Ahmed, Aiden, Belal, Martha, Merna)'."
       }
     ]
   };
-
   apiMessages.unshift(systemMessage);
-  const response = await fetch( "https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer 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`,
-      "HTTP-Referer": SITE_URL,
-      "X-Title": SITE_NAME,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "qwen/qwen2.5-vl-72b-instruct:free",
-      messages: apiMessages
-    })
-  });
-
-  const data = await response.json();
-  return data.choices ? data.choices[0].message.content : "Error: No response";
+  try {
+    const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", 
+      {
+        model: "qwen/qwen2.5-vl-72b-instruct:free",
+        messages: apiMessages
+      },
+      {
+        headers: {
+          "Authorization": `Bearer API_KEY`,
+          "HTTP-Referer": SITE_URL,
+          "X-Title": SITE_NAME,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    
+    return response.data.choices ? response.data.choices[0].message.content : "Error: No response";
+  } catch (error) {
+    console.error("Chat API error:", error);
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("API error response:", error.response.data);
+    }
+    return "Sorry, I couldn't process your request at the moment.";
+  }
 };
 
 export const formatText = (text: string): string => {

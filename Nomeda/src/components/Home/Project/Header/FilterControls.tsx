@@ -9,79 +9,71 @@ import {
   Stack,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
 import TaskDialog from './TaskDialog';
 import useTasks from '../../../../hooks/useTasks';
 
-const FilterControls = ({
+
+interface FilterControlsProps {
+  dueDateFilter: string;
+  assigneeFilter: string;
+  priorityFilter: string;
+  setDueDateFilter: (value: string) => void;
+  setAssigneeFilter: (value: string) => void;
+  setPriorityFilter: (value: string) => void;
+  onSave?: () => void;
+}
+
+const FilterControls: React.FC<FilterControlsProps> = ({
   dueDateFilter,
   assigneeFilter,
   priorityFilter,
   setDueDateFilter,
   setAssigneeFilter,
   setPriorityFilter,
-}) => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const { tasks, loading } = useTasks();
-  const [localTasks, setLocalTasks] = useState(tasks);
+  onSave = () => console.log('Save changes'),
+}) => {  const [openDialog, setOpenDialog] = useState(false);
+  const { tasks, addTask, refreshTasks } = useTasks();
 
-  const handleFilterChange = (setter) => (event) => {
-    setter(event.target.value);
+  const handleFilterChange = (setter: (value: string) => void) => (event: React.ChangeEvent<{ value: unknown }>) => {
+    setter(event.target.value as string);
   };
-
-  const handleAddTask = (newTask) => {
-    setLocalTasks((prev) => [...prev, newTask]);
+  const handleAddTask = async (task: {
+    title: string;
+    description?: string;
+    priority: 'High' | 'Normal' | 'Low';
+    assignedAt?: string;
+    users: Array<{ name: string; avatar: string; }>
+  }) => {
+    try {
+      if (!task.title) {
+        throw new Error('Task title is required');
+      }
+      
+      await addTask({
+        title: task.title,
+        description: task.description || '',
+        status: 'todo',
+        priority: task.priority || 'Normal',
+        dueDate: task.assignedAt || null,
+        assignees: task.users ? task.users.map(user => user.name) : [],
+        labels: []
+      });
+      refreshTasks();
+      setOpenDialog(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   return (
     <Box sx={{ pb: 2, pt: 2 }}>
       <Stack direction="row" spacing={2} alignItems="center">
-        <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>Due Date</InputLabel>
-          <Select
-            value={dueDateFilter}
-            onChange={handleFilterChange(setDueDateFilter)}
-            label="Due Date"
-          >
-            <MenuItem value="all">All Dates</MenuItem>
-            <MenuItem value="upcoming">Upcoming</MenuItem>
-            <MenuItem value="overdue">Overdue</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>Assignee</InputLabel>
-          <Select
-            value={assigneeFilter}
-            onChange={handleFilterChange(setAssigneeFilter)}
-            label="Assignee"
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="john">John</MenuItem>
-            <MenuItem value="jane">Jane</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl size="small" sx={{ minWidth: 140 }}>
-          <InputLabel>Priority</InputLabel>
-          <Select
-            value={priorityFilter}
-            onChange={handleFilterChange(setPriorityFilter)}
-            label="Priority"
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="high">High</MenuItem>
-            <MenuItem value="normal">Normal</MenuItem>
-            <MenuItem value="low">Low</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Button variant="outlined" size="small">
-          Advanced Filters
+        <Box sx={{ flexGrow: 1 }} />        <Button
+          variant="contained"
+          onClick={onSave}
+        >
+          Save Changes
         </Button>
-
-        <Box sx={{ flexGrow: 1 }} />
-
         <Button
           variant="contained"
           startIcon={<AddIcon />}

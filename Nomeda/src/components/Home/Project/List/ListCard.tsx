@@ -20,24 +20,10 @@ import ListCardLabel from './ListCardLabel'
 import ListCardActions from './ListCardActions'
 import PriorityLabel from '../../../Tasks/PriorityLabel'
 
-interface User {
-  name: string
-  avatar: string
-}
+import { FormattedTask, FormattedUser, TaskAction } from '../../../../types/project';
 
-interface Task {
-  id: string
-  title: string
-  users: User[]
-  assignedAt: string
-  priority: 'High' | 'Normal' | 'Low'
-  deadline?: Date
-  status: 'To Do' | 'In Progress' | 'Done' | 'Blocked'
-}
-
-interface ListCardProps {
-  task: Task
-  onEdit?: (updatedTask: Task) => void
+interface ListCardProps {  task: FormattedTask
+  onEdit?: (updatedTask: FormattedTask) => void
   onDelete?: (taskId: string) => void
   onView?: (taskId: string) => void
 }
@@ -51,7 +37,7 @@ const ListCard: React.FC<ListCardProps> = ({
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
-  const [editedTask, setEditedTask] = useState<Task>(task)
+  const [editedTask, setEditedTask] = useState<FormattedTask>(task)
 
   // Available assignees (you can expand this list)
   const availableAssignees = [

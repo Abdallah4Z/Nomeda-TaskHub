@@ -1,114 +1,126 @@
-import React, {useState} from 'react'
-import {Box, Chip, Divider, useTheme} from '@mui/material'
-import TabPanel from './TabPanel'
-import FilterControls from './FilterControls'
-import ProjectTitle from './ProjectTitle'
-import ProjectActions from './ProjectActions'
-import NavigationTabs from './NavigationTabs'
-import OverviewPage from '../Overview/OverviewPage'
-import ListView from '../List/ListView'
-import BoardView from '../Board/BoardView'
-import CalendarView from '../Calender/UpcomingDeadlines'
-import FilesView from '../Files/FilesView'
-import useTasks from '../../../../hooks/useTasks'
+import React, { useState } from 'react';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import ProjectTitle from './ProjectTitle';
+import TaskDialog from './TaskDialog';
+import useTasks from '../../../../hooks/useTasks';
 
-const Header = ({projectName = 'Design Project', onEdit = () => {}}) => {
-  const theme = useTheme()
-  // State to manage filter values
-  const [dueDateFilter, setDueDateFilter] = useState('all')
-  const [assigneeFilter, setAssigneeFilter] = useState('all')
-  const [priorityFilter, setPriorityFilter] = useState('all')
-  const [tabValue, setTabValue] = useState(2) // "Board" tab is active by default
-
-  const {tasks} = useTasks()
-  const users = tasks[1]?.users || []
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        mt: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        ml: '2vw',
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor:
-            theme.palette.mode === 'dark'
-              ? theme.palette.background.paper
-              : '#fff',
-          color: theme.palette.text.primary,
-          borderRadius: '8px',
-          p: 2,
-          flexShrink: 0,
-          width: '100%',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            mb: 2,
-          }}
-        >
-          <ProjectTitle projectName={projectName} onEdit={onEdit} />
-          <ProjectActions users={users} />
-        </Box>
-
-        <NavigationTabs tabValue={tabValue} setTabValue={setTabValue} />
-
-        <FilterControls
-          dueDateFilter={dueDateFilter}
-          assigneeFilter={assigneeFilter}
-          priorityFilter={priorityFilter}
-          setDueDateFilter={setDueDateFilter}
-          setAssigneeFilter={setAssigneeFilter}
-          setPriorityFilter={setPriorityFilter}
-        />
-      </Box>
-      <Divider  sx={{width:'100%'}}/>
-
-      {/* Tab Content Panels */}
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflow: 'hidden',
-          backgroundColor:
-            theme.palette.mode === 'dark'
-              ? theme.palette.background.default
-              : theme.palette.background.paper,
-          borderRadius: '8px',
-          mt: 2,
-          transition: 'background-color 0.3s',
-        }}
-      >
-        <TabPanel value={tabValue} index={0}>
-          <OverviewPage />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={1}>
-          <ListView />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={2}>
-          <BoardView boards={[]} />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={3}>
-          <CalendarView />
-        </TabPanel>
-
-        <TabPanel value={tabValue} index={4}>
-          <FilesView />
-        </TabPanel>
-      </Box>
-    </Box>
-  )
+interface HeaderProps {
+  projectName: string;
+  projectDescription?: string;
+  onEdit?: (name: string, description?: string) => void;
+  onFilterChange?: (e: React.ChangeEvent<{ value: unknown }>) => void;
 }
 
-export default Header
+interface NewTaskData {
+  title: string;
+  description?: string;
+  priority: 'High' | 'Normal' | 'Low';
+  assignedAt?: string;
+  users: Array<{ name: string; avatar: string; }>;
+}
+
+const Header: React.FC<HeaderProps> = ({
+  projectName = "New Project",
+  projectDescription = "",
+  onEdit
+}) => {
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState(projectName);
+  const [editDescription, setEditDescription] = useState(projectDescription);
+  
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const { tasks, addTask } = useTasks();
+  const users = tasks?.length > 0 ? tasks[0]?.users || [] : [];
+
+  const handleEditClick = () => {
+    setEditName(projectName);
+    setEditDescription(projectDescription);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveChanges = () => {
+    if (editName.trim()) {
+      onEdit?.(editName, editDescription);
+      setEditDialogOpen(false);
+    }
+  };
+
+ 
+
+  const handleAddTask = async (task: NewTaskData) => {
+    try {
+      if (!task.title) {
+        throw new Error('Task title is required');
+      }        const newTask = {
+        title: task.title,
+        description: task.description || '',
+        status: 'todo' as const,
+        priority: task.priority,
+        dueDate: task.assignedAt || undefined, // Ensure dueDate is always sent to backend
+        assignedAt: task.assignedAt || undefined, // Keep assignedAt for UI consistency
+        assignees: task.users.map(u => u.name),
+        labels: [] as string[]
+      };
+
+      await addTask(newTask);
+      setTaskDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
+  };
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', mt: 5, justifyContent: 'center', alignItems: 'center', ml: '2vw' }}>
+      <Box sx={{ backgroundColor: '#fff', borderRadius: '8px', p: 2, flexShrink: 0, width: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <ProjectTitle projectName={projectName} onEdit={handleEditClick} />
+          {projectDescription && (
+            <Box sx={{ mt: 1, color: '#666', fontSize: '0.9rem', textAlign: 'center' }}>
+              {projectDescription}
+            </Box>
+          )}
+        </Box>
+      </Box>
+      
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Project</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Project Name"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Project Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            multiline
+            rows={4}
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleSaveChanges} variant="contained">Save Changes</Button>
+        </DialogActions>
+      </Dialog>
+      
+      <TaskDialog
+        open={taskDialogOpen}
+        onClose={() => setTaskDialogOpen(false)}
+        onAddTask={handleAddTask}
+      />
+    </Box>
+  );
+};
+
+export default Header;

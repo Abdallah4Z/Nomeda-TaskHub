@@ -15,12 +15,17 @@ interface Action {
 }
 
 interface Task {
-  id: string;
+  id?: string;
   title: string;
-  users: User[];
-  assignedAt: string;
+  description?: string;
+  status?: 'todo' | 'in-progress' | 'review' | 'done';
   priority: 'High' | 'Normal' | 'Low';
-  actions: Action[];
+  dueDate?: string; // This matches what backend expects
+  assignedAt?: string; // For UI consistency
+  assignees?: string[];
+  labels?: string[];
+  users: User[];
+  actions?: Action[];
 }
 
 interface Props {
@@ -41,7 +46,7 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
     if (taskToEdit) {
       setTitle(taskToEdit.title);
       setUserNames(taskToEdit.users.map((user) => user.name));
-      setAssignedAt(taskToEdit.assignedAt);
+      setAssignedAt(taskToEdit.dueDate || taskToEdit.assignedAt || ''); // Use dueDate or fallback to assignedAt
       setPriority(taskToEdit.priority);
     }
   }, [taskToEdit]);
@@ -65,16 +70,21 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
     e.preventDefault();
 
     if (!title || userNames.length === 0 || !assignedAt) return;
-
+    
     const newTask: Task = {
       id: taskToEdit ? taskToEdit.id : Date.now().toString(),
       title,
+      description: "",
+      status: 'todo',
+      priority,
+      dueDate: assignedAt, // Set dueDate field for backend
+      assignedAt,          // Keep assignedAt for UI consistency
+      assignees: userNames,
+      labels: [],
       users: userNames.map((name) => ({
         name,
         avatar: getRandomAvatar(name),
       })),
-      assignedAt,
-      priority,
       actions: [
         { label: 'Edit', onClick: () => console.log('Edit Task') },
         { label: 'Delete', onClick: () => console.log('Delete Task') },
@@ -82,9 +92,9 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
     };
 
     if (taskToEdit) {
-      onUpdateTask?.(newTask); // Call update function if editing
+      onUpdateTask?.(newTask);
     } else {
-      onAddTask(newTask); // Call add function if new task
+      onAddTask(newTask);
     }
 
     // Reset form after submission

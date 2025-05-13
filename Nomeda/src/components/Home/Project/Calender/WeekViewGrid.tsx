@@ -25,7 +25,7 @@ const WeekViewGrid: React.FC<WeekViewGridProps> = ({
               align="center" 
               variant="subtitle2" 
               sx={{ color: 'text.main', fontWeight: 500 }}
-              width={170}
+              width={190}
             >
               {day}
             </Typography>
@@ -34,9 +34,9 @@ const WeekViewGrid: React.FC<WeekViewGridProps> = ({
       </Grid>
 
       {/* Week Days */}
-      <Grid container spacing={1}>
+      <Grid container spacing={1} >
         {weekDays.map((day, index) => (
-          <Grid item key={index} xs={12 / 7}>
+          <Grid item key={index} xs={12 / 7} width={190}>
             <CalendarDayCell 
               day={day} 
               priorityColors={priorityColors} 

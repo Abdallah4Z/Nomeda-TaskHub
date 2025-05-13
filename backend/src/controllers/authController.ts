@@ -22,14 +22,16 @@ export const createToken = (user: IUser) => {
 };
 
 // Register a new user
-export const register = async (req: Request, res: Response) => {  try {
-    const { name, email, password, phone } = req.body;    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-      return res.status(400).json({ 
+export const register = async (req: Request, res: Response) => {
+  try {
+    const { name, email, password, phone } = req.body;
+    const emailExists = await User.findOne({ email });if (emailExists) {
+      res.status(400).json({ 
         success: false, 
         message: 'This email address is already registered.',
         errorType: 'email_exists'
       });
+      return;
     } 
     // Create user
     const user = await User.create({ 
@@ -52,22 +54,22 @@ export const register = async (req: Request, res: Response) => {  try {
         phone: user.phone,
         photoUrl: user.photoUrl,
         joinedDate: user.joinedDate
-      },
-      token
-    });  } catch (error: any) {
+      },      token
+    });
+  } catch (error: any) {
     console.error('Register error:', error);
     
     // Check if the error is a validation error
     if (error.name === 'ValidationError') {
       // Extract error message from Mongoose validation error
       const passwordError = error.errors?.password?.message;
-      
-      if (passwordError) {
-        return res.status(400).json({ 
+        if (passwordError) {
+        res.status(400).json({ 
           success: false, 
           message: passwordError,
           errorType: 'invalid_password'
         });
+        return;
       }
       
       // For other validation errors
@@ -75,7 +77,7 @@ export const register = async (req: Request, res: Response) => {  try {
         .map((err: any) => err.message)
         .join(', ');
         
-      return res.status(400).json({ 
+      res.status(400).json({ 
         success: false, 
         message: errorMessage,
         errorType: 'validation_error'
@@ -94,24 +96,25 @@ export const register = async (req: Request, res: Response) => {  try {
 // Login user
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;    // Check if user exists
+    const { email, password } = req.body;
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ 
+      res.status(401).json({ 
         success: false, 
         message: 'User not found. Please check your email address.', 
         errorType: 'user_not_found'
       });
-    }
-
-    // Check if password is correct
+      return;
+    }    // Check if password is correct
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ 
+      res.status(401).json({ 
         success: false, 
         message: 'Incorrect password. Please try again.',
         errorType: 'incorrect_password'
       });
+      return;
     }
 
     // Generate token
@@ -127,9 +130,9 @@ export const login = async (req: Request, res: Response) => {
         phone: user.phone,
         photoUrl: user.photoUrl,
         joinedDate: user.joinedDate
-      },
-      token
-    });  } catch (error) {
+      },      token
+    });
+  } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ 
       success: false, 
@@ -144,22 +147,25 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   try {
     // User is attached to req by auth middleware
     const userId = (req as any).user?.userId;
-      if (!userId) {
-      return res.status(401).json({
+    
+    if (!userId) {
+      res.status(401).json({
         success: false,
         message: 'Authentication invalid. Please login again.',
         errorType: 'auth_invalid'
       });
+      return;
     }
 
     const user = await User.findById(userId).select('-password');
     
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User profile not found. Account may have been deleted.',
         errorType: 'user_not_found'
       });
+      return;
     }
 
     res.status(200).json({
@@ -170,9 +176,9 @@ export const getCurrentUser = async (req: Request, res: Response) => {
         email: user.email,
         phone: user.phone,
         photoUrl: user.photoUrl,
-        joinedDate: user.joinedDate
-      }
-    });  } catch (error) {
+        joinedDate: user.joinedDate      }
+    });
+  } catch (error) {
     console.error('Get current user error:', error);
     res.status(500).json({
       success: false,

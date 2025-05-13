@@ -8,13 +8,13 @@ export const googleAuth = async (req: Request, res: Response) => {
   try {
     console.log('Google auth request received:', req.body);
     const { token } = req.body;
-    
-    if (!token) {
+      if (!token) {
       console.error('Google auth error: No token provided');
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Google authentication failed: No token provided'
       });
+      return;
     }
     
     try {
@@ -36,12 +36,12 @@ export const googleAuth = async (req: Request, res: Response) => {
         name: name ? 'Found' : 'Not found',
         picture: picture ? 'Found' : 'Not found'
       });
-      
-      if (!email) {
-        return res.status(400).json({
+        if (!email) {
+        res.status(400).json({
           success: false,
           message: 'Google authentication failed: Email not provided'
         });
+        return;
       }
       
       // Check if user exists
@@ -87,13 +87,13 @@ export const googleAuth = async (req: Request, res: Response) => {
           joinedDate: user.joinedDate
         },
         token: jwtToken
-      });
-    } catch (apiError: any) {
+      });    } catch (apiError: any) {
       console.error('Google API error:', apiError.response?.data || apiError.message);
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         message: 'Google authentication failed: Invalid token or API error'
       });
+      return;
     }
   } catch (error) {
     console.error('Google auth error:', error);

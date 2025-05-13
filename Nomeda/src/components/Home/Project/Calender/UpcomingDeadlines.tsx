@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
 import {Paper, Box, useTheme} from '@mui/material'
 import PageContainer from '../Overview/PageContainer'
-import {ViewType} from './types'
+import {ViewType, Task, CalendarDay} from './types'
 import {
-  generateMockTasks,
   generateCalendarDays,
   getMonthYearDisplay,
 } from './calendarUtils'
@@ -13,10 +12,44 @@ import WeekViewGrid from './WeekViewGrid'
 import PlaceholderView from './PlaceholderView'
 import CalendarFooter from './CalendarFooter'
 import DayViewGrid from './DayViewGrid'
+import useTasks from '../../../../hooks/useTasks'
+import LoadingSpinner from '../../../Common/LoadingSpinner'
 
-const UpcomingCalendarView: React.FC = () => {
+interface Props {
+  projectId?: string;
+}
+
+const UpcomingCalendarView: React.FC<Props> = ({ projectId }) => {
   const theme = useTheme()
-  const tasks = generateMockTasks()
+  const { tasks, loading } = useTasks(projectId)
+  
+  // Convert tasks to calendar format
+  const calendarTasks: Task[] = tasks.map(task => {
+    // Map backend priority to calendar priority
+    let priority: 'high' | 'medium' | 'low';
+    switch (task.priority?.toLowerCase()) {
+      case 'high':
+        priority = 'high';
+        break;
+      case 'normal':
+        priority = 'medium';
+        break;
+      default:
+        priority = 'low';
+    }
+
+    return {
+      id: Number(task.id.split('-')[1]), // Extract task ID number
+      title: task.title,
+      dueDate: new Date(task.dueDate || task.assignedAt || new Date()),
+      priority,
+      status: task.status === 'done' ? 'completed' 
+        : task.status === 'in-progress' ? 'in-progress' 
+        : 'pending',
+      category: task.labels?.[0] || task.status,
+      assignee: task.assignees?.[0]
+    }
+  })
 
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewType, setViewType] = useState<ViewType>('month')
@@ -38,7 +71,7 @@ const UpcomingCalendarView: React.FC = () => {
   const calendarDays = generateCalendarDays(
     currentDate.getFullYear(),
     currentDate.getMonth(),
-    tasks,
+    calendarTasks,
   )
 
   // Generate current week's days (Sunday to Saturday)
@@ -46,21 +79,22 @@ const UpcomingCalendarView: React.FC = () => {
     const startOfWeek = new Date(date)
     const dayOfWeek = startOfWeek.getDay() // 0 (Sun) to 6 (Sat)
     startOfWeek.setDate(date.getDate() - dayOfWeek)
-    const weekDays: ReturnType<typeof generateCalendarDays> = []
+    const weekDays: CalendarDay[] = []
 
     for (let i = 0; i < 7; i++) {
       const day = new Date(startOfWeek)
       day.setDate(startOfWeek.getDate() + i)
 
-      const matchedDay = generateCalendarDays(
-        day.getFullYear(),
-        day.getMonth(),
-        tasks,
-      ).find(d => new Date(d.date).toDateString() === day.toDateString())
-
-      if (matchedDay) {
-        weekDays.push(matchedDay)
+      const dayData: CalendarDay = {
+        date: day,
+        isCurrentMonth: day.getMonth() === date.getMonth(),
+        isToday: day.toDateString() === new Date().toDateString(),
+        tasks: calendarTasks.filter(task => {
+          const taskDate = new Date(task.dueDate)
+          return taskDate.toDateString() === day.toDateString()
+        })
       }
+      weekDays.push(dayData)
     }
 
     return weekDays
@@ -100,17 +134,15 @@ const UpcomingCalendarView: React.FC = () => {
     setCurrentDate(new Date())
   }
 
-  const handleViewChange = (
-    event: React.SyntheticEvent,
-    newValue: ViewType,
-  ) => {
+  const handleViewChange = (_event: React.SyntheticEvent, newValue: ViewType) => {
     setViewType(newValue)
   }
+
   const getCurrentDay = (date: Date) => {
     const fullMonth = generateCalendarDays(
       date.getFullYear(),
       date.getMonth(),
-      tasks,
+      calendarTasks,
     )
     return fullMonth.find(
       d => new Date(d.date).toDateString() === date.toDateString(),
@@ -118,6 +150,10 @@ const UpcomingCalendarView: React.FC = () => {
   }
 
   const currentDay = getCurrentDay(currentDate)
+
+  if (loading) {
+    return <LoadingSpinner />
+  }
 
   return (
     <PageContainer title="Upcoming Tasks Calendar">
@@ -138,7 +174,6 @@ const UpcomingCalendarView: React.FC = () => {
         <CalendarHeader
           currentDate={currentDate}
           viewType={viewType}
-          monthYearDisplay={monthYearDisplay}
           onPrevMonth={prevPeriod}
           onNextMonth={nextPeriod}
           onGoToday={goToToday}
@@ -146,7 +181,7 @@ const UpcomingCalendarView: React.FC = () => {
         />
 
         {/* Main Content */}
-        <Box sx={{flex: 1, overflow: 'auto', p: 2}}>
+        <Box sx={{flex: 1, overflow: 'auto', p: 2,}}>
           {viewType === 'month' && (
             <MonthViewGrid
               calendarDays={calendarDays}
@@ -181,7 +216,7 @@ const UpcomingCalendarView: React.FC = () => {
         <CalendarFooter
           priorityColors={priorityColors}
           statusColors={statusColors}
-          taskCount={tasks.length}
+          taskCount={calendarTasks.length}
           monthYearDisplay={monthYearDisplay}
         />
       </Paper>

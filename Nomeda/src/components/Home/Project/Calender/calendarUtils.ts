@@ -1,35 +1,5 @@
 import { Task, CalendarDay } from './types';
 
-export const generateMockTasks = (): Task[] => {
-  const today = new Date();
-  const tasks: Task[] = [];
-  
-  // Generate tasks for the next 30 days
-  for (let i = 0; i < 45; i++) {
-    const date = new Date();
-    date.setDate(today.getDate() + i - 15); // Some tasks in the past, some in the future
-    
-    // Skip some days to make the calendar look more realistic
-    if (Math.random() > 0.3) {
-      const taskCount = Math.floor(Math.random() * 3) + 1; // 1-3 tasks per day
-      
-      for (let j = 0; j < taskCount; j++) {
-        tasks.push({
-          id: tasks.length + 1,
-          title: `Task ${tasks.length + 1}`,
-          dueDate: date,
-          priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)] as 'high' | 'medium' | 'low',
-          status: ['completed', 'in-progress', 'pending'][Math.floor(Math.random() * 3)] as 'completed' | 'in-progress' | 'pending',
-          category: ['Development', 'Design', 'Marketing', 'Research'][Math.floor(Math.random() * 4)],
-          assignee: ['John Doe', 'Jane Smith', 'Robert Johnson', 'Emily Davis'][Math.floor(Math.random() * 4)]
-        });
-      }
-    }
-  }
-  
-  return tasks;
-};
-
 const filterTasksByDate = (tasks: Task[], date: Date): Task[] => {
   return tasks.filter(task => {
     const taskDate = new Date(task.dueDate);

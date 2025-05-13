@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -16,7 +16,8 @@ import {
   FormControl,
   InputLabel,
   Checkbox,
-} from '@mui/material'
+  Alert,
+} from '@mui/material';
 import {
   Assignment as TaskIcon,
   People as PeopleIcon,
@@ -26,52 +27,57 @@ import {
   FormatListBulleted as TodoIcon,
   AttachFile as FileIcon,
   Add as AddIcon,
-} from '@mui/icons-material'
-import StatCard from './StatCard'
+} from '@mui/icons-material';
+import StatCard from './StatCard';
+import { Project } from '../../../../types/project';
 
 interface ComponentType {
-  id: string
-  type: 'text' | 'todo' | 'file'
-  title: string
-  content?: string
-  createdAt: Date
+  id: string;
+  type: 'text' | 'todo' | 'file';
+  title: string;
+  content?: string;
+  createdAt: Date;
   properties?: {
-    textContent?: string
+    textContent?: string;
     todos?: Array<{
-      id: string
-      text: string
-      completed: boolean
-      priority: 'low' | 'medium' | 'high'
-      dueDate?: string
-    }>
+      id: string;
+      text: string;
+      completed: boolean;
+      priority: 'low' | 'medium' | 'high';
+      dueDate?: string;
+    }>;
     files?: Array<{
-      id: string
-      name: string
-      url: string
-      type: string
-      size: number
-    }>
-  }
+      id: string;
+      name: string;
+      url: string;
+      type: string;
+      size: number;
+    }>;
+  };
 }
 
-const OverviewPage = () => {
-  const [components, setComponents] = useState<ComponentType[]>([])
-  const [dialogOpen, setDialogOpen] = useState(false)
+interface OverviewPageProps {
+  project: Project;
+}
+
+const OverviewPage: React.FC<OverviewPageProps> = ({ project }) => {
+  const [components, setComponents] = useState<ComponentType[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [newComponent, setNewComponent] = useState<{
-    title: string
-    type: ComponentType['type']
+    title: string;
+    type: ComponentType['type'];
   }>({
     title: '',
     type: 'text',
-  })
+  });
 
-  // Mock data for statistics
+  // Use real project statistics from the API
   const stats = {
-    totalTasks: 12,
-    completedTasks: 5,
-    pendingTasks: 7,
-    totalMembers: 4,
-  }
+    totalTasks: project.stats?.totalTasks || 0,
+    completedTasks: project.stats?.completedTasks || 0,
+    pendingTasks: project.stats?.pendingTasks || 0,
+    totalMembers: project.stats?.totalMembers || 1, // Default to at least 1 (owner)
+  };
   const handleAddComponent = () => {
     if (!newComponent.title.trim()) {
       return

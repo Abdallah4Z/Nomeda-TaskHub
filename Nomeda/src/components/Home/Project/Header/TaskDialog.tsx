@@ -14,22 +14,30 @@ import CreateTaskForm from './CreateTaskForm';
 interface TaskDialogProps {
   open: boolean;
   onClose: () => void;
-  onAddTask: (task: any) => void;
+  onAddTask: (task: {
+    title: string;
+    description?: string;
+    priority: 'High' | 'Normal' | 'Low';
+    assignedAt?: string;
+    users: Array<{ name: string; avatar: string; }>
+  }) => void;
 }
 
 const TaskDialog: React.FC<TaskDialogProps> = ({ open, onClose, onAddTask }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>      <DialogTitle
         sx={{
           m: 0,
           p: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          borderBottom: '1px solid #eee',
         }}
       >
-        <Typography variant="h6" fontWeight={600}>Create New Task</Typography>
+        <Box component="div">
+          <Typography variant="h6" fontWeight={600} component="span">Create New Task</Typography>
+        </Box>
         <IconButton
           aria-label="close"
           onClick={onClose}

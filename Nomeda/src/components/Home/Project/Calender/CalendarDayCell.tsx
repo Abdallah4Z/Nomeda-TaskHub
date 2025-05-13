@@ -16,35 +16,40 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ day, priorityColors, 
     <Paper
       elevation={0}
       sx={{ 
-        p: 1,
+        p: 1.5,
         height: 150,
-        width: '170px',
         bgcolor: day.isToday 
           ? alpha(theme.palette.primary.main, 0.05)
           : day.isCurrentMonth 
             ? 'background.paper'
-            : alpha(theme.palette.action.disabledBackground, 0.5),
+            : alpha(theme.palette.action.disabledBackground, 0.3),
         border: '1px solid',
         borderColor: day.isToday 
           ? 'primary.main' 
           : 'divider',
-        borderRadius: 1,
+        borderRadius: 2,
         overflow: 'hidden',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          transform: 'translateY(-2px)'
+        }
       }}
     >
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        mb: 0.5
+        mb: 1
       }}>
         <Typography 
           variant="subtitle2"
           sx={{ 
-            fontWeight: day.isToday ? 'bold' : day.isCurrentMonth ? 'medium' : 'normal',
-            color: !day.isCurrentMonth ? 'text.disabled' : 'text.primary'
+            fontWeight: day.isToday ? 600 : day.isCurrentMonth ? 500 : 400,
+            color: !day.isCurrentMonth ? 'text.disabled' : 'text.primary',
+            fontSize: '0.9rem'
           }}
         >
           {day.date.getDate()}
@@ -54,8 +59,13 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ day, priorityColors, 
           <Badge 
             badgeContent={day.tasks.length} 
             color="primary"
-            variant="dot"
-            sx={{ '.MuiBadge-dot': { right: 2, top: 2 } }}
+            sx={{ 
+              '& .MuiBadge-badge': {
+                fontSize: '0.7rem',
+                height: 18,
+                minWidth: 18
+              }
+            }}
           />
         )}
       </Box>
@@ -63,8 +73,16 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ day, priorityColors, 
       <Box sx={{ 
         overflow: 'auto',
         flex: 1,
-        '&::-webkit-scrollbar': { width: 4 },
-        '&::-webkit-scrollbar-thumb': { backgroundColor: 'divider', borderRadius: 2 }
+        '&::-webkit-scrollbar': { 
+          width: 4 
+        },
+        '&::-webkit-scrollbar-thumb': { 
+          backgroundColor: alpha(theme.palette.primary.main, 0.2),
+          borderRadius: 2
+        },
+        '&::-webkit-scrollbar-track': { 
+          backgroundColor: alpha(theme.palette.primary.main, 0.05)
+        }
       }}>
         {day.tasks.slice(0, 3).map(task => (
           <TaskItem 
@@ -81,7 +99,10 @@ const CalendarDayCell: React.FC<CalendarDayCellProps> = ({ day, priorityColors, 
             sx={{ 
               display: 'block',
               color: 'text.secondary',
-              textAlign: 'center'
+              textAlign: 'center',
+              mt: 0.5,
+              fontSize: '0.75rem',
+              fontWeight: 500
             }}
           >
             +{day.tasks.length - 3} more

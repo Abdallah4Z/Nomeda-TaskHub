@@ -16,12 +16,8 @@ import {
   ViewDay as ViewDayIcon,
   ViewWeek as ViewWeekIcon,
   ViewModule as ViewModuleIcon,
-  FilterList as FilterListIcon,
-  Search as SearchIcon,
-  MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import { ViewType } from './types';
-import { getMonthYearDisplay } from './calendarUtils';
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -41,7 +37,26 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onViewChange,
 }) => {
   const theme = useTheme();
-  const monthYearDisplay = getMonthYearDisplay(currentDate);
+  
+  const getHeaderText = () => {
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'long',
+      year: 'numeric',
+    };
+
+    if (viewType === 'day') {
+      options.weekday = 'long';
+      options.day = 'numeric';
+    } else if (viewType === 'week') {
+      const endDate = new Date(currentDate);
+      endDate.setDate(currentDate.getDate() + 6);
+      const startStr = currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const endStr = endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      return `${startStr} - ${endStr}`;
+    }
+
+    return currentDate.toLocaleDateString('en-US', options);
+  };
 
   return (
     <Box 
@@ -74,7 +89,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               textAlign: 'center' 
             }}
           >
-            {monthYearDisplay}
+            {getHeaderText()}
           </Typography>
           
           <IconButton onClick={onNextMonth} size="small">
@@ -109,22 +124,6 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           />
         </Tabs>
         
-        <Button
-          variant="outlined"
-          startIcon={<FilterListIcon />}
-          size="small"
-          sx={{ mr: 1 }}
-        >
-          Filter
-        </Button>
-        
-        <IconButton size="small">
-          <SearchIcon />
-        </IconButton>
-        
-        <IconButton size="small">
-          <MoreVertIcon />
-        </IconButton>
       </Box>
     </Box>
   );

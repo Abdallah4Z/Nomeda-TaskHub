@@ -1,9 +1,11 @@
 export interface File {
-    id: number;
+    id: string;
     name: string;
     type: string;
-    size: string;
-    date: string;
+    size?: string;
+    url: string;
     project: string;
-    content: string | null;
+    uploadedBy: string;
+    date: string;
+    content?: string;
   }
