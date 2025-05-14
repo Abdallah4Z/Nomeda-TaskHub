@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', mt: 5, justifyContent: 'center', alignItems: 'center', ml: '2vw' }}>
-      <Box sx={{ backgroundColor: '#fff', borderRadius: '8px', p: 2, flexShrink: 0, width: '100%' }}>
+      <Box sx={{ borderRadius: '8px', p: 2, flexShrink: 0, width: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <ProjectTitle projectName={projectName} onEdit={handleEditClick} />
           {projectDescription && (
