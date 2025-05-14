@@ -90,9 +90,16 @@ const ListCard: React.FC<ListCardProps> = ({
         }}
       >
         <ListCardTitle title={task.title} />
-        <ListCardAssignees users={task.users} />
-        <ListCardTime time={task.assignedAt} />
-        <ListCardLabel status={task.status} />
+        <ListCardAssignees users={task.users} />        <ListCardTime time={task.assignedAt} />
+        <ListCardLabel 
+          status={task.status} 
+          taskId={task.id}
+          onStatusChange={(newStatus) => {
+            if (onEdit) {
+              onEdit({...task, status: newStatus})
+            }
+          }} 
+        />
         <PriorityLabel level={task.priority} />
         <ListCardActions
           onEdit={handleEditClick}
