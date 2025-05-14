@@ -42,7 +42,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ projectName, onEdit }) =>
   const [tabValue, setTabValue] = useState(2); // "Board" tab is active by default
 
   return (
-    <Box sx={{ backgroundColor: '#fff', padding: '16px', borderRadius: '8px',width:"100%"}}>
+    <Box sx={{  padding: '16px', borderRadius: '8px',width:"100%"}}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold', marginRight: '8px' }}>

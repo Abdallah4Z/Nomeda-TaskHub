@@ -1,9 +1,5 @@
 import React from 'react'
-import {
-  Grid,
-  Paper,
-  Typography,
-} from '@mui/material'
+import {Grid, Paper, Typography} from '@mui/material'
 import {
   PieChart,
   Pie,
@@ -19,22 +15,22 @@ import {
 
 interface ChartsSectionProps {
   taskDistribution: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
+    name: string
+    value: number
+    color: string
+  }>
   weeklyProgress: Array<{
-    day: string;
-    tasks: number;
-  }>;
+    day: string
+    tasks: number
+  }>
 }
 
-const ChartsSection: React.FC<ChartsSectionProps> = ({ 
+const ChartsSection: React.FC<ChartsSectionProps> = ({
   taskDistribution,
-  weeklyProgress 
+  weeklyProgress,
 }) => {
   return (
-    <Grid container spacing={3} sx={{ mb: 4, mt: 2 }}>
+    <Grid container spacing={3} sx={{mb: 4, mt: 2}}>
       {/* Task Distribution Chart */}
       <Grid item xs={12} md={6}>
         <Paper

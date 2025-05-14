@@ -24,6 +24,28 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 /**
+ * Get all projects for the authenticated user
+ */
+export const getAllProjects = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    
+    // Find all projects where the user is either the owner or a member
+    const projects = await Project.find({
+      $or: [
+        { owner: userId },
+        { members: userId }
+      ]
+    });
+    
+    res.status(200).json(projects);
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    res.status(500).json({ message: 'Error fetching projects', error });
+  }
+};
+
+/**
  * Create a new project
  */
 export const createProject = async (req: Request, res: Response) => {

@@ -38,7 +38,7 @@ const Project: React.FC<ProjectProps> = ({ project, onUpdate, refreshProject }) 
         onFilterChange={(e: React.ChangeEvent<{ value: unknown }>) => console.log(`Filter changed: ${e.target.value}`)}
       />
       
-      <Box sx={{ backgroundColor: '#fff', borderRadius: '8px', p: 2, mx: '2vw', mt: 2 }}>
+      <Box sx={{ borderRadius: '8px', p: 2, mx: '2vw', mt: 2 }}>
         <FilterControls
           dueDateFilter={dueDateFilter}
           assigneeFilter={assigneeFilter}

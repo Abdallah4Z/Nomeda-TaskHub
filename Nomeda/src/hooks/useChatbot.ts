@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, KeyboardEvent, ChangeEvent } from 'react';
 import { Message } from '../types';
-import { sendMessageToAPI } from '../services/apiService';
+import { sendMessageToAPI, fetchProjectData, fetchTasksForProject } from '../services/apiService';
 import { VoiceService } from '../services/voiceService';
 
 export const useChatbot = () => {
@@ -111,7 +111,6 @@ export const useChatbot = () => {
       fileInputRef.current.value = '';
     }
   };
-
   const sendMessage = async () => {
     const trimmedText = inputText.trim();
     
@@ -132,6 +131,7 @@ export const useChatbot = () => {
     setIsLoading(true);
 
     try {
+      // The sendMessageToAPI function now handles project data fetching internally
       const aiResponse = await sendMessageToAPI(trimmedText, imagePreview);
       
       setMessages(prev => [...prev, {

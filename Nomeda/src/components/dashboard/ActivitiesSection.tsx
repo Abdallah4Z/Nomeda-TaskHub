@@ -12,19 +12,21 @@ import {
 } from '@mui/material'
 
 interface Activity {
-  id: number;
-  user: string;
-  action: string;
-  task: string;
-  time: string;
-  avatar: string;
+  id: number
+  user: string
+  action: string
+  task: string
+  time: string
+  avatar: string
 }
 
 interface ActivitiesSectionProps {
-  recentActivities: Activity[];
+  recentActivities: Activity[]
 }
 
-const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({ recentActivities }) => {
+const ActivitiesSection: React.FC<ActivitiesSectionProps> = ({
+  recentActivities,
+}) => {
   return (
     <Grid item xs={12} md={6}>
       <Paper

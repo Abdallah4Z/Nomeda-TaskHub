@@ -1,30 +1,33 @@
 import React from 'react'
-import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  LinearProgress,
-} from '@mui/material'
-import {
-  TrendingUp as TrendingUpIcon,
-} from '@mui/icons-material'
+import {Box, Grid, Paper, Typography, LinearProgress} from '@mui/material'
+import {TrendingUp as TrendingUpIcon} from '@mui/icons-material'
 
 interface ProgressSectionProps {
   taskCompletion: {
-    current: number;
-    previous: number;
-  };
+    current: number
+    previous: number
+  }
   teamPerformance: {
-    current: number;
-    previous: number;
-  };
+    current: number
+    previous: number
+  }
+  taskCompletionRate?: number
+  loading?: boolean
+  error?: string | null
 }
 
-const ProgressSection: React.FC<ProgressSectionProps> = ({ 
+const ProgressSection: React.FC<ProgressSectionProps> = ({
   taskCompletion,
-  teamPerformance 
+  teamPerformance,
+  taskCompletionRate,
+  loading,
+  error,
 }) => {
+  // If we have real data from the database, use it instead of mock data
+  const actualTaskCompletionRate =
+    taskCompletionRate !== undefined
+      ? taskCompletionRate
+      : taskCompletion.current
   return (
     <Grid container spacing={3}>
       {/* Task Completion Progress */}
@@ -48,7 +51,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
           </Box>
           <Box sx={{mb: 1, display: 'flex', alignItems: 'center'}}>
             <Typography variant="h4" sx={{mr: 1}}>
-              {taskCompletion.current}%
+              {actualTaskCompletionRate}%
             </Typography>
             <Box
               sx={{
@@ -59,12 +62,21 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
               }}
             >
               <TrendingUpIcon sx={{mr: 0.5, fontSize: '1.2rem'}} />+
-              {taskCompletion.current - taskCompletion.previous}%
+              {taskCompletionRate !== undefined
+                ? 5
+                : taskCompletion.current - taskCompletion.previous}
+              %
             </Box>
           </Box>
+          {loading && (
+            <Typography color="text.secondary">
+              Loading statistics...
+            </Typography>
+          )}
+          {error && <Typography color="error">Error: {error}</Typography>}
           <LinearProgress
             variant="determinate"
-            value={taskCompletion.current}
+            value={actualTaskCompletionRate}
             sx={{height: 8, borderRadius: 2}}
           />
         </Paper>
