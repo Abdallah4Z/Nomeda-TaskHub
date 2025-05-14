@@ -8,13 +8,15 @@ import {
   deleteTask,
   uploadFile, 
   deleteFile,
-  upload 
+  upload,
+  getUserProjects
 } from '../controllers/projectController';
 import { authenticateUser } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
 // Project routes
+router.get('/', authenticateUser, getUserProjects);
 router.post('/', authenticateUser, createProject);
 router.get('/:id', authenticateUser, getProject);
 router.put('/:id', authenticateUser, updateProject);

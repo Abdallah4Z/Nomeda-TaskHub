@@ -25,6 +25,19 @@ const getAuthHeader = () => {
 };
 
 export const projectService = {
+  async getUserProjects(): Promise<Project[]> {
+    try {
+      const response = await axios.get(`${API_URL}/projects`, {
+        headers: {
+          ...getAuthHeader()
+        }
+      });
+      return response.data;
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
   async createProject(data: { name: string; description?: string; members?: string[] }) {
     try {
       const response = await axios.post(`${API_URL}/projects`, data, {
