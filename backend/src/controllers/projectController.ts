@@ -24,6 +24,41 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 /**
+ * Get all projects for the current user (either as owner or member)
+ */
+export const getUserProjects = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+
+    // Find projects where user is owner or a member
+    const projects = await Project.find({
+      $or: [
+        { owner: userId },
+        { members: userId }
+      ]
+    })
+    .select('_id name description owner members createdAt updatedAt')
+    .populate('owner', 'name email avatar')
+    .populate('members', 'name email avatar');
+    
+    // Format projects with an indicator if user is the owner
+    const formattedProjects = projects.map(project => {
+      const isOwner = project.owner._id.toString() === userId;
+      
+      return {
+        ...project.toObject(),
+        isOwner: isOwner
+      };
+    });
+
+    res.status(200).json(formattedProjects);
+  } catch (error) {
+    console.error("Error fetching user projects:", error);
+    res.status(400).json({ message: 'Error fetching user projects', error });
+  }
+};
+
+/**
  * Create a new project
  */
 export const createProject = async (req: Request, res: Response) => {
@@ -69,15 +104,6 @@ export const getProject = async (req: Request, res: Response) => {
       completedTasks: project.tasks.filter(task => task.status === 'done').length,
       pendingTasks: project.tasks.filter(task => task.status !== 'done').length,
       totalMembers: (project.members?.length || 0) + 1, // +1 for owner
-      upcomingDeadlines: project.tasks
-        .filter(task => task.dueDate && new Date(String(task.dueDate)) > new Date())
-        .sort((a, b) => {
-          if (a.dueDate && b.dueDate) {
-            return new Date(String(a.dueDate)).getTime() - new Date(String(b.dueDate)).getTime();
-          }
-          return 0;
-        })
-        .slice(0, 5) // Get the 5 nearest upcoming deadlines
     };
 
     // Format tasks for frontend consumption
