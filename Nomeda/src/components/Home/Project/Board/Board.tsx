@@ -25,6 +25,7 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
+import DeleteConfirmationDialog from '../../../Common/DeleteConfirmationDialog';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -54,14 +55,19 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
   const projectId = routeProjectId || (window.location.pathname.split('/projects/')[1] || '').split('/')[0];
   
   const { addTask, updateTask, refreshTasks } = useTasks(projectId);
-  const [localTasks, setLocalTasks] = useState<Task[]>([]);  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
+  const [localTasks, setLocalTasks] = useState<Task[]>([]);
+  const [isAddTaskDialogOpen, setIsAddTaskDialogOpen] = useState(false);
   const [isEditTaskDialogOpen, setIsEditTaskDialogOpen] = useState(false);
   const [isViewTaskDialogOpen, setIsViewTaskDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);  const [showFeedback, setShowFeedback] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
   const [feedback, setFeedback] = useState({ message: '', severity: 'success' as 'success' | 'error' });
   const [isBoardLoading, setIsBoardLoading] = useState(false);
+  const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+  const [isDeleteTaskDialogOpen, setIsDeleteTaskDialogOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<string>('');
   
   // Get status from label
   const getBoardStatus = (): 'todo' | 'in-progress' | 'review' | 'done' => {
@@ -197,11 +203,11 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
       setIsBoardLoading(false);
     }
   };// All task handling logic has been moved to the TaskDialog component's handleSubmit function  // Handler for deleting all tasks in the current board
+  const openDeleteAllDialog = () => {
+    setIsDeleteAllDialogOpen(true);
+  };
+  
   const handleDeleteBoard = async () => {
-    // Show confirmation dialog before proceeding
-    const confirmDelete = window.confirm(`Are you sure you want to delete all tasks in the "${label}" board?`);
-    if (!confirmDelete) return;
-
     setIsSubmitting(true);
     setIsBoardLoading(true);
     setError(null);
@@ -256,10 +262,6 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
     }
   };  // Handler for deleting a single task
   const handleDeleteTask = async (taskId: string) => {
-    // Confirm before deleting
-    const confirmDelete = window.confirm('Are you sure you want to delete this task?');
-    if (!confirmDelete) return;
-    
     setIsBoardLoading(true);
     try {
       await projectService.deleteTask(projectId, taskId);
@@ -290,14 +292,13 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
       label: 'Add',
       icon: <Add sx={{ fontSize: 18 }} />,
       onClick: handleOpenAddDialog,
-    },
-    {
+    },    {
       label: `Delete All (${localTasks.filter(task => 
         task.status === getBoardStatus() || 
         (!task.status && getBoardStatus() === 'todo')
       ).length})`,
       icon: <Delete sx={{ fontSize: 18 }} />,
-      onClick: handleDeleteBoard,
+      onClick: openDeleteAllDialog,
     },
   ];
 
@@ -627,12 +628,14 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
                 label: 'Edit',
                 icon: <Edit sx={{ fontSize: 18 }} />,
                 onClick: () => handleOpenEditDialog(task),
-              },
-              {
+              },              {
                 label: 'Delete',
                 icon: <Delete sx={{ fontSize: 18 }} />,
-                onClick: () => handleDeleteTask(task.id),
-              },              {
+                onClick: () => {
+                  setTaskToDelete(task.id);
+                  setIsDeleteTaskDialogOpen(true);
+                },
+              }, {
                 label: 'View',
                 icon: <LabelImportant sx={{ fontSize: 18 }} />,
                 onClick: () => handleOpenViewDialog(task),
@@ -779,11 +782,11 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
                 startIcon={<Edit />}
               >
                 Edit
-              </Button>
-              <Button 
+              </Button>              <Button 
                 onClick={() => {
                   handleCloseViewDialog();
-                  handleDeleteTask(selectedTask.id);
+                  setTaskToDelete(selectedTask.id);
+                  setIsDeleteTaskDialogOpen(true);
                 }} 
                 color="error"
                 startIcon={<Delete />}
@@ -811,6 +814,26 @@ const Board: React.FC<{ label: string, tasks: FormattedTask[] }> = ({ label, tas
           {feedback.message}
         </Alert>
       </Snackbar>
+
+      {/* Delete All Tasks Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        title="Delete All Tasks"
+        message={`Are you sure you want to delete all tasks in the "${label}" board? This action cannot be undone.`}
+        isOpen={isDeleteAllDialogOpen}
+        isDeleting={isSubmitting}
+        onClose={() => setIsDeleteAllDialogOpen(false)}
+        onConfirm={handleDeleteBoard}
+      />
+
+      {/* Delete Single Task Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+        isOpen={isDeleteTaskDialogOpen}
+        isDeleting={isBoardLoading}
+        onClose={() => setIsDeleteTaskDialogOpen(false)}
+        onConfirm={() => handleDeleteTask(taskToDelete)}
+      />
     </div>
   );
 };

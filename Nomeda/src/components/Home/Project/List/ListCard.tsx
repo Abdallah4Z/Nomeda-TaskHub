@@ -3,8 +3,7 @@ import {Card} from '@mui/material'
 import {
   Dialog,
   DialogTitle,
-  DialogContent,
-  DialogActions,
+  DialogContent,  DialogActions,
   Button,
   TextField,
   FormControl,
@@ -12,7 +11,10 @@ import {
   Select,
   MenuItem,
   Box,
+  Snackbar,
+  Alert,
 } from '@mui/material'
+import DeleteConfirmationDialog from '../../../Common/DeleteConfirmationDialog'
 import ListCardTitle from './ListCardTitle'
 import ListCardAssignees from './ListCardAssignees'
 import ListCardTime from './ListCardTime'
@@ -20,12 +22,13 @@ import ListCardLabel from './ListCardLabel'
 import ListCardActions from './ListCardActions'
 import PriorityLabel from '../../../Tasks/PriorityLabel'
 
-import { FormattedTask, FormattedUser, TaskAction } from '../../../../types/project';
+import { FormattedTask } from '../../../../types/project';
 
-interface ListCardProps {  task: FormattedTask
-  onEdit?: (updatedTask: FormattedTask) => void
-  onDelete?: (taskId: string) => void
-  onView?: (taskId: string) => void
+interface ListCardProps {
+  task: FormattedTask;
+  onEdit?: (updatedTask: FormattedTask) => void;
+  onDelete?: (taskId: string) => Promise<void>;
+  onView?: (taskId: string) => void;
 }
 
 const ListCard: React.FC<ListCardProps> = ({
@@ -33,18 +36,19 @@ const ListCard: React.FC<ListCardProps> = ({
   onEdit,
   onDelete,
   onView,
-}) => {
-  const [dialogOpen, setDialogOpen] = useState(false)
+}) => {  const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [editedTask, setEditedTask] = useState<FormattedTask>(task)
-
-  // Available assignees (you can expand this list)
-  const availableAssignees = [
-    {name: 'John Doe', avatar: `https://robohash.org/john?set=set5`},
-    {name: 'Jane Smith', avatar: `https://robohash.org/jane?set=set5`},
-    {name: 'Mike Johnson', avatar: `https://robohash.org/mike?set=set5`},
-  ]
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [notification, setNotification] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({
+    open: false,
+    message: '',
+    severity: 'success'
+  })
 
   const handleEditClick = () => {
     setDialogOpen(true)
@@ -55,21 +59,42 @@ const ListCard: React.FC<ListCardProps> = ({
     setDialogOpen(false)
     setEditedTask({...task}) // Reset to original
   }
-
   const handleSaveTask = () => {
     if (onEdit && editedTask.title.trim()) {
       onEdit(editedTask)
       setDialogOpen(false)
     }
   }
-
-  const handleDelete = () => {
-    onDelete?.(task.id)
-    setDeleteDialogOpen(false)
+  
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      if (onDelete) {
+        await onDelete(task.id)
+        // Close the dialog once deletion is successful
+        setDeleteDialogOpen(false)
+        setNotification({
+          open: true,
+          message: 'Task deleted successfully',
+          severity: 'success'
+        })
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error)
+      setNotification({
+        open: true,
+        message: 'Failed to delete task',
+        severity: 'error'
+      })
+      // Keep the dialog open if there's an error
+    } finally {
+      setIsDeleting(false)
+    }
   }
-
   const handleView = () => {
-    setViewDialogOpen(true)
+    if (onView) {
+      onView(task.id)
+    }
   }
 
   return (
@@ -89,8 +114,9 @@ const ListCard: React.FC<ListCardProps> = ({
           },
         }}
       >
-        <ListCardTitle title={task.title} />
-        <ListCardAssignees users={task.users} />        <ListCardTime time={task.assignedAt} />
+        <ListCardTitle title={task.title || ''} />
+        <ListCardAssignees users={task.users} />
+        <ListCardTime time={task.assignedAt || ''} />
         <ListCardLabel 
           status={task.status} 
           taskId={task.id}
@@ -144,9 +170,34 @@ const ListCard: React.FC<ListCardProps> = ({
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button onClick={handleSaveTask} color="primary" variant="contained">
             Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </Button>        </DialogActions>
+      </Dialog>      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        title="Delete Task"
+        itemName={task.title}
+        message="Are you sure you want to delete this task? This action cannot be undone."
+        isOpen={deleteDialogOpen}
+        isDeleting={isDeleting}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+      />
+
+      {/* Notification Snackbar */}
+      <Snackbar 
+        open={notification.open} 
+        autoHideDuration={6000} 
+        onClose={() => setNotification(prev => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert 
+          onClose={() => setNotification(prev => ({ ...prev, open: false }))} 
+          severity={notification.severity} 
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
