@@ -158,8 +158,12 @@ export const authAPI = {  // Register a new user
 };
 
 // Function to get auth header for protected routes
+export const getAuthToken = () => {
+  return localStorage.getItem('token');
+};
+
 export const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
 
@@ -206,7 +210,7 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
       },
       {
         headers: {
-          "Authorization": `Bearer API_KEY`,
+          "Authorization": `Bearer ${process.env.VITE_OPENROUTER_API_KEY}`,
           "HTTP-Referer": SITE_URL,
           "X-Title": SITE_NAME,
           "Content-Type": "application/json"

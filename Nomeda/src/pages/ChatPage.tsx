@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import {
   Box,
   Paper,
@@ -15,11 +15,17 @@ import {
   Button,
   InputAdornment,
   styled,
+  CircularProgress,
+  Alert,
+  AlertTitle,
 } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
 import SearchIcon from '@mui/icons-material/Search'
-import {Message} from '../types'
+import ForumIcon from '@mui/icons-material/Forum'
+import {format} from 'date-fns'
+import {useChat} from '../hooks/useChat'
+import {Chat as ChatType} from '../services/chatService'
 import MainLayout from '../components/Layout/MainLayout'
 
 // Styled components
@@ -48,88 +54,48 @@ const UnreadBadge = styled(Box)(({theme}) => ({
   fontSize: '0.75rem',
 }))
 
-interface Chat {
-  id: string
-  name: string
-  avatar: string
-  lastMessage: string
-  timestamp: string
-  unread: number
-  type: 'project' | 'direct'
-}
-
-interface ChatMessage {
-  id: string
-  senderId: string
-  text: string
-  timestamp: string
-  attachment?: string
-}
+// We're using the types from chatService.ts now
 
 const ChatPage: React.FC = () => {
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
-  const [message, setMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const {
+    chats,
+    loading,
+    error,
+    selectedChat,
+    currentMessages,
+    projectName,
+    message,
+    typingUsers,
+    setMessage,
+    setSelectedChat,
+    handleSendMessage,
+    handleKeyPress,
+    handleInputChange,
+  } = useChat()
 
-  // Mock data for chats
-  const mockChats: Chat[] = [
-    {
-      id: '1',
-      name: 'Project Alpha',
-      avatar: 'https://robohash.org/project-alpha',
-      lastMessage: 'Latest updates on the project',
-      timestamp: '10:30 AM',
-      unread: 2,
-      type: 'project',
-    },
-    {
-      id: '2',
-      name: 'John Doe',
-      avatar: 'https://robohash.org/john-doe',
-      lastMessage: 'When is the next meeting?',
-      timestamp: '09:15 AM',
-      unread: 0,
-      type: 'direct',
-    },
-  ]
-
-  const [chats] = useState<Chat[]>(mockChats)
-
-  const handleSendMessage = () => {
-    if (!message.trim() || !selectedChat) return
-
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      senderId: 'currentUser',
-      text: message,
-      timestamp: new Date().toLocaleTimeString(),
-    }
-
-    setMessages(prev => [...prev, newMessage])
-    setMessage('')
-  }
-
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      handleSendMessage()
+  const formatTimestamp = (timestamp: string) => {
+    if (!timestamp) return ''
+    try {
+      return format(new Date(timestamp), 'h:mm a')
+    } catch (err) {
+      console.error('Invalid date format:', timestamp)
+      return timestamp
     }
   }
 
   const filteredChats = chats.filter(chat =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    chat.projectName.toLowerCase().includes(searchQuery.toLowerCase()),
   )
-
   return (
     <MainLayout>
-      <Box sx={{height: 'calc(100vh - 64px)', display: 'flex', width:'80vw'}}>
+      <Box sx={{height: 'calc(100vh - 64px)', display: 'flex', width: '80vw'}}>
         {/* Chat List */}
         <Paper sx={{width: 320, borderRadius: 0}}>
           <Box sx={{p: 2}}>
             <TextField
               fullWidth
-              placeholder="Search chats..."
+              placeholder="Search project chats..."
               variant="outlined"
               size="small"
               value={searchQuery}
@@ -150,62 +116,112 @@ const ChatPage: React.FC = () => {
               }}
             />
           </Box>
-          <List sx={{overflowY: 'auto', height: 'calc(100vh - 130px)'}}>
-            {filteredChats.map(chat => (
-              <React.Fragment key={chat.id}>
-                <ListItem
-                  onClick={() => setSelectedChat(chat)}
-                  selected={selectedChat?.id === chat.id}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'action.hover',
-                    },
-                    '&.Mui-selected': {
-                      backgroundColor: 'primary.light',
-                    },
-                  }}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={chat.avatar} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Box
-                        sx={{display: 'flex', justifyContent: 'space-between'}}
-                      >
-                        <Typography variant="subtitle2">{chat.name}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {chat.timestamp}
-                        </Typography>
-                      </Box>
-                    }
-                    secondary={
-                      <Box
-                        sx={{display: 'flex', justifyContent: 'space-between'}}
-                      >
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            maxWidth: '180px',
-                          }}
-                        >
-                          {chat.lastMessage}
-                        </Typography>
-                        {chat.unread > 0 && (
-                          <UnreadBadge>{chat.unread}</UnreadBadge>
-                        )}
-                      </Box>
-                    }
+
+          {loading && !chats.length ? (
+            <Box sx={{display: 'flex', justifyContent: 'center', p: 4}}>
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Box sx={{p: 2}}>
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {error}
+              </Alert>
+            </Box>
+          ) : (
+            <List sx={{overflowY: 'auto', height: 'calc(100vh - 130px)'}}>
+              {filteredChats.length > 0 ? (
+                filteredChats.map(chat => (
+                  <React.Fragment key={chat.id}>
+                    <ListItem
+                      onClick={() => setSelectedChat(chat)}
+                      selected={selectedChat?.id === chat.id}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: 'action.hover',
+                        },
+                        '&.Mui-selected': {
+                          backgroundColor: 'primary.light',
+                        },
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar src={chat.avatar} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <Typography variant="subtitle2">
+                              {chat.projectName}
+                            </Typography>
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {formatTimestamp(chat.timestamp)}
+                            </Typography>
+                          </Box>
+                        }
+                        secondary={
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                maxWidth: '180px',
+                              }}
+                            >
+                              {chat.sender
+                                ? `${chat.sender.name}: ${chat.lastMessage}`
+                                : chat.lastMessage || 'No messages yet'}
+                            </Typography>
+                            {chat.unread > 0 && (
+                              <UnreadBadge>{chat.unread}</UnreadBadge>
+                            )}
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                ))
+              ) : (
+                <Box sx={{p: 3, textAlign: 'center'}}>
+                  <ForumIcon
+                    sx={{fontSize: 40, color: 'text.secondary', mb: 1}}
                   />
-                </ListItem>
-                <Divider />
-              </React.Fragment>
-            ))}
-          </List>
+                  <Typography variant="body2" color="text.secondary">
+                    {searchQuery
+                      ? 'No matching projects found'
+                      : 'No project chats available'}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{mt: 1, display: 'block'}}
+                  >
+                    {searchQuery
+                      ? 'Try a different search term'
+                      : 'Create or join a project to start chatting'}
+                  </Typography>
+                </Box>
+              )}
+            </List>
+          )}
         </Paper>
 
         {/* Chat Area */}
@@ -223,56 +239,196 @@ const ChatPage: React.FC = () => {
                 }}
               >
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
-                  <Avatar src={selectedChat.avatar} />
+                  <Avatar
+                    src={
+                      selectedChat.avatar ||
+                      `https://robohash.org/${projectName}`
+                    }
+                  />
                   <Box>
-                    <Typography variant="h6">{selectedChat.name}</Typography>
+                    <Typography variant="h6">
+                      {projectName || selectedChat.projectName}
+                    </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {selectedChat.type === 'project'
-                        ? 'Project Chat'
-                        : 'Direct Message'}
+                      Project Chat
                     </Typography>
                   </Box>
                 </Box>
               </Paper>
-
               {/* Messages Area */}
               <ChatMessageArea>
-                {messages.map(msg => (
+                {loading && !currentMessages.length ? (
                   <Box
-                    key={msg.id}
                     sx={{
                       display: 'flex',
-                      justifyContent:
-                        msg.senderId === 'currentUser'
-                          ? 'flex-end'
-                          : 'flex-start',
-                      mb: 2,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
                     }}
                   >
-                    <MessageBubble
-                      sx={{
-                        bgcolor:
-                          msg.senderId === 'currentUser'
-                            ? 'primary.main'
-                            : 'background.paper',
-                        color:
-                          msg.senderId === 'currentUser'
-                            ? 'primary.contrastText'
-                            : 'text.primary',
-                      }}
-                    >
-                      <Typography variant="body1">{msg.text}</Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{opacity: 0.7, display: 'block', mt: 0.5}}
-                      >
-                        {msg.timestamp}
-                      </Typography>
-                    </MessageBubble>
+                    <CircularProgress />
                   </Box>
-                ))}
-              </ChatMessageArea>
+                ) : error ? (
+                  <Box sx={{p: 2}}>
+                    <Alert severity="error">
+                      <AlertTitle>Error</AlertTitle>
+                      {error}
+                    </Alert>
+                  </Box>
+                ) : currentMessages.length === 0 ? (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100%',
+                    }}
+                  >
+                    <ForumIcon
+                      sx={{fontSize: 60, color: 'text.secondary', mb: 2}}
+                    />
+                    <Typography variant="h6" color="text.secondary">
+                      No messages yet
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Be the first to send a message in this project chat!
+                    </Typography>
+                  </Box>
+                ) : (
+                  <>
+                    {currentMessages.map(msg => {
+                      // Get user data from backend or localStorage for "currentUser" id
+                      const currentUserId = JSON.parse(
+                        localStorage.getItem('user') || '{}',
+                      )?.id
+                      const isCurrentUser = msg.senderId === currentUserId
 
+                      return (
+                        <Box
+                          key={msg.id}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: isCurrentUser
+                              ? 'flex-end'
+                              : 'flex-start',
+                            mb: 2,
+                          }}
+                        >
+                          {!isCurrentUser && (
+                            <Avatar
+                              src={
+                                msg.senderAvatar ||
+                                `https://robohash.org/${msg.senderId}`
+                              }
+                              sx={{mr: 1, width: 32, height: 32, mt: 1}}
+                            />
+                          )}
+                          <Box sx={{maxWidth: '70%'}}>
+                            {!isCurrentUser && (
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ml: 1}}
+                              >
+                                {msg.senderName}
+                              </Typography>
+                            )}
+                            <MessageBubble
+                              sx={{
+                                bgcolor: isCurrentUser
+                                  ? 'primary.main'
+                                  : 'background.paper',
+                                color: isCurrentUser
+                                  ? 'primary.contrastText'
+                                  : 'text.primary',
+                                boxShadow: 1,
+                              }}
+                            >
+                              <Typography variant="body1">
+                                {msg.text}
+                              </Typography>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  opacity: 0.7,
+                                  display: 'block',
+                                  mt: 0.5,
+                                  textAlign: isCurrentUser ? 'right' : 'left',
+                                }}
+                              >
+                                {formatTimestamp(msg.timestamp)}
+                              </Typography>
+                              {msg.attachment && (
+                                <Box sx={{mt: 1}}>
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<AttachFileIcon />}
+                                    href={msg.attachment}
+                                    target="_blank"
+                                  >
+                                    Attachment
+                                  </Button>
+                                </Box>
+                              )}
+                            </MessageBubble>
+                          </Box>
+                          {isCurrentUser && (
+                            <Avatar
+                              src={
+                                msg.senderAvatar ||
+                                `https://robohash.org/${msg.senderId}`
+                              }
+                              sx={{ml: 1, width: 32, height: 32, mt: 1}}
+                            />
+                          )}
+                        </Box>
+                      )
+                    })}
+
+                    {/* Typing indicators */}
+                    {Object.keys(typingUsers).length > 0 && (
+                      <Box sx={{display: 'flex', alignItems: 'center', mb: 2}}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            bgcolor: 'background.paper',
+                            borderRadius: 2,
+                            p: 1,
+                            boxShadow: 1,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              '&::after': {
+                                content: '"..."',
+                                animation: 'typing 1.5s infinite',
+                                '@keyframes typing': {
+                                  '0%': {content: '"."'},
+                                  '33%': {content: '".."'},
+                                  '66%': {content: '"..."'},
+                                },
+                              },
+                            }}
+                          >
+                            <Typography variant="body2" color="text.secondary">
+                              {Object.keys(typingUsers).length === 1
+                                ? `${Object.values(typingUsers)[0]} is typing`
+                                : `${
+                                    Object.keys(typingUsers).length
+                                  } people are typing`}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    )}
+                  </>
+                )}
+              </ChatMessageArea>
               {/* Message Input */}
               <Paper
                 elevation={1}
@@ -285,7 +441,7 @@ const ChatPage: React.FC = () => {
               >
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
-                    <IconButton color="primary">
+                    <IconButton color="primary" disabled>
                       <AttachFileIcon />
                     </IconButton>
                   </Grid>
@@ -296,9 +452,10 @@ const ChatPage: React.FC = () => {
                       maxRows={4}
                       placeholder="Type your message..."
                       value={message}
-                      onChange={e => setMessage(e.target.value)}
+                      onChange={handleInputChange}
                       onKeyPress={handleKeyPress}
                       variant="outlined"
+                      disabled={loading}
                       sx={{
                         width: '45vw',
                         '& .MuiOutlinedInput-root': {
@@ -312,28 +469,39 @@ const ChatPage: React.FC = () => {
                   <Grid item>
                     <Button
                       variant="contained"
-                      endIcon={<SendIcon />}
+                      endIcon={
+                        loading ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : (
+                          <SendIcon />
+                        )
+                      }
                       onClick={handleSendMessage}
-                      disabled={!message.trim()}
+                      disabled={!message.trim() || loading}
                     >
                       Send
                     </Button>
                   </Grid>
                 </Grid>
-              </Paper>
+              </Paper>{' '}
             </>
           ) : (
             <Box
               sx={{
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100%',
                 bgcolor: 'grey.100',
               }}
             >
+              <ForumIcon sx={{fontSize: 80, color: 'text.secondary', mb: 2}} />
               <Typography variant="h6" color="text.secondary">
-                Select a chat to start messaging
+                Select a project chat to start messaging
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{mt: 1}}>
+                Chat with your team members in project-specific conversations
               </Typography>
             </Box>
           )}
