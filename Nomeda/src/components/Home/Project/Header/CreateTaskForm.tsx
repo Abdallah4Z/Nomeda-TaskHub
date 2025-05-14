@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Stack, Typography, Chip, IconButton, MenuItem, InputLabel, FormControl, Select } from '@mui/material';
+import { TextField, Button, Stack, Typography, Chip, IconButton, MenuItem, InputLabel, FormControl, Select, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Close';
 
@@ -40,6 +40,11 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
   const [newUser, setNewUser] = useState('');
   const [assignedAt, setAssignedAt] = useState('');
   const [priority, setPriority] = useState<'High' | 'Normal' | 'Low'>('Normal');
+  const [errors, setErrors] = useState<{
+    title?: string;
+    users?: string;
+    assignedAt?: string;
+  }>({});
 
   // Populate form with existing task data when editing
   useEffect(() => {
@@ -65,11 +70,32 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
   const handleRemoveUser = (name: string) => {
     setUserNames((prev) => prev.filter((user) => user !== name));
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!title || userNames.length === 0 || !assignedAt) return;
+    
+    // Clear previous errors
+    setErrors({});
+    
+    // Validate form fields
+    const newErrors: {title?: string; users?: string; assignedAt?: string} = {};
+    
+    if (!title.trim()) {
+      newErrors.title = "Task title is required";
+    }
+    
+    if (userNames.length === 0) {
+      newErrors.users = "At least one assignee is required";
+    }
+    
+    if (!assignedAt) {
+      newErrors.assignedAt = "Assigned date is required";
+    }
+    
+    // If there are errors, show them and stop form submission
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     
     const newTask: Task = {
       id: taskToEdit ? taskToEdit.id : Date.now().toString(),
@@ -103,29 +129,39 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
     setAssignedAt('');
     setPriority('Normal');
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={2}>
+        {Object.keys(errors).length > 0 && 
+          <Stack spacing={1} sx={{mb: 2}}>
+            {Object.entries(errors).map(([key, value]) => (
+              <Typography key={key} color="error" variant="body2">{value}</Typography>
+            ))}
+          </Stack>
+        }
         <TextField
           label="Task Title"
           fullWidth
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-        />
-
-        <Stack direction="row" spacing={1} alignItems="center">
+          error={!!errors.title}
+          helperText={errors.title}
+        />        <Stack direction="row" spacing={1} alignItems="center">
           <TextField
             label="Assignee Name"
             value={newUser}
             onChange={(e) => setNewUser(e.target.value)}
             fullWidth
+            error={!!errors.users && userNames.length === 0}
           />
           <IconButton color="primary" onClick={handleAddUser}>
             <AddIcon />
           </IconButton>
         </Stack>
+        {errors.users && userNames.length === 0 && (
+          <Typography color="error" variant="caption">{errors.users}</Typography>
+        )}
 
         {userNames.length > 0 && (
           <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -138,9 +174,7 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
               />
             ))}
           </Stack>
-        )}
-
-        <TextField
+        )}        <TextField
           label="Assigned At"
           type="date"
           InputLabelProps={{ shrink: true }}
@@ -148,6 +182,8 @@ const CreateTaskForm: React.FC<Props> = ({ onAddTask, taskToEdit, onUpdateTask }
           required
           value={assignedAt}
           onChange={(e) => setAssignedAt(e.target.value)}
+          error={!!errors.assignedAt}
+          helperText={errors.assignedAt}
         />
 
         <FormControl fullWidth>
