@@ -206,7 +206,7 @@ export const sendMessageToAPI = async (inputText: string, imagePreview: string |
       },
       {
         headers: {
-          "Authorization": `Bearer API_KEY`,
+          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
           "HTTP-Referer": SITE_URL,
           "X-Title": SITE_NAME,
           "Content-Type": "application/json"

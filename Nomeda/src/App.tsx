@@ -23,6 +23,7 @@ import AccountViewPage from './pages/AccountViewPage'
 import LandingPage from './pages/LandingPage'
 import TasksPage from './pages/TasksPage'
 import TeamPage from './pages/TeamPage'
+import ChatPage from './pages/ChatPage'
 
 function App() {
   const { isAuthenticated } = useAuth()
@@ -48,6 +49,8 @@ function App() {
             <Route path="/projects/:id" element={<ProjectViewPage />} />
             <Route path="/tasks" element={<TasksPage />} />
             <Route path="/team" element={<TeamPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+
 
 
 
