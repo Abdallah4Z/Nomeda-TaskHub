@@ -34,26 +34,32 @@
 
 ## Overview
 
-Nomeda-TaskHub is a comprehensive platform featuring real-time chat, task tracking, authentication (including Google and GitHub), and a modern, responsive UI designed for teams to collaborate efficiently.
+Nomeda-TaskHub is a comprehensive platform featuring real-time chat, task
+tracking, authentication (including Google and GitHub), and a modern, responsive
+UI designed for teams to collaborate efficiently.
 
 ## ✨ Features
 
 - **Real-time Communication**
+
   - Chat messaging with instant notifications
   - File sharing in conversations
   - Read receipts and typing indicators
 
 - **Project Management**
+
   - Kanban-style task boards
   - Task assignments and deadline tracking
   - Progress visualization and reporting
 
 - **User Authentication**
+
   - JWT token-based authentication
   - OAuth integration (Google, GitHub)
   - Role-based access control
 
 - **Dashboard & Analytics**
+
   - Project progress metrics
   - Team productivity insights
   - Custom reporting options
@@ -76,6 +82,7 @@ Nomeda-TaskHub is a comprehensive platform featuring real-time chat, task tracki
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite for fast development
 - **State Management**: Context API
@@ -84,6 +91,7 @@ Nomeda-TaskHub is a comprehensive platform featuring real-time chat, task tracki
 - **APIs**: Fetch API, Socket.io client
 
 ### Backend
+
 - **Runtime**: Node.js with Express
 - **Language**: TypeScript
 - **Database**: MongoDB with Mongoose ODM
@@ -92,6 +100,7 @@ Nomeda-TaskHub is a comprehensive platform featuring real-time chat, task tracki
 - **File Storage**: Local with multer (cloud storage ready)
 
 ### DevOps & Tools
+
 - **Linting**: ESLint, Prettier
 - **Version Control**: Git, GitHub
 - **API Documentation**: Swagger/OpenAPI
@@ -126,24 +135,29 @@ Nomeda-TaskHub/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 16.x or later
 - MongoDB 4.4+ running locally or MongoDB Atlas account
 - npm or yarn package manager
 
 ### Backend Setup
+
 1. Clone the repository
+
    ```bash
    git clone https://github.com/YourUsername/Nomeda-TaskHub.git
    cd Nomeda-TaskHub
    ```
 
 2. Install dependencies
+
    ```bash
    cd backend
    npm install
    ```
 
 3. Set up environment variables
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
@@ -155,19 +169,23 @@ Nomeda-TaskHub/
    ```
 
 ### Frontend Setup
+
 1. Install dependencies
+
    ```bash
    cd Nomeda
    npm install
    ```
 
 2. Set up environment variables
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 3. Start the development server
+
    ```bash
    npm run dev
    ```
@@ -180,6 +198,7 @@ Nomeda-TaskHub/
 ## 🔧 Environment Variables
 
 ### Backend (.env)
+
 ```
 NODE_ENV=development
 PORT=3000
@@ -194,6 +213,7 @@ UPLOAD_DIR=./uploads
 ```
 
 ### Frontend (.env)
+
 ```
 VITE_API_URL=http://localhost:3000/api
 VITE_SOCKET_URL=http://localhost:3000
@@ -203,6 +223,7 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 ## 📚 API Documentation
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - User login
 - `GET /api/auth/google` - Google OAuth login
@@ -210,6 +231,7 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 - `GET /api/auth/profile` - Get current user profile
 
 ### Projects
+
 - `GET /api/projects` - Get all projects
 - `POST /api/projects` - Create new project
 - `GET /api/projects/:id` - Get project details
@@ -217,29 +239,34 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id
 - `DELETE /api/projects/:id` - Delete project
 
 ### Tasks
+
 - `GET /api/projects/:id/tasks` - Get tasks for project
 - `POST /api/projects/:id/tasks` - Create new task
 - `PUT /api/tasks/:id` - Update task
 - `DELETE /api/tasks/:id` - Delete task
 
 ### Chat
+
 - `GET /api/chats` - Get user's chat list
 - `POST /api/chats` - Create new chat
 - `GET /api/chats/:id/messages` - Get messages in chat
 - `POST /api/chats/:id/messages` - Send message to chat
 
 ### Files
+
 - `POST /api/upload` - Upload file
 - `GET /api/files/:id` - Download file
 
 ## 📝 Roadmap
 
 - [ ] **Q3 2025**
+
   - Mobile application (React Native)
   - Calendar integration
   - Advanced analytics dashboard
 
 - [ ] **Q4 2025**
+
   - AI-powered task recommendations
   - Workflow automation tools
   - Time tracking features
@@ -259,10 +286,10 @@ We welcome contributions to Nomeda-TaskHub! Here's how you can help:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-Please make sure to update tests as appropriate and adhere to our code of conduct.
+Please make sure to update tests as appropriate and adhere to our code of
+conduct.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
