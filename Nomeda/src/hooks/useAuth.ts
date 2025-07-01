@@ -112,18 +112,23 @@ export const useAuth = () => {
       setIsLoading(false);
     }
   };
-
   // Social authentication (Google, GitHub)
   const socialAuth = async (token: string, provider: 'google' | 'github') => {
     try {
       setIsLoading(true);
+      console.log(`Starting ${provider} authentication with token`);
+      
       const response = await authAPI.socialAuth({ token, provider });
+      console.log(`${provider} auth API response:`, response);
       
       if (response.success && response.user) {
+        console.log(`${provider} auth successful, setting user:`, response.user);
         setUser(response.user);
         setIsAuthenticated(true);
+        console.log('User state updated, authentication complete');
         return response.user;
       } else {
+        console.error(`${provider} auth failed - no user in response:`, response);
         throw new Error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} authentication failed`);
       }
     } catch (error) {

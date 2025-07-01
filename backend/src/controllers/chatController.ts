@@ -4,6 +4,25 @@ import Project from '../models/Project';
 import mongoose from 'mongoose';
 
 /**
+ * Utility function to generate unique message ID
+ */
+const generateUniqueMessageId = (): mongoose.Types.ObjectId => {
+  return new mongoose.Types.ObjectId();
+};
+
+/**
+ * Utility function to check if a message with the same content exists recently
+ */
+const isDuplicateMessage = (messages: any[], newText: string, senderId: string, timeWindow: number = 5000): boolean => {
+  const now = new Date().getTime();
+  return messages.some(msg => 
+    msg.text === newText && 
+    msg.sender.toString() === senderId && 
+    (now - new Date(msg.timestamp).getTime()) < timeWindow
+  );
+};
+
+/**
  * Get all chats for a user
  * Returns chats for projects where the user is an owner or member
  */
@@ -130,14 +149,12 @@ export const getChatMessages = async (req: Request, res: Response) => {
         participants: [project.owner, ...project.members],
         messages: []
       });
-    }
-
-    // Format messages for frontend with null check and safe access
+    }    // Format messages for frontend with null check and safe access
     const messages = chat.messages.map(msg => {
       const sender = msg.sender as any;
       return {
-        id: msg._id,
-        senderId: sender?._id || 'unknown',
+        id: msg._id?.toString() || new mongoose.Types.ObjectId().toString(),
+        senderId: sender?._id?.toString() || 'unknown',
         senderName: sender?.name || 'Unknown User',
         senderAvatar: sender?.photoUrl || `https://robohash.org/${sender?.name || 'unknown'}`,
         text: msg.text,
@@ -181,15 +198,28 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     // Get or create chat for this project
     let chat = await Chat.findOne({ projectId });
-    
-    if (!chat) {
+      if (!chat) {
       chat = await Chat.create({
         projectId,
         participants: [project.owner, ...project.members],
         messages: []
       });
-    }    // Add new message
+    }
+
+    // Check for duplicate messages
+    if (isDuplicateMessage(chat.messages, text, userId)) {
+      return res.status(400).json({ 
+        message: 'Duplicate message detected. Please wait before sending the same message again.' 
+      });
+    }// Check for duplicate message
+    const isDuplicate = isDuplicateMessage(chat.messages, text, userId);
+    
+    if (isDuplicate) {
+      return res.status(400).json({ message: 'Duplicate message detected' });
+    }    // Add new message with explicit ID generation
+    const messageId = generateUniqueMessageId();
     const newMessage = {
+      _id: messageId,
       sender: new mongoose.Types.ObjectId(userId),
       text: text || '',  // Ensure text is never null/undefined
       timestamp: new Date(),
@@ -215,18 +245,16 @@ export const sendMessage = async (req: Request, res: Response) => {
     
     if (!sender) {
       return res.status(404).json({ message: 'Sender not found' });
-    }
-
-    // Format the message response with proper null checks
+    }    // Format the message response with proper null checks
     const messageResponse = {
-      id: createdMessage._id || new mongoose.Types.ObjectId(),
+      id: messageId.toString(), // Use the explicitly generated ID
       senderId: userId,
       senderName: sender?.name || 'Unknown User',
       senderAvatar: sender?.photoUrl || `https://robohash.org/${sender?.name || 'unknown'}`,
       text: createdMessage.text || '',
       timestamp: createdMessage.timestamp || new Date(),
       attachment: createdMessage.attachment || undefined
-    };    // Emit socket event if available
+    };// Emit socket event if available
     try {
       if ((req as any).socketService) {
         const socketService = (req as any).socketService;

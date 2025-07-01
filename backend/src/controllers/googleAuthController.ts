@@ -71,12 +71,12 @@ export const googleAuth = async (req: Request, res: Response) => {
           console.log('Updated user photo with Google profile picture');
         }
       }
-      
-      // Generate token
+        // Generate token
       const jwtToken = createToken(user);
+      console.log('JWT token generated successfully');
       
-      // Return response
-      res.status(200).json({
+      // Format response data
+      const responseData = {
         success: true,
         user: {
           id: user._id,
@@ -87,7 +87,18 @@ export const googleAuth = async (req: Request, res: Response) => {
           joinedDate: user.joinedDate
         },
         token: jwtToken
-      });    } catch (apiError: any) {
+      };
+      
+      console.log('Sending response with user data and token');
+      console.log('Response structure:', {
+        success: responseData.success,
+        hasUser: !!responseData.user,
+        hasToken: !!responseData.token,
+        userId: responseData.user.id
+      });
+      
+      // Return response
+      res.status(200).json(responseData);} catch (apiError: any) {
       console.error('Google API error:', apiError.response?.data || apiError.message);
       res.status(401).json({
         success: false,

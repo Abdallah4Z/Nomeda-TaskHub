@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getUserChats, getChatMessages, sendMessage, Chat, ChatMessage, ChatDetails } from '../services/chatService';
+import { mergeAndSortMessages, removeDuplicateMessages } from '../utils/messageUtils';
 import socketService from '../services/socketService';
 
 interface UseChatReturn {
@@ -61,13 +62,13 @@ export const useChat = (): UseChatReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  const fetchMessages = useCallback(async (projectId: string) => {
+  }, []);  const fetchMessages = useCallback(async (projectId: string) => {
     try {
       setLoading(true);
       const chatDetails: ChatDetails = await getChatMessages(projectId);
-      setCurrentMessages(chatDetails.messages);
+      // Ensure message uniqueness when setting messages using improved utility
+      const uniqueMessages = removeDuplicateMessages(chatDetails.messages);
+      setCurrentMessages(uniqueMessages);
       setProjectName(chatDetails.projectName);
       setError(null);
     } catch (err) {
@@ -90,11 +91,13 @@ export const useChat = (): UseChatReturn => {
   }, [fetchChats]);
 
   // Handle real-time message reception
-  useEffect(() => {
-    socketService.onReceiveMessage((newMessage: ChatMessage) => {
+  useEffect(() => {    socketService.onReceiveMessage((newMessage: ChatMessage) => {
       // Add new message to current messages if it belongs to the selected chat
       if (selectedChat && newMessage.senderId !== currentUserRef.current?.id) {
-        setCurrentMessages(prev => [...prev, newMessage]);
+        setCurrentMessages(prev => {
+          // Use improved merge function to prevent duplicates
+          return mergeAndSortMessages(prev, [newMessage]);
+        });
         
         // Update the chat list with the new message
         setChats(prevChats => prevChats.map(chat => 
@@ -151,14 +154,14 @@ export const useChat = (): UseChatReturn => {
         socketService.leaveProjectChat(selectedChat.projectId);
       }
     };
-  }, [selectedChat?.projectId]);
-
-  const handleSendMessage = async () => {
+  }, [selectedChat?.projectId]);  const handleSendMessage = async () => {
     if (!message.trim() || !selectedChat) return;
 
     try {
       const newMessage = await sendMessage(selectedChat.projectId, message);
-      setCurrentMessages(prev => [...prev, newMessage]);
+      
+      // Use improved merge function to add new message while preventing duplicates
+      setCurrentMessages(prev => mergeAndSortMessages(prev, [newMessage]));
       setMessage('');
       
       // Update the last message in the chat list

@@ -82,22 +82,33 @@ export const authAPI = {  // Register a new user
       
       throw error;
     }
-  },
-  // Social authentication (Google, GitHub)
+  },  // Social authentication (Google, GitHub)
   socialAuth: async (authData: SocialAuthData) => {
     try {
       const endpoint = `${API_BASE_URL}/auth/${authData.provider}`;
       
       console.log(`Authenticating with ${authData.provider}`, { token: authData.token && 'Token provided' });
       
-      const response = await axios.post(endpoint, { token: authData.token },);
+      const response = await axios.post(endpoint, { token: authData.token });
       
       const data = response.data;
       console.log(`${authData.provider} auth response:`, data);
+      console.log('Response status:', response.status);
+      console.log('Response structure check:', {
+        hasSuccess: 'success' in data,
+        hasUser: 'user' in data,
+        hasToken: 'token' in data,
+        successValue: data.success,
+        userValue: !!data.user,
+        tokenValue: !!data.token
+      });
       
       // Save token to local storage
       if (data.token) {
+        console.log('Saving token to localStorage');
         localStorage.setItem('token', data.token);
+      } else {
+        console.warn('No token in response to save');
       }
       
       return data;

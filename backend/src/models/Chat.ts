@@ -16,6 +16,10 @@ export interface IChat extends Document {
 }
 
 const MessageSchema = new Schema<IMessage>({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
+  },
   sender: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -32,7 +36,7 @@ const MessageSchema = new Schema<IMessage>({
   attachment: {
     type: String
   }
-});
+}, { _id: true });
 
 const ChatSchema = new Schema<IChat>({
   projectId: {
@@ -56,7 +60,9 @@ const ChatSchema = new Schema<IChat>({
   }
 });
 
-// Create index on projectId for faster lookups
+// Create indexes for faster lookups
 ChatSchema.index({ projectId: 1 });
+ChatSchema.index({ 'messages._id': 1 });
+ChatSchema.index({ 'messages.timestamp': -1 });
 
 export default mongoose.model<IChat>('Chat', ChatSchema);
